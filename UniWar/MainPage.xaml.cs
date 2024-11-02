@@ -12,7 +12,7 @@ namespace UniWar
         }
 
         // Importa la funzione C++ direttamente qui
-        [DllImport("C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\CppLibrary\\UniWarCppLibrary.dll", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport("UniWar\\UniWarCppLibrary\\x64\\Debug\\UniWarCppLibrary.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern int Multiply(int a, int b);
 
         private void OnCppButtonClicked(object sender, EventArgs e)
