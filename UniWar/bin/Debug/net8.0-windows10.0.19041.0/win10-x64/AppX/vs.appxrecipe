@@ -29,7 +29,7 @@
     <AppXManifest Include="C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2024-11-02T09:33:29.325</Modified>
+      <Modified>2024-11-02T09:54:41.124</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
@@ -43,11 +43,11 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\UniWar.dll">
       <PackagePath>UniWar.dll</PackagePath>
-      <Modified>2024-11-02T09:33:27.470</Modified>
+      <Modified>2024-11-02T09:54:39.004</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\apphost.exe">
       <PackagePath>UniWar.exe</PackagePath>
-      <Modified>2024-11-02T09:33:27.479</Modified>
+      <Modified>2024-11-02T09:54:39.035</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\provi\Documents\GitHub\UniWar\UniWar\Resources\Raw\AboutAssets.txt">
       <PackagePath>AboutAssets.txt</PackagePath>

@@ -6,3 +6,7 @@ extern "C" __declspec(dllexport) const char* GetCppMessage()
 {
     return "Saluti da C++!";
 }
+
+int Multiply(int a, int b) {
+    return a * b;
+}

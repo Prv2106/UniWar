@@ -6,11 +6,22 @@
                FontSize="24" 
                HorizontalOptions="Center" />
 
+        <!-- Entry per inserire il primo numero -->
+        <Entry x:Name="FirstNumberEntry" 
+               Placeholder="Primo numero" 
+               Keyboard="Numeric" />
+
+        <!-- Entry per inserire il secondo numero -->
+        <Entry x:Name="SecondNumberEntry" 
+               Placeholder="Secondo numero" 
+               Keyboard="Numeric" />
+
+        <!-- Pulsante per ottenere il risultato -->
         <Button Text="Ottieni risultato da C++"
                 x:Name="CppButton"
                 Clicked="OnCppButtonClicked" />
 
-
+        <!-- Label per mostrare il risultato -->
         <Label x:Name="ResultLabel"
                Text="Risultato:"
                FontSize="18"

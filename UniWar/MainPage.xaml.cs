@@ -1,26 +1,36 @@
 ﻿using System;
-using Microsoft.Maui.Controls;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Microsoft.Maui.Controls;
 
 namespace UniWar
 {
     public partial class MainPage : ContentPage
     {
-        [DllImport("C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\CppLibrary\\UniWarCppLibrary.dll", CallingConvention = CallingConvention.Cdecl)]
-        private static extern IntPtr GetCppMessage();
-
         public MainPage()
         {
             InitializeComponent();
         }
 
+        // Importa la funzione C++ direttamente qui
+        [DllImport("C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\CppLibrary\\UniWarCppLibrary.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern int Multiply(int a, int b);
+
         private void OnCppButtonClicked(object sender, EventArgs e)
         {
-            IntPtr resultPtr = GetCppMessage();
-            string result = Marshal.PtrToStringAnsi(resultPtr);
-            ResultLabel.Text = "Risultato da C++: " + result;
-        }
+            // Legge i valori inseriti nei campi di input
+            if (int.TryParse(FirstNumberEntry.Text, out int num1) &&
+                int.TryParse(SecondNumberEntry.Text, out int num2))
+            {
+                // Richiama la funzione C++ per il calcolo
+                int result = Multiply(num1, num2);
 
+                // Mostra il risultato nella Label
+                ResultLabel.Text = $"Risultato: {result}";
+            }
+            else
+            {
+                ResultLabel.Text = "Inserisci numeri validi.";
+            }
+        }
     }
 }
