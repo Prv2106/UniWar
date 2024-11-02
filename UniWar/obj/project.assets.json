@@ -3252,24 +3252,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\giuse\\.nuget\\packages\\": {},
+    "C:\\Users\\provi\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj",
+      "projectUniqueName": "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\UniWar.csproj",
       "projectName": "UniWar",
-      "projectPath": "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj",
-      "packagesPath": "C:\\Users\\giuse\\.nuget\\packages\\",
-      "outputPath": "C:\\UniWar\\UniWar\\UniWar\\obj\\",
+      "projectPath": "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\UniWar.csproj",
+      "packagesPath": "C:\\Users\\provi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\obj\\",
       "projectStyle": "PackageReference",
       "crossTargeting": true,
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\giuse\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\provi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

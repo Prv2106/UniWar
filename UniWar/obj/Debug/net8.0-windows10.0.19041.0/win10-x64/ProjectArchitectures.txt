@@ -1,1 +1,0 @@
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\UniWar.csproj;x64
