@@ -6,6 +6,8 @@
                FontSize="24" 
                HorizontalOptions="Center" />
 
+    <!-- TEST PER C++ -->
+
         <!-- Entry per inserire il primo numero -->
         <Entry x:Name="FirstNumberEntry" 
                Placeholder="Primo numero" 
@@ -26,5 +28,15 @@
                Text="Risultato:"
                FontSize="18"
                HorizontalOptions="Center" />
+
+
+
+    <!-- TEST PER Python (stessi numeri in input) -->
+
+        <Button Text="Calculate Sum" Clicked="OnPythonButtonClicked" />
+        
+        <Label x:Name="ResultLabel2" Text="" FontSize="14" />
+    
+       
     </StackLayout>
 </ContentPage>

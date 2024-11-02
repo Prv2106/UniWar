@@ -1,0 +1,45 @@
+Requisiti:
+1) Koyeb Account
+2) Github Account
+3) phyton installato sulla macchina
+  -> per verificare se presente, aprire il terminale e digitare "phyton": 
+     se installato, dovrebbe uscire l'output della versione installata (es: Python 3.12.7)
+
+Phyton and FastAPI:
+1) crea una cartella in locale (es: python_server), dopo bisogna aprirla
+    con un editor di testo (VScode) ed aprire il terminale.
+2) crea un "ambiente virtuale" (virtual environment) eseguendo: " python -m venv venv "
+3) avviamo questo ambiente creato con il comando: " . venv/scripts/activate "
+4) installiamo fastapi: " pip install fastapi "uvicorn[standard]" "
+5) " pip freeze > requirements.txt "
+
+6) ORA, creiamo il main.py nella root della directory 'python_server' e incolla:
+
+    from typing import Union
+    from fastapi import FastAPI
+
+    app = FastAPI()
+
+    # creiamo gli endpoint sotto!!
+
+    @app.get("/")
+    def read_root():
+        return {"message": "Hello from Koyeb"}
+
+7) salviamo.
+
+8) " uvicorn main:app --reload " -> questo fa partire, di fatto, il server (localhost)
+
+9) crea un repository (privato) su github ed effettuiamo il push di quanto creato 
+    (requirements.txt e main.py), la cartella 'venv' rimane il locale perchè è servita
+    solo per la prova del localhost
+
+SPOSTIAMOCI su Koyeb.
+1) creiamo un "Web Service" ed agganciamoci al repository github
+2) IMPORTANTE: modifichiamo il "build and deployment setting" andando
+   ad overridare il 'run command' inserendo la stringa "uvicorn main:app --host 0.0.0.0"
+3) nella sezione "instance" selezioniamo 'Eco' per la gratutità
+4) selezioniamo la regione più vicina a noi per una minore latenza
+5) diamo un nome all'app
+6) ...finish...
+
