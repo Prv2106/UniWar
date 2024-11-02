@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "15u0x7Yy6xI=",
+  "dgSpecHash": "jFZKckMHglA=",
   "success": true,
   "projectFilePath": "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj",
   "expectedPackageFiles": [
@@ -27,6 +27,7 @@
     "C:\\Users\\giuse\\.nuget\\packages\\microsoft.maui.resizetizer\\8.0.82\\microsoft.maui.resizetizer.8.0.82.nupkg.sha512",
     "C:\\Users\\giuse\\.nuget\\packages\\microsoft.windows.sdk.buildtools\\10.0.22621.756\\microsoft.windows.sdk.buildtools.10.0.22621.756.nupkg.sha512",
     "C:\\Users\\giuse\\.nuget\\packages\\microsoft.windowsappsdk\\1.5.240627000\\microsoft.windowsappsdk.1.5.240627000.nupkg.sha512",
+    "C:\\Users\\giuse\\.nuget\\packages\\npgsql\\8.0.5\\npgsql.8.0.5.nupkg.sha512",
     "C:\\Users\\giuse\\.nuget\\packages\\python.runtime\\2.7.9\\python.runtime.2.7.9.nupkg.sha512",
     "C:\\Users\\giuse\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.44\\microsoft.windows.sdk.net.ref.10.0.19041.44.nupkg.sha512"
   ],

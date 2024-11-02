@@ -12,6 +12,7 @@
           "Microsoft.Extensions.Logging.Debug": "8.0.0",
           "Microsoft.Maui.Controls": "8.0.82",
           "Microsoft.Maui.Controls.Compatibility": "8.0.82",
+          "Npgsql": "8.0.5",
           "Python.Runtime": "2.7.9",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.44"
         },
@@ -446,6 +447,17 @@
           }
         }
       },
+      "Npgsql/8.0.5": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.0"
+        },
+        "runtime": {
+          "lib/net8.0/Npgsql.dll": {
+            "assemblyVersion": "8.0.5.0",
+            "fileVersion": "8.0.5.0"
+          }
+        }
+      },
       "Python.Runtime/2.7.9": {}
     }
   },
@@ -620,6 +632,13 @@
       "sha512": "sha512-qzzWG8rxZyzKzBuUdwr4ApezMINf+NT2b8EiEE5fchczNJJmDwlHImMWxX1pHK1W8Yby99alqLyC8DB0fIrhuA==",
       "path": "microsoft.windowsappsdk/1.5.240627000",
       "hashPath": "microsoft.windowsappsdk.1.5.240627000.nupkg.sha512"
+    },
+    "Npgsql/8.0.5": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-zRG5V8cyeZLpzJlKzFKjEwkRMYIYnHWJvEor2lWXeccS2E1G2nIWYYhnukB51iz5XsWSVEtqg3AxTWM0QJ6vfg==",
+      "path": "npgsql/8.0.5",
+      "hashPath": "npgsql.8.0.5.nupkg.sha512"
     },
     "Python.Runtime/2.7.9": {
       "type": "package",

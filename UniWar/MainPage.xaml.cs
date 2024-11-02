@@ -18,12 +18,17 @@ namespace UniWar
 
     public partial class MainPage : ContentPage {
         private readonly HttpClient _httpClient;
+        private DatabaseConnection db;
 
         public MainPage()
         {
             InitializeComponent();
             _httpClient = new HttpClient();
+            
+            // Inizializza il database all'avvio dell'app
+            InitializeDatabase().ConfigureAwait(false);
         }
+
 
         // Importa la funzione C++ direttamente qui
         [DllImport("UniWar\\UniWarCppLibrary\\x64\\Debug\\UniWarCppLibrary.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -78,6 +83,18 @@ namespace UniWar
             using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
             var serializer = new DataContractJsonSerializer(typeof(T)) ?? throw new InvalidOperationException("Serializer could not be created.");
             return serializer.ReadObject(stream) as T;
+        }
+
+        private async Task InitializeDatabase() {
+            var connectionString = "Host=ep-little-frog-a2jktkaw.eu-central-1.pg.koyeb.app;Username=koyeb-adm;Password=tOl5UkbKc6WL;Database=UniWarDB";
+            db = new DatabaseConnection(connectionString);
+            
+            try {
+                await db.CreatePartitaTable();   
+
+            } catch (Exception ex) {
+                Console.WriteLine($"Errore durante la creazione della tabella: {ex.Message}");
+            }
         }
 
     }

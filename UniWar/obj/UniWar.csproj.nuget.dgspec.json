@@ -63,6 +63,10 @@
               "target": "Package",
               "version": "[8.0.82, )"
             },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            },
             "Python.Runtime": {
               "target": "Package",
               "version": "[2.7.9, )"
