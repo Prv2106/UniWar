@@ -1,6 +1,6 @@
 *.json
 
-*.dll
+UniWar/*.dll
 
 *.exe
 
