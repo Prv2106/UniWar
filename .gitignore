@@ -5,3 +5,5 @@
 *.exe
 
 *.cache
+
+**/UniWar.AssemblyInfo.cs
