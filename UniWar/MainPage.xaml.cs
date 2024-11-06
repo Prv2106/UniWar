@@ -1,84 +1,32 @@
-﻿using System.Runtime.InteropServices;
-
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json; // IMPORTANTE
-
-
+﻿using Microsoft.Maui.Controls;
+using UniWar.views;
 
 namespace UniWar
 {
-
-    [DataContract]
-    public class ResponseModel {
-        [DataMember(Name = "result")]
-        public int Result { get; set; }
-    }
-
-
-
-    public partial class MainPage : ContentPage {
-        private readonly HttpClient _httpClient;
-
+    /*
+    * dichiara una classe pubblica MainPage che eredita da ContentPage. 
+    * In .NET MAUI, ContentPage rappresenta una singola pagina con contenuti definiti tramite XAML o codice C#. 
+    * partial indica che questa classe è "parziale", cioè ha una parte del codice scritta nel file .cs e un'altra parte nel file XAML collegato.
+    */
+    public partial class MainPage : ContentPage
+    {
         public MainPage()
         {
+            /*
+            * InitializeComponent() è un metodo generato automaticamente durante la compilazione che collega la logica C# agli elementi XAML definiti 
+            * per questa pagina, consentendo di accedere a controlli e layout presenti nella MainPage.xaml.
+            */
             InitializeComponent();
-            _httpClient = new HttpClient();
         }
 
-        // Importa la funzione C++ direttamente qui
-        [DllImport("UniWarCppLibrary\\x64\\Debug\\UniWarCppLibrary.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int Multiply(int a, int b);
-
-        private void OnCppButtonClicked(object sender, EventArgs e)
+        private async void OnNuovaPartitaButtonClicked(object sender, EventArgs e)
         {
-            // Legge i valori inseriti nei campi di input
-            if (int.TryParse(FirstNumberEntry.Text, out int num1) &&
-                int.TryParse(SecondNumberEntry.Text, out int num2)) {
-                // Richiama la funzione C++ per il calcolo
-                int result = Multiply(num1, num2);
-
-                // Mostra il risultato nella Label
-                ResultLabel.Text = $"Risultato dalla libreria C++: {result}";
-            } else {
-                ResultLabel.Text = "Inserisci numeri validi.";
-            }
+            /*
+            * await Navigation.PushAsync(new Integration()); avvia la navigazione verso una nuova pagina (Integration).
+            * Navigation.PushAsync(new Integration()): Usa il metodo PushAsync della proprietà Navigation per navigare verso la pagina Integration e aggiungerla alla stack di navigazione.
+            * await: È usato perché PushAsync è un metodo asincrono, per cui l’app attende fino a quando la navigazione non è completata prima di procedere. Questo garantisce che il flusso dell’interfaccia utente resti fluido.
+            */
+            await Navigation.PushAsync(new Integration());
         }
-
-        private async void OnPythonButtonClicked(object sender, EventArgs e) {
-            // Legge i valori inseriti nei campi di input
-            if (int.TryParse(FirstNumberEntry.Text, out int num1) &&
-                int.TryParse(SecondNumberEntry.Text, out int num2)) {
-
-                // richiesta HTTP al server python
-                string url = $"https://diverse-cobra-nicoville-52f48d81.koyeb.app/add/?a={num1}&b={num2}";
-                HttpResponseMessage response = await _httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
-                // 'content' è il json RAW del tipo {"risultato": valore}
-
-                try {
-                    var resultObject = DeserializeJson<ResponseModel>(content);
-                    if (resultObject != null) {
-                        ResultLabel2.Text = $"Result: {resultObject.Result}"; // Stampa il risultato
-                    } else {
-                        ResultLabel2.Text = "Error: Failed to get result";
-                    }
-                } catch (Exception ex) {
-                    ResultLabel2.Text = $"Error: {ex.Message}";
-                }
-                
-            } else {
-                ResultLabel2.Text = "Inserisci numeri validi.";
-            }
-        }
-
-
-        // Metodo helper per deserializzare
-        private static T? DeserializeJson<T>(string json)  where T : class {
-            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
-            var serializer = new DataContractJsonSerializer(typeof(T)) ?? throw new InvalidOperationException("Serializer could not be created.");
-            return serializer.ReadObject(stream) as T;
-        }
-
     }
 }

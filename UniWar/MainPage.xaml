@@ -1,42 +1,13 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="UniWar.MainPage">
-    <StackLayout Padding="30">
-        <Label Text="UniWar App" 
-               FontSize="24" 
-               HorizontalOptions="Center" />
+             x:Class="UniWar.MainPage"
+             Title="UniWar">
 
-    <!-- TEST PER C++ -->
-
-        <!-- Entry per inserire il primo numero -->
-        <Entry x:Name="FirstNumberEntry" 
-               Placeholder="Primo numero" 
-               Keyboard="Numeric" />
-
-        <!-- Entry per inserire il secondo numero -->
-        <Entry x:Name="SecondNumberEntry" 
-               Placeholder="Secondo numero" 
-               Keyboard="Numeric" />
-
-        <!-- Pulsante per ottenere il risultato -->
-        <Button Text="Ottieni risultato da C++"
-                x:Name="CppButton"
-                Clicked="OnCppButtonClicked" />
-
-        <!-- Label per mostrare il risultato -->
-        <Label x:Name="ResultLabel"
-               Text="Risultato:"
-               FontSize="18"
-               HorizontalOptions="Center" />
-
-
-
-    <!-- TEST PER Python (stessi numeri in input) -->
-
-        <Button Text="Calculate Sum" Clicked="OnPythonButtonClicked" />
-        
-        <Label x:Name="ResultLabel2" Text="" FontSize="14" />
-    
-       
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+        <Button Text="Nuova partita"
+                Clicked="OnNuovaPartitaButtonClicked"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"/>
     </StackLayout>
+
 </ContentPage>
