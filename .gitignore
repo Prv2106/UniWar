@@ -7,3 +7,5 @@
 *.cache
 
 **/UniWar.AssemblyInfo.cs
+
+*.pdb
