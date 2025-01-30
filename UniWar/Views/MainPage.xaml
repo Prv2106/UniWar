@@ -1,13 +1,23 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniWar.MainPage"
-             Title="UniWar">
+             Title="UniWar"
+             Padding="20">
 
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+
+        <Image Source="mappa.png"
+            WidthRequest="380"
+            HeightRequest="245"
+            Aspect="AspectFit"
+            Margin="0,0,0,20"/>
+
         <Button Text="Nuova partita"
                 Clicked="OnNuovaPartitaButtonClicked"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"/>
+                HorizontalOptions="Fill"
+                VerticalOptions="Center"
+
+                />
     </StackLayout>
 
 </ContentPage>

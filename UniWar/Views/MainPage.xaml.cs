@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using UniWar.views;
-
+﻿
 namespace UniWar {
     public partial class MainPage : ContentPage {
         public MainPage() {
@@ -11,7 +9,7 @@ namespace UniWar {
         private async void OnNuovaPartitaButtonClicked(object sender, EventArgs e) {
             // PushAsync: metodo della proprietà Navigation per navigare verso la pagina Integration e aggiungerla alla stack di navigazione.
             // N.B: await è usato perché PushAsync è un metodo asincrono.
-            await Navigation.PushAsync(new Integration());
+            await Navigation.PushAsync(new views.ChooseTankColor());
         }
     }
 }

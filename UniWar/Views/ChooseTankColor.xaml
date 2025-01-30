@@ -1,0 +1,15 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniWar.views.ChooseTankColor">
+    <StackLayout Padding="30">
+        <Label Text="Iniziamo! Scegli un colore per i tuoi carri armati" 
+               FontSize="24" 
+               HorizontalOptions="Center" />
+
+        <!-- Entry per inserire un numero -->
+        <Entry x:Name="FirstNumberEntry" 
+               Placeholder="Primo numero" 
+               Keyboard="Numeric" />   
+       
+    </StackLayout>
+</ContentPage>
