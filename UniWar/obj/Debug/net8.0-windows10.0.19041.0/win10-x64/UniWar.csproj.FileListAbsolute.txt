@@ -927,3 +927,4 @@ C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.Windows.Widgets.winmd
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Microsoft.UI.Xaml.Controls.pri
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Npgsql.dll
+C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\Npgsql.dll
