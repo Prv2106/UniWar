@@ -19,7 +19,7 @@ namespace UniWar {
 					window.OnWindowCreated(w => {
 						var appWindow = w.GetAppWindow(); 
 						if (appWindow != null) {
-							int width = 650;  // Larghezza finestra
+							int width = 1200;  // Larghezza finestra
 							int height = 1200; // Altezza finestra
 							appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));							
 						}

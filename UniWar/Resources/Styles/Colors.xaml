@@ -24,7 +24,7 @@
 
     <!-- 🌍 Colori per sfondi e territori -->
     <Color x:Key="MapGreen">#4CAF50</Color> <!-- Verde mappa -->
-    <Color x:Key="MapBrown">#8D6E63</Color> <!-- Marrone per bordi e dettagli -->
+    <Color x:Key="MapBrown">#FF8D6E63</Color> <!-- Marrone per bordi e dettagli -->
     <Color x:Key="MapBlue">#0288D1</Color> <!-- Azzurro per l’oceano -->
 
     <!-- ⚙️ Grigi per testo e sfondi -->
