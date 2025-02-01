@@ -43,11 +43,11 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Resources.Styles.St
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
 
-[C:/UniWar/UniWar/UniWar/Views/ChooseTankColor.xaml]
+[C:/UniWar/UniWar/UniWar/Views/InitializationSummary.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ChooseTankColor.xaml
-build_metadata.AdditionalFiles.TargetPath = Views\ChooseTankColor.xaml
-build_metadata.AdditionalFiles.RelativePath = Views\ChooseTankColor.xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.InitializationSummary.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\InitializationSummary.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\InitializationSummary.xaml
 
 [C:/UniWar/UniWar/UniWar/Views/MainPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml

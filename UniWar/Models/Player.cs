@@ -5,6 +5,6 @@ public class Player {
     public Dictionary<string, Territory> Territories {get;}
 
     public Player() {
-                
+            
     }
 }

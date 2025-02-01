@@ -7,7 +7,6 @@ public class Territory {
     public Dictionary<string, Territory> NeighboringTerritories {get;}
 
 
-
     public Territory (string name, int score) {
         Score = score;
         Name = name;

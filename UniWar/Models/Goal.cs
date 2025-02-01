@@ -4,7 +4,4 @@ public class Goal {
     public Goal(string descr) {
         Description = descr;
     }
-
-    
-
 }
