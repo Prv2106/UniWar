@@ -44,8 +44,6 @@ namespace UniWar {
             }
             
         }
-        
-        
     }
 
     private async void OnTerritoryClicked(object sender, EventArgs e) {

@@ -24,7 +24,7 @@ public class UniWarSystem { // singleton
 
     private void InitializeAll() {
         // qui gestiamo la creazione dei territori ecc..
-        _continents.Add("America Del Nord", new Continent("America Del Nord", 9, new List<Territory>() {
+        _continents.Add("AmericaDelNord", new Continent("AmericaDelNord", 9, new List<Territory>() {
             new Territory("Alaska",2),
             new Territory("Alberta",2),
             new Territory("StatiUnitiOccidentali",3),
@@ -35,7 +35,7 @@ public class UniWarSystem { // singleton
             new Territory("Groenlandia",3),
             new Territory("Quebec",3),
         }));
-        _continents.Add("America Del Sud", new Continent("America Del Sud", 4, new List<Territory>() {
+        _continents.Add("AmericaDelSud", new Continent("AmericaDelSud", 4, new List<Territory>() {
             new Territory("Venezuela",3),
             new Territory("Perù",3),
             new Territory("Brasile",4),
