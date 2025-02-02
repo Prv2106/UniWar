@@ -1,10 +1,12 @@
 public class Player {
-    public Turn Turn {get; set;}
-    public Goal Goal {get;}
-    public List<Tank> Tanks {get;} // anche se c'è l'associazione con i Territori, è utile per il conteggio
-    public Dictionary<string, Territory> Territories {get;}
+    public Turn? Turn {get; set;}
+    public Goal? Goal {get; set;}
+    public List<Territory> Territories {get; set;}
 
-    public Player() {
-            
+    public bool IsCPU {get;} 
+
+    public Player(bool isCpu) {
+        Territories = [];
+        IsCPU = isCpu;
     }
 }

@@ -32,7 +32,8 @@
 
               <HorizontalStackLayout 
                      VerticalOptions="Center"
-                     HorizontalOptions="Center">
+                     HorizontalOptions="Center"
+                     Margin="20">
                      <Image Source="black_tank.png"
                             WidthRequest="150"/>
                      <Label Text="Colore carri armati: nero"
@@ -43,7 +44,7 @@
 
               <CollectionView ItemsSource="{Binding Territories}"
                                    ItemsLayout="HorizontalList"
-                                   Margin="10">
+                                   Margin="0,20,0,40">
                      
                      <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -57,8 +58,7 @@
                                    HeightRequest="90">
                                    <Label Text="{Binding}" />
                             </Frame>
-                            <Label Text=""
-                                   Margin="2"/>
+                            <Label Margin="2"/>
                             </HorizontalStackLayout>
                             
                             </DataTemplate>
@@ -77,16 +77,14 @@
                             Margin="120,0,0,0"/>
               </Grid>
               
-              
-
+       
               <!-- Carro armato: png a sinistra e label a destra -->
               
               
-               
-                
               <!-- Bottoni -->
               <HorizontalStackLayout
-              HorizontalOptions="Center">
+              HorizontalOptions="Center"
+              Margin="0,25,0,0">
               <Button Text="Conferma"
                      TextColor="White"
                      CornerRadius="8"
@@ -94,22 +92,21 @@
                      HorizontalOptions="Center"
                      WidthRequest="100"
                      BackgroundColor="Green"
-                     Margin="10"/>
+                     Clicked="onConfirmButtonClicked"
+                     Margin="30"/>
 
-              <Button Text="Ripeti"
+              <Button Text="Indietro"
                      TextColor="White"
                      CornerRadius="8"
                      Padding="10"
                      HorizontalOptions="Center"
                      WidthRequest="100"
                      BackgroundColor="DarkRed"
-                     Margin="10"/>
+                     Clicked="onBackButtonClicked"
+                     Margin="30"/>
 
               </HorizontalStackLayout>
                      
-                     
-                
-                
             </VerticalStackLayout>
             
         </Frame>

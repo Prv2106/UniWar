@@ -20,7 +20,7 @@ namespace UniWar {
 						var appWindow = w.GetAppWindow(); 
 						if (appWindow != null) {
 							int width = 1200;  // Larghezza finestra
-							int height = 1200; // Altezza finestra
+							int height = 1400; // Altezza finestra
 							appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));							
 						}
 					});
@@ -30,8 +30,15 @@ namespace UniWar {
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
-
-            return builder.Build();
+            try {
+                return builder.Build();
+            }
+            catch (System.Exception ex) {
+                Console.WriteLine($"Errore: {ex.Message}");
+                Console.WriteLine($"Dettagli: {ex.InnerException?.Message}");
+                throw;
+            }
+            
         }
     }
 }

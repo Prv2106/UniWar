@@ -1,0 +1,296 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniWar.TablePage"
+             Title="">
+
+    <AbsoluteLayout WidthRequest="735" HeightRequest="480" HorizontalOptions="Center" VerticalOptions="Start">
+        <!-- NOTA BENE: 
+                LayoutBounds="X, Y, Width, Height" 
+                X = distanza da sinistra 
+                Y = distanza da sopra 
+        -->
+
+        <!-- Mappa di Sfondo -->
+        <Image Source="mappa.png"
+               Aspect="Fill"
+               AbsoluteLayout.LayoutBounds="0, 0, 735, 480" />
+               
+
+        <Label x:Name="tooltipLabel"
+               Text=""
+               BackgroundColor="Black"
+               TextColor="White"
+               Padding="15"
+               IsVisible="False"
+               AbsoluteLayout.LayoutBounds="340, 10, 100, 50"
+               HorizontalTextAlignment="Center"
+               VerticalTextAlignment="Center"
+               FontSize="12"
+               />
+
+        <!-- Alaska -->
+        <Grid x:Name="Alaska" AbsoluteLayout.LayoutBounds="55,60,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Alaska"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Alberta -->
+        <Grid x:Name="Alberta" AbsoluteLayout.LayoutBounds="75,115,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Alberta"
+                Margin="0,0,0,5"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Stati Uniti Occidentali -->
+        <Grid x:Name="StatiUnitiOccidentali" AbsoluteLayout.LayoutBounds="55,160,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Stati Uniti Occidentali"
+                Margin="0,0,0,10"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Stati Uniti Orientali -->
+        <Grid x:Name="StatiUnitiOrientali" AbsoluteLayout.LayoutBounds="100,190,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Stati Uniti Orientali"
+                Margin="0,0,0,10"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- America Centrale -->
+        <Grid x:Name="AmericaCentrale" AbsoluteLayout.LayoutBounds="45,210,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="America Centrale"
+                Margin="0,-10,0,0"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Ontario -->
+        <Grid x:Name="Ontario" AbsoluteLayout.LayoutBounds="135,140,40,40">       
+            <!-- Carro armato -->
+            <Image Source="green_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Ontario"
+                Margin="0,-5,0,5"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Territori Del Nord Ovest -->
+        <Grid x:Name="TerritoriDelNordOvest" AbsoluteLayout.LayoutBounds="115,55,40,40">       
+            <!-- Carro armato -->
+            <Image Source="green_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Territori Del Nord Ovest"
+                Margin="-10,-5,0,-10"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Groenlandia -->
+        <Grid x:Name="Groenlandia" AbsoluteLayout.LayoutBounds="200,55,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Groenlandia"
+                Margin="-10,-5,0,-10"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+        <!-- Quebec -->
+        <Grid x:Name="Quebec" AbsoluteLayout.LayoutBounds="185,150,40,40">       
+            <!-- Carro armato -->
+            <Image Source="black_tank.png"/>
+            <!-- Counter -->
+            <Grid Margin="28,0,0,28">
+                <Frame BackgroundColor="White"
+                CornerRadius="7"
+                BorderColor="Black"
+                WidthRequest="20"
+                HeightRequest="20"
+                HasShadow="True"/>
+                <Label Text="1"
+                        TextColor="Black"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        VerticalTextAlignment="Center" />
+            </Grid>
+            <!-- Pulsante per gestire il click -->
+            <Button
+                ClassId="Quebec"
+                Margin="-10,-5,0,-10"
+                BackgroundColor="Transparent"
+                CornerRadius="10"
+                Clicked="OnTerritoryClicked"/>
+        </Grid>
+
+
+        
+
+    </AbsoluteLayout>
+
+</ContentPage>
