@@ -14,11 +14,10 @@ namespace UniWar {
     // a sua volta il riferimento ad una lista di carri armati
 
 
-    public TablePage() {
-        Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
+    public TablePage(Player user, Player cpu) {
+        //Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
         InitializeComponent();
 
-        (Player user, Player cpu) = UniWarSystem.Instance.InitializeGame();
         string iconSrcUser = user.Territories[0].Tanks[0].GetTankIconByColor();
         // string iconSrcCpu = cpu.Territories[0].Tanks[0].GetTankIconByColor();
 

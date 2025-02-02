@@ -42,7 +42,7 @@
                             Margin="50"/>
               </HorizontalStackLayout>
 
-              <CollectionView ItemsSource="{Binding Territories}"
+              <CollectionView ItemsSource="{Binding UserTerritories}"
                                    ItemsLayout="HorizontalList"
                                    Margin="0,20,0,40">
                      
@@ -54,11 +54,14 @@
                                    HasShadow="True"
                                    BackgroundColor="White"
                                    BorderColor="Black"
-                                   WidthRequest="125"
-                                   HeightRequest="90">
-                                   <Label Text="{Binding}" />
+                                   WidthRequest="160"
+                                   HeightRequest="100">
+                                   <Label Text="{Binding}" 
+                                          WidthRequest ="90"
+                                          HorizontalOptions="Center"
+                                          VerticalOptions="Center"/>
                             </Frame>
-                            <Label Margin="2"/>
+                            <Label Margin="3"/>
                             </HorizontalStackLayout>
                             
                             </DataTemplate>
