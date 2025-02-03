@@ -87,7 +87,7 @@
                      HorizontalOptions="Center"
                      WidthRequest="100"
                      BackgroundColor="Green"
-                     Clicked="onConfirmButtonClicked"
+                     Clicked="OnConfirmButtonClicked"
                      Margin="40"/>
                      
             </VerticalStackLayout>

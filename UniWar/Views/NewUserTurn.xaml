@@ -1,0 +1,48 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniWar.NewUserTurn">
+
+        <!-- Material Card -->
+        <Frame Padding="25"
+               CornerRadius="12"
+               HasShadow="True"
+               BackgroundColor="White"
+               Margin="10"
+               VerticalOptions="Center">
+            
+            <VerticalStackLayout>
+              
+              <!-- Titolo -->
+              <Image
+                Source="your_turn.png"
+                WidthRequest="250"
+                />
+              <!-- Testo che spiega all'utente che deve fare -->
+              <Label Text="È il tuo turno!"
+                     FontSize="25"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     Margin="0,5,0,10"/>
+
+             <Label Text="Puoi scegliere se attaccare o passare il turno"
+                     FontSize="20"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     Margin="0,5,0,10"/>
+
+              <!-- Bottone -->
+              <Button Text="Capito"
+                     TextColor="White"
+                     CornerRadius="8"
+                     Padding="10"
+                     HorizontalOptions="Center"
+                     WidthRequest="100"
+                     BackgroundColor="Green"
+                     Clicked="OnConfirmButtonClicked"
+                     Margin="40"/>
+                     
+            </VerticalStackLayout>
+            
+        </Frame>
+
+</ContentPage>

@@ -5,6 +5,7 @@ namespace UniWar {
             Quindi, questo vede informazioni come:
             - il posizionamento delle sue armate sulla mappa,
             - il numero totale di carri armati,
+            - il numero totale di territori posseduti,
             - il suo colore di carri armati,
             - il suo obiettivo,
     */
@@ -15,13 +16,19 @@ namespace UniWar {
 
     public Player User {get; private set;}
     public Player CPU {get; private set;}
+    public string IconSrcUser {get;}
+    public string IconSrcCpu {get;}
 
 
     public TablePage(Player user, Player cpu) {
         Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
         InitializeComponent();
         User = user;
+        // recuperiamo il nome del file dell'icona del carro armato utente
+        IconSrcUser = User.Territories[0].Tanks[0].GetTankIconByColor();
         CPU = cpu;
+        // recuperiamo il nome del file dell'icona del carro armato CPU
+        IconSrcCpu = CPU.Territories[0].Tanks[0].GetTankIconByColor();
 
         // costruiamo la mappa distribuendo i carri armati sia per l'utente che per la CPU
         DeployTanks();
@@ -29,19 +36,32 @@ namespace UniWar {
         // costruiamo la parte delle informazioni per l'utente sotto la mappa
         BuildUserInformation();
 
-        
-
-
+        // gestiamo la grafica sulla base del turno
+        CheckIfIsUserTurn();
     }
 
+        private async void CheckIfIsUserTurn() {
+            if (User.Turn != null && User.Turn.Phase == TurnPhases.Attack) {
+                // è il turno dell'utente, mostriamo una modal view dove gli comunichiamo che è il suo turno
+                await Navigation.PushModalAsync(new NewUserTurn());
+
+                // mostrimo il pulsante "attacca"
+                AttackButton.IsVisible = true;
+                // mostriamo il pulsante "passa"
+                AttackButton.IsVisible = true;
+            } else {
+                // è il turno della CPU
+
+            }
+        }
+
         private void BuildUserInformation() {
-            
+            UserTankIcon.Source = IconSrcUser;
+            NumTanks.Text = User.GetNumTanks().ToString();
+            GoalDescr.Text = User.Goal?.Description;
         }
 
         private void DeployTanks() {
-            string iconSrcUser = User.Territories[0].Tanks[0].GetTankIconByColor();
-            string iconSrcCpu = CPU.Territories[0].Tanks[0].GetTankIconByColor();
-
             foreach (Territory territory in User.Territories) {
                 // prendiamoci la Grid corrispondente
                 var territoryInMap = this.FindByName<Grid>(territory.Name);
@@ -49,7 +69,7 @@ namespace UniWar {
                     foreach (var child in territoryInMap.Children) {
                         switch (child) {
                             case Image img:
-                                img.Source = iconSrcUser;
+                                img.Source = IconSrcUser;
                                 break;
                             case Grid grid:
                                 // la grid contenente 
@@ -71,7 +91,7 @@ namespace UniWar {
                     foreach (var child in territoryInMap.Children) {
                         switch (child) {
                             case Image img:
-                                img.Source = iconSrcCpu;
+                                img.Source = IconSrcCpu;
                                 break;
                             case Grid grid:
                                 // la grid contenente 
@@ -88,13 +108,23 @@ namespace UniWar {
         }
 
         private async void OnTerritoryClicked(object sender, EventArgs e) {
-        var button = sender as Button;
-        var territoryName = button?.ClassId;
-        tooltipLabel.Text = territoryName;  // Testo del tooltip
-        tooltipLabel.IsVisible = true;      // Mostra il tooltip
-        await Task.Delay(2500);
-        tooltipLabel.IsVisible = false;
+            var button = sender as Button;
+            var territoryName = button?.ClassId;
+            tooltipLabel.Text = territoryName;  // Testo del tooltip
+            tooltipLabel.IsVisible = true;      // Mostra il tooltip
+            await Task.Delay(2500);
+            tooltipLabel.IsVisible = false;
     }
+        private async void OnAttackButtonClicked(object sender, EventArgs e) {
+            // Interagisci con la classe Singleton UniWarSystem per
+            // implementare il caso d'uso di attacco
+
+        }
+
+        private async void OnPassButtonClicked(object sender, EventArgs e) {
+            // Interagisci con la classe Singleton UniWarSystem 
+            
+        }
   }
     
 }

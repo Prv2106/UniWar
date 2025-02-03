@@ -89,8 +89,10 @@ public class UniWarSystem { // singleton
             - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
             - “mischia” le “carte” dei territori e le distribuisce equamente tra i partecipanti.
             - assegna un obiettivo ai partecipanti.
+            - sceglie chi inizia il turno tra cpu e utente
 
         */
+        Random gen = new Random();
 
         // qui il sistema deve distribuire equamente i territori ai due giocatori
         Player user = new Player(isCpu: false);
@@ -114,9 +116,7 @@ public class UniWarSystem { // singleton
         user.Territories = firstHalf;
         cpu.Territories = secondHalf;
 
-        // scegliamo due colori random
-        Random gen = new Random();
-        // i colori sono 6
+        // scegliamo due colori random, i colori sono 6
         int colorForUser = gen.Next(6);
         int colorForCpu;
         do { // vogliamo assolutamente evitare che i colori siano uguali
@@ -134,6 +134,13 @@ public class UniWarSystem { // singleton
         // obiettivo ai partecipanti
         user.Goal = _goals[0];
         cpu.Goal = _goals[0];
+
+        // turno
+        if (gen.Next(2)==0) 
+            user.Turn = new Turn(TurnPhases.Attack);
+        else 
+            cpu.Turn = new Turn(TurnPhases.Attack);
+        
         
         return (user, cpu);
     }

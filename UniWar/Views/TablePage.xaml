@@ -2,8 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="UniWar.TablePage"
              Title="">
+            
+    <VerticalStackLayout>
 
-    <AbsoluteLayout WidthRequest="735" HeightRequest="480" HorizontalOptions="Center" VerticalOptions="Start">
+        <AbsoluteLayout WidthRequest="735" HeightRequest="480" HorizontalOptions="Center" VerticalOptions="Start">
         <!-- NOTA BENE: 
                 LayoutBounds="X, Y, Width, Height" 
                 X = distanza da sinistra 
@@ -14,18 +16,20 @@
                Aspect="Fill"
                AbsoluteLayout.LayoutBounds="0, 0, 735, 480" />
                
-
+        <!-- Questa è la label per mostrare il nome di un territorio cliccandoci sopra -->
         <Label x:Name="tooltipLabel"
                Text=""
                BackgroundColor="Black"
                TextColor="White"
                Padding="15"
                IsVisible="False"
-               AbsoluteLayout.LayoutBounds="340, 10, 100, 50"
+               AbsoluteLayout.LayoutBounds="340, 10, 120, 55"
                HorizontalTextAlignment="Center"
                VerticalTextAlignment="Center"
                FontSize="12"
-               />
+               />       
+
+        <!-- A seguire, posizioniamo una Grid su ogni territorio manualmente!! -->
 
         <!-- Alaska -->
         <Grid x:Name="Alaska" AbsoluteLayout.LayoutBounds="55,60,40,40">       
@@ -1027,7 +1031,7 @@
             </Grid>
             <!-- Pulsante per gestire il click -->
             <Button
-                ClassId="GranBretagna"
+                ClassId="Gran Bretagna"
                 Margin="0,0,0,-10"
                 BackgroundColor="Transparent"
                 CornerRadius="10"
@@ -1114,7 +1118,7 @@
             </Grid>
             <!-- Pulsante per gestire il click -->
             <Button
-                ClassId="EuropaSettentrionale"
+                ClassId="Europa Settentrionale"
                 Margin="-10,10,0,-5"
                 BackgroundColor="Transparent"
                 CornerRadius="10"
@@ -1172,7 +1176,7 @@
             </Grid>
             <!-- Pulsante per gestire il click -->
             <Button
-                ClassId="AustraliaOccidentale"
+                ClassId="Australia Occidentale"
                 Margin="-10,0,0,-5"
                 BackgroundColor="Transparent"
                 CornerRadius="10"
@@ -1259,20 +1263,101 @@
             </Grid>
             <!-- Pulsante per gestire il click -->
             <Button
-                ClassId="AustraliaOrientale"
+                ClassId="Australia Orientale"
                 Margin="0,0,0,-20"
                 BackgroundColor="Transparent"
                 CornerRadius="10"
                 Clicked="OnTerritoryClicked"/>
         </Grid>
 
-
-
-
-
-
-        
-
     </AbsoluteLayout>
+
+    <!-- A partire da qui, mettiamo le informazioni grafiche per l'utente -->
+
+
+         <Frame Padding="25"
+               CornerRadius="12"
+               HasShadow="True"
+               BackgroundColor="White"
+               Margin="10"> <!-- Simula la profondità della Material Card -->
+            <VerticalStackLayout>
+              <HorizontalStackLayout>
+                 <!-- Riepilogo colore e numero armate -->
+                <Image
+                    x:Name="UserTankIcon"
+                    Source="red_tank.png"
+                    WidthRequest="50"/>
+                <Label 
+                    x:Name="NumTanks"
+                    VerticalOptions="Center"
+                    Margin="10"
+                    Text="63"
+                     FontSize="15"
+                     FontAttributes="Bold"
+                     TextColor="#333"
+                     HorizontalOptions="Center"/>
+                <!-- Riepilogo numero territori posseduti -->
+                <Image
+                    Source="flag.png"
+                    WidthRequest="40"
+                    Margin="50,0,0,0"/>
+                <Label 
+                    VerticalOptions="Center"
+                    Margin="10"
+                    Text="21"
+                     FontSize="15"
+                     FontAttributes="Bold"
+                     TextColor="#333"
+                     HorizontalOptions="Center"/>
+              </HorizontalStackLayout>
+              <!-- Riepilogo obiettivo -->
+              <HorizontalStackLayout>
+                <Label
+                    VerticalOptions="Center"
+                    Text="OBIETTIVO:"
+                    TextColor="#333"
+                    FontSize="15" />
+                <Label 
+                    VerticalOptions="Center"
+                    x:Name="GoalDescr"
+                    Margin="10"
+                    Text="...."
+                     FontSize="15"
+                     FontAttributes="Bold"
+                     TextColor="#333"
+                     HorizontalOptions="Center"/>
+              </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
+        <!-- Pulsanti per Scegliere se Attaccare o meno -->
+        <HorizontalStackLayout
+            HorizontalOptions="Center">
+            <Button
+                x:Name="AttackButton"
+                TextColor="White"
+                Text="ATTACCA"
+                FontSize="21"
+                WidthRequest="130"
+                Margin="30"
+                IsVisible="False"
+                Clicked="OnAttackButtonClicked"
+                BackgroundColor="DarkRed"/>
+            <Button
+                x:Name="PassButton"
+                TextColor="White"
+                Text="PASSA"
+                FontSize="21"
+                Margin="30"
+                IsVisible="False"
+                Clicked="OnPassButtonClicked"
+                WidthRequest="130"
+                />
+        </HorizontalStackLayout>
+
+
+
+    </VerticalStackLayout>
+       
+    
 
 </ContentPage>

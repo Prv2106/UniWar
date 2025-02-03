@@ -481,3 +481,7 @@ C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\pri.resfi
 C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\qualifiers.txt
 C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\qualifiers.txt.intermediate
 C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\MultipleQualifiersPerDimensionFound.txt
+C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\flag.scale-100.png
+C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\flag.scale-100.png
+C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\your_turn.scale-100.png
+C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\your_turn.scale-100.png

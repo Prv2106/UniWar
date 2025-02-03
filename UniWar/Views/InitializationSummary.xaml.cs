@@ -36,7 +36,7 @@ namespace UniWar {
             GoalDescription.Text = User.Goal?.Description;
         }
 
-        public async void onConfirmButtonClicked(object o, EventArgs args) {
+        private async void OnConfirmButtonClicked(object o, EventArgs args) {
             // passiamo gli oggetti player alla pagina successiva
             // che mostrerà la mappa
             await Navigation.PushAsync(new TablePage(User,CPU));
