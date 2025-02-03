@@ -5,7 +5,7 @@ public class Territory {
 
     // sotto gestiamo le associazioni e le visibilità per parametro
     public List<Tank> Tanks {get;}
-    public Dictionary<string, Territory> NeighboringTerritories {get;}
+    public List<Territory> NeighboringTerritories {get;}
 
 
     public Territory (string name, int score) {

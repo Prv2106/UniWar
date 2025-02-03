@@ -108,17 +108,32 @@ namespace UniWar {
         }
 
         private async void OnTerritoryClicked(object sender, EventArgs e) {
+            // logica per mostrare SEMPRE il nome del territorio
+            // perchè potrebbe essere nascosto dal carro armato
             var button = sender as Button;
             var territoryName = button?.ClassId;
             tooltipLabel.Text = territoryName;  // Testo del tooltip
             tooltipLabel.IsVisible = true;      // Mostra il tooltip
             await Task.Delay(2500);
             tooltipLabel.IsVisible = false;
+
+            // se è il turno di attacco dell'utente
+            if (User.Turn != null && User.Turn.Phase == TurnPhases.Attack) {
+                // al click su un territorio, oltre a mostrare il nome, 
+                // invochiamo l'operazione di sistema che restituisce
+                // l'elenco dei territori attaccabili sulla base
+                // dei territori confinanti!
+                
+                
+            }
     }
         private async void OnAttackButtonClicked(object sender, EventArgs e) {
-            // Interagisci con la classe Singleton UniWarSystem per
-            // implementare il caso d'uso di attacco
-
+            // 1. mostriamo un banner in cui informiamo l'utente di dove selezionare
+            //    un territorio dal quale effettuare l'attacco
+            attackBanner.IsVisible = true;
+            await Task.Delay(3000);
+            attackBanner.IsVisible = false;
+            
         }
 
         private async void OnPassButtonClicked(object sender, EventArgs e) {

@@ -6,8 +6,9 @@ public class Turn {
     public int IdRound {get; set;}
     /* potremmo usare questo attributo per implementare la logica del giro completato 
     (incrementandola man mano che tutti hanno eseguito il turno)*/
-
-
+    
+    // TODO: riferimento a Player 
+    
     public Turn(TurnPhases phase) {
         Phase = phase;
     }

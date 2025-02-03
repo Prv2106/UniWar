@@ -1354,6 +1354,19 @@
                 />
         </HorizontalStackLayout>
 
+        <!-- Questa è la label che dice all'utente di selezionare un territorio da cui effettuare l'attacco -->
+        <Label x:Name="attackBanner"
+            WidthRequest="550"
+            HeightRequest="50"
+            Text="Seleziona il territorio da cui vuoi effettuare l'attacco"
+            BackgroundColor="Black"
+            TextColor="White"
+            Padding="15"
+            IsVisible="False"
+            FontSize="18"
+            HorizontalTextAlignment="Center"
+            VerticalTextAlignment="Center"/>
+
 
 
     </VerticalStackLayout>
