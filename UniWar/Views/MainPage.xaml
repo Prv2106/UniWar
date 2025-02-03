@@ -26,8 +26,8 @@
                 FontSize="20"
                 Margin="20,0,20,20"/>
 
-        <Button Text="Prova passaggio contesto"
-                Clicked="ProvaVittoria"
+        <Button Text="Prova"
+                Clicked="OnReinforcement"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 HeightRequest="70"

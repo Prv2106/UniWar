@@ -1,3 +1,6 @@
+:: Compila uniwar_lib.cpp in un file oggetto 
+g++ -m64 -c uniwar_lib.cpp
+
 :: Per prima cosa invochiamo il compilatore GNU per C++
 :: con -c diciamo al compilatore di compilare il file sorgente ma senza eseguire il linking, 
 :: risultando in un file oggetto (.o) che contiene il codice compilato ma non completo.
@@ -13,4 +16,8 @@ g++ -m64 -c -DBUILD_MY_DLL functions_lib.cpp
 :: -Wl, indica che le opzioni che seguono devono essere passate al linker.
 :: --out-implib,libfunctions_lib.a crea una libreria statica di importazione (libfunctions_lib.a) che può essere utilizzata da altri programmi per fare il linking con la DLL creata.
 :: in pratica, questa libreria di importazione è un interfaccia per collegare il codice al programma in modo che possa chiamare la DLL.
-g++ -m64 -shared -o functions_lib.dll functions_lib.o -Wl,--out-implib,libfunctions_lib.a
+g++ -m64 -shared -o functions_lib.dll functions_lib.o uniwar_lib.o -Wl,--out-implib,libfunctions_lib.a
+
+
+
+

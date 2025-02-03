@@ -3,7 +3,6 @@ In C#, la direttiva using System.Runtime.InteropServices; serve a importare il n
 Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità tra il codice gestito (C#) e il codice non gestito (come quello C++).
 */
 using System.Runtime.InteropServices;
-using System.Collections.Generic;
 using System.Text.Json;   
 
 
@@ -21,77 +20,20 @@ namespace UniWar {
         }
 
        
-
-    
         public struct MapData{
             public string PlayerId {set; get;} 
             public Dictionary<string, List<string>> Neighbors { get; set; }
             public Dictionary<string, int> Tanks { get; set; }
 
         }
-        
-        [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr process_map(string jsonData);
+    /************ CODICE DI TEST PER LE FUNZIONALITA' C++ ***************/
 
-        private async void OnTryLibrary(object sender, EventArgs e) {
-
-            // Sintassi con Object Initializer (viene chiamato il costruttore senza parametri in modo implicito)
-            List<MapData> playersMaps = new List<MapData> {
-                new MapData {
-                    PlayerId = "Player1",
-                    Neighbors = new Dictionary<string, List<string>> {
-                        { "TerritorioA", new List<string> { "TerritorioB", "TerritorioC" } },
-                        { "TerritorioB", new List<string> { "TerritorioA" } },
-                        { "TerritorioC", new List<string> { "TerritorioA" } }
-                    },
-                    Tanks = new Dictionary<string, int> {
-                        { "TerritorioA", 10 },
-                        { "TerritorioB", 5 },
-                        { "TerritorioC", 7 }
-                    }
-                },
-                new MapData {
-                    PlayerId = "Player2",
-                    Neighbors = new Dictionary<string, List<string>> {
-                        { "TerritorioX", new List<string> { "TerritorioY", "TerritorioZ" } },
-                        { "TerritorioY", new List<string> { "TerritorioX" } },
-                        { "TerritorioZ", new List<string> { "TerritorioX" } }
-                    },
-                    Tanks = new Dictionary<string, int> {
-                        { "TerritorioX", 8 },
-                        { "TerritorioY", 6 },
-                        { "TerritorioZ", 4 }
-                    }
-                }
-            };
-
-            // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
-            // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
-            string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
-            Console.WriteLine("JSON inviato a C++:\n" + jsonData);
-
-            // process_map restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
-            // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
-            // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
-            IntPtr resultPtr = process_map(jsonData);
-            // In questo caso, usiamo Marshal.PtrToStringAnsi(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
-            string resultJson = Marshal.PtrToStringAnsi(resultPtr);
-            
-            // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
-            // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
-
-            // JsonSerializer.Deserialize<List<MapData>>(resultJson) converte (deserializza) quella stringa JSON in una Lista di oggetti MapData.
-            // updatedMaps diventa quindi una List<MapData>, cioè una lista di oggetti MapData.
-            var updatedMaps = JsonSerializer.Deserialize<List<MapData>>(resultJson);
 
 
         
-
-           Console.WriteLine("JSON aggiornato: " + JsonSerializer.Serialize(updatedMaps, new JsonSerializerOptions { WriteIndented = true }));
-        }
-    
+        
        
-        /*Codice per testare la vittoria*/
+        /****************** Codice per testare la vittoria ******************/
         [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void testWin();
 
@@ -99,6 +41,112 @@ namespace UniWar {
         private async void ProvaVittoria(object sender, EventArgs e) {
             testWin();
         }
+
+
+        /****************** Codice per testare la frontiera ******************/
+
+        [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void testFrontiers();
+
+
+        private async void ProvaFrontiere(object sender, EventArgs e) {
+            testFrontiers();
+        }
+
+
+
+        /***************** Codice per testare il rinforzo *****************/
+        [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void testRinforzi(int newCount);
+
+
+        private async void TestRinforzo(object sender, EventArgs e) {
+            Console.WriteLine("Prova test Rinforzo");
+            testRinforzi(1);
+        }
+
+
+
+    /////////////////////////////// IMPLEMENTAZIONE FUNZIONI EFFETTIVE 
+    /// <summary>
+        [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern IntPtr reinforcement (string jsonData, int newTanks);
+
+        private async void OnReinforcement(object sender, EventArgs e) {
+
+            // Sintassi con Object Initializer (viene chiamato il costruttore senza parametri in modo implicito) 
+            // TODO: SOSTITUIRE CON I VALORI EFFETTIVI DELLE CLASSI
+            List<MapData> playersMaps = new List<MapData>
+            {
+                new MapData
+                {
+                    PlayerId = "cpuPlayer",
+                    Neighbors = new Dictionary<string, List<string>>
+                    {
+                        { "Alaska", new List<string> { "Alberta", "TerritoriDelNordOvest" } },
+                        { "Alberta", new List<string> { "Alaska", "StatiUnitiOccidentali" } },
+                        { "StatiUnitiOccidentali", new List<string> { "Alberta", "StatiUnitiOrientali" } },
+                        { "StatiUnitiOrientali", new List<string> { "StatiUnitiOccidentali", "Ontario" } },
+                        { "AmericaCentrale", new List<string> { "StatiUnitiOrientali", "Ontario" } },
+                        { "Ontario", new List<string> { "StatiUnitiOrientali", "AmericaCentrale", "TerritoriDelNordOvest", "Groenlandia", "Quebec" } },
+                        { "TerritoriDelNordOvest", new List<string> { "Ontario", "Alaska", "Groenlandia" } },
+                        { "Groenlandia", new List<string> { "Ontario", "TerritoriDelNordOvest", "Quebec" } }
+                    },
+                    Tanks = new Dictionary<string, int>
+                    {
+                        { "Alaska", 3 },
+                        { "Alberta", 2 },
+                        { "StatiUnitiOccidentali", 4 },
+                        { "StatiUnitiOrientali", 5 },
+                        { "AmericaCentrale", 2 },
+                        { "Ontario", 7 },
+                        { "TerritoriDelNordOvest", 3 },
+                        { "Groenlandia", 5 }
+                    }
+                }
+            };
+
+
+
+            // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
+            // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
+            string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+
+            // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
+            // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
+            // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
+
+            IntPtr resultPtr = reinforcement(jsonData, 10); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
+
+            // In questo caso, usiamo Marshal.PtrToStringAnsi(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
+            //  Marshal.PtrToStringAnsi(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
+            string resultJson = Marshal.PtrToStringAnsi(resultPtr) ?? string.Empty; 
+
+
+            
+            // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
+            // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
+
+            // JsonSerializer.Deserialize<List<MapData>>(resultJson) converte (deserializza) quella stringa JSON in una mappa (MapData)
+            // updatedMaps diventa quindi MapData (che quindi può essere utilizzata per aggiornare le classi in C#).
+            var updatedMaps = JsonSerializer.Deserialize<MapData>(resultJson);
+
+            // Per il debug
+            Console.WriteLine("JSON aggiornato: " + JsonSerializer.Serialize(updatedMaps, new JsonSerializerOptions { WriteIndented = true }));
+
+            // TODO: Aggiungere il codice per copiare gli aggiornamenti nelle classi C#
+
+
+        }
+
+        
+        
+
+
+
+
+
 
 
 
