@@ -1,7 +1,7 @@
 public class UniWarSystem { // singleton
     private static UniWarSystem? _instance;
     private readonly Dictionary<string, Continent> _continents; // collezione di tutti i territori gestiti dal gioco
-    private readonly Dictionary<int, Goal> _goals; // collezione di tutti gli obiettivi
+    private readonly List<Goal> _goals; // collezione di tutti gli obiettivi
     private List<Player> _players; 
 
 
@@ -17,7 +17,7 @@ public class UniWarSystem { // singleton
     // il costruttore deve essere privato (accessibile solo da dentro)
     private UniWarSystem() {
         _continents = new Dictionary<string, Continent>();
-        _goals = new Dictionary<int, Goal>();
+        _goals = [new Goal("Conquista almeno 3 continenti e almeno 28 territori")];
         _players = [];
         InitializeAll();
     }
@@ -105,7 +105,7 @@ public class UniWarSystem { // singleton
             }
         }
 
-        // eseguiamo uno shuffle
+        // eseguiamo uno shuffle (metodo implementato nell'extension)
         allTerritories.Shuffle();
 
         // 21 territori a User e 21 alla CPU
@@ -114,13 +114,26 @@ public class UniWarSystem { // singleton
         user.Territories = firstHalf;
         cpu.Territories = secondHalf;
 
-        // per ogni territorio del'utente, associamo 3 carri armati verdi
+        // scegliamo due colori random
+        Random gen = new Random();
+        // i colori sono 6
+        int colorForUser = gen.Next(6);
+        int colorForCpu;
+        do { // vogliamo assolutamente evitare che i colori siano uguali
+            colorForCpu = gen.Next(6);
+        } while (colorForUser == colorForCpu);
+           
+        // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in user.Territories)
-            territory.Tanks.AddRange([new Tank(TankColors.Yellow), new Tank(TankColors.Yellow), new Tank(TankColors.Yellow)]);
+            territory.Tanks.AddRange([new Tank(colorForUser), new Tank(colorForUser), new Tank(colorForUser)]);
         
-        // per ogni territorio della CPU, associamo 3 carri armati viola
-        foreach (Territory territory in user.Territories)
-            territory.Tanks.AddRange([new Tank(TankColors.Red), new Tank(TankColors.Red), new Tank(TankColors.Red)]);
+        // per ogni territorio della CPU, associamo 3 carri armati 
+        foreach (Territory territory in cpu.Territories)
+            territory.Tanks.AddRange([new Tank(colorForCpu), new Tank(colorForCpu), new Tank(colorForCpu)]);
+
+        // obiettivo ai partecipanti
+        user.Goal = _goals[0];
+        cpu.Goal = _goals[0];
         
         return (user, cpu);
     }

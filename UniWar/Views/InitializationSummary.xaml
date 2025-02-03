@@ -34,12 +34,8 @@
                      VerticalOptions="Center"
                      HorizontalOptions="Center"
                      Margin="20">
-                     <Image Source="black_tank.png"
+                     <Image x:Name="TankIcon" Source="black_tank.png"
                             WidthRequest="150"/>
-                     <Label Text="Colore carri armati: nero"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"
-                            Margin="50"/>
               </HorizontalStackLayout>
 
               <CollectionView ItemsSource="{Binding UserTerritories}"
@@ -72,7 +68,7 @@
                      <Image Source="goal.png"
                             WidthRequest="450"
                             HeightRequest="150"/>
-                     <Label Text="Distruggi le armate avversarie"
+                     <Label x:Name="GoalDescription" Text="Distruggi le armate avversarie"
                             Padding="50"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
@@ -83,11 +79,7 @@
        
               <!-- Carro armato: png a sinistra e label a destra -->
               
-              
-              <!-- Bottoni -->
-              <HorizontalStackLayout
-              HorizontalOptions="Center"
-              Margin="0,25,0,0">
+              <!-- Bottone -->
               <Button Text="Conferma"
                      TextColor="White"
                      CornerRadius="8"
@@ -96,19 +88,7 @@
                      WidthRequest="100"
                      BackgroundColor="Green"
                      Clicked="onConfirmButtonClicked"
-                     Margin="30"/>
-
-              <Button Text="Indietro"
-                     TextColor="White"
-                     CornerRadius="8"
-                     Padding="10"
-                     HorizontalOptions="Center"
-                     WidthRequest="100"
-                     BackgroundColor="DarkRed"
-                     Clicked="onBackButtonClicked"
-                     Margin="30"/>
-
-              </HorizontalStackLayout>
+                     Margin="40"/>
                      
             </VerticalStackLayout>
             

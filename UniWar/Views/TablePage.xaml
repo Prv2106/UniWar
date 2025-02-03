@@ -7,8 +7,7 @@
         <!-- NOTA BENE: 
                 LayoutBounds="X, Y, Width, Height" 
                 X = distanza da sinistra 
-                Y = distanza da sopra 
-        -->
+                Y = distanza da sopra -->
 
         <!-- Mappa di Sfondo -->
         <Image Source="mappa.png"
