@@ -14,10 +14,11 @@ namespace UniWar {
     // il riferimento alla lista di territori != da null e dove ogni territorio ha 
     // a sua volta il riferimento ad una lista di carri armati
 
-    public Player User {get; private set;}
-    public Player CPU {get; private set;}
-    public string IconSrcUser {get;}
-    public string IconSrcCpu {get;}
+    private Player User {get; set;}
+    private Player CPU {get; set;}
+    private string IconSrcUser {get;}
+    private string IconSrcCpu {get;}
+    private bool UserWantsToAttack {get; set;} = false;
 
 
     public TablePage(Player user, Player cpu) {
@@ -48,7 +49,7 @@ namespace UniWar {
                 // mostrimo il pulsante "attacca"
                 AttackButton.IsVisible = true;
                 // mostriamo il pulsante "passa"
-                AttackButton.IsVisible = true;
+                PassButton.IsVisible = true;
             } else {
                 // è il turno della CPU
 
@@ -62,6 +63,8 @@ namespace UniWar {
         }
 
         private void DeployTanks() {
+            // nella distribuzione dei carri armati degli utenti, aggiungiamo un metadato 
+            // che ci permette di capire quali sono i territori selezionabili per l'attacco!
             foreach (Territory territory in User.Territories) {
                 // prendiamoci la Grid corrispondente
                 var territoryInMap = this.FindByName<Grid>(territory.Name);
@@ -77,10 +80,15 @@ namespace UniWar {
                                     if (gridChild is Label label)
                                         label.Text = territory.Tanks.Count.ToString();
                                 break;
+                            case Button btn:
+                                btn.CommandParameter = "user"; // sono quelli dell'utente
+                                break;
                             default: 
                                 continue;
                         }
                     }
+                } else {
+                    Console.WriteLine("problema con: " + territory.Name);
                 }
             }
 
@@ -103,40 +111,68 @@ namespace UniWar {
                                 continue;
                         }
                     }
+                } else {
+                    Console.WriteLine("problema con: " + territory.Name);
                 }
             }
         }
 
         private async void OnTerritoryClicked(object sender, EventArgs e) {
-            // logica per mostrare SEMPRE il nome del territorio
-            // perchè potrebbe essere nascosto dal carro armato
+            // recuperiamo il metadato (nome) associato al territorio cliccato
             var button = sender as Button;
             var territoryName = button?.ClassId;
-            tooltipLabel.Text = territoryName;  // Testo del tooltip
-            tooltipLabel.IsVisible = true;      // Mostra il tooltip
-            await Task.Delay(2500);
-            tooltipLabel.IsVisible = false;
-
-            // se è il turno di attacco dell'utente
-            if (User.Turn != null && User.Turn.Phase == TurnPhases.Attack) {
-                // al click su un territorio, oltre a mostrare il nome, 
-                // invochiamo l'operazione di sistema che restituisce
-                // l'elenco dei territori attaccabili sulla base
-                // dei territori confinanti!
-                
-                
+            if (territoryName != null) {
+                if (UserWantsToAttack) { // se è il turno di attacco dell'utente
+                    // come prima cosa dobbiamo capire se il territorio cliccato è posseduto dall'utente
+                    if (button?.CommandParameter != null && button?.CommandParameter.ToString() == "user") {
+                        // allora l'utente può attaccare da questo territorio
+                        // invochiamo l'operazione di sistema che restituisce
+                        // l'elenco dei territori attaccabili sulla base dei territori confinanti!
+                        List<Territory> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName);
+                        if (neighboringTerritories.Count > 0) {
+                            // mostriamo la modale dove l'utente clicca il territorio da attaccare
+                            await Navigation.PushModalAsync(new AttackableTerritoriesPage(neighboringTerritories));
+                        } else {// l'utente deve selezionare un altro territorio
+                            ShowInformation("i territori confinanti appartengono tutti a te, scegli un altro territorio..");
+                        }
+                    } else {
+                        // l'utente ha selezionato il territorio avversario da cui non può attaccare
+                        ShowInformation("devi selezionare un territorio che appartiene a te, non alla CPU!..");
+                    }
+                } else { // l'utente non ha detto di voler attaccare
+                    // mostriamo semplicemente il nome del territorio
+                    // perchè potrebbe essere nascosto dal carro armato
+                    tooltipLabel.Text = territoryName;  
+                    tooltipLabel.IsVisible = true;      
+                    await Task.Delay(2500);
+                    tooltipLabel.IsVisible = false; 
+                }
             }
-    }
-        private async void OnAttackButtonClicked(object sender, EventArgs e) {
-            // 1. mostriamo un banner in cui informiamo l'utente di dove selezionare
-            //    un territorio dal quale effettuare l'attacco
+        }
+        
+
+        private async void ShowInformation(string text) {
             attackBanner.IsVisible = true;
-            await Task.Delay(3000);
+            attackBanner.Text = text;
+            await Task.Delay(3500);
             attackBanner.IsVisible = false;
-            
         }
 
-        private async void OnPassButtonClicked(object sender, EventArgs e) {
+        private void OnAttackButtonClicked(object sender, EventArgs e) {
+            if (!UserWantsToAttack) {
+                // mostriamo un banner in cui informiamo l'utente di dove selezionare
+                // un territorio dal quale effettuare l'attacco
+                ShowInformation("Seleziona il territorio da cui vuoi effettuare l'attacco");  
+                UserWantsToAttack = true;
+                AttackButton.Text = "ANNULLA ATTACCO";      
+            } else {                 
+                UserWantsToAttack = false;
+                ShowInformation("Ora, clickando su un territorio, ne vedrai soltanto il nome");
+                AttackButton.Text = "ATTACCA";      
+            }
+        }
+
+        private void OnPassButtonClicked(object sender, EventArgs e) {
             // Interagisci con la classe Singleton UniWarSystem 
             
         }

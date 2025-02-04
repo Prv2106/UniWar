@@ -7,7 +7,7 @@ namespace UniWar {
             
         }
 
-        public async void OnConfirmButtonClicked (object sender, EventArgs eventArgs) {
+        private async void OnConfirmButtonClicked (object sender, EventArgs eventArgs) {
             await Navigation.PopModalAsync();
         }
     }

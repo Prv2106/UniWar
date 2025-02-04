@@ -485,3 +485,5 @@ C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\flag.scal
 C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\flag.scale-100.png
 C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\your_turn.scale-100.png
 C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\your_turn.scale-100.png
+C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\soldier.scale-100.png
+C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\soldier.scale-100.png

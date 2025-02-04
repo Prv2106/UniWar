@@ -1,3 +1,5 @@
+using System.Linq;
+
 public class UniWarSystem { // singleton
     private static UniWarSystem? _instance;
     private readonly Dictionary<string, Continent> _continents; // collezione di tutti i continenti gestiti dal gioco
@@ -5,6 +7,7 @@ public class UniWarSystem { // singleton
 
     private readonly List<Goal> _goals; // collezione di tutti gli obiettivi
     private List<Player> _players; 
+    private Turn? CurrentTurn {get; set;}
 
 
     // Proprietà pubblica per accedere all'istanza Singleton
@@ -19,6 +22,7 @@ public class UniWarSystem { // singleton
     // il costruttore deve essere privato (accessibile solo da dentro)
     private UniWarSystem() {
         _continents = new Dictionary<string, Continent>();
+        _territories = [];
         _goals = [new Goal("Conquista almeno 3 continenti e almeno 28 territori")];
         _players = [];
         InitializeAll();
@@ -31,10 +35,6 @@ public class UniWarSystem { // singleton
         // impostiamo, per ogni territorio, i territori confinanti
         SetsNeighboringTerritories();
         
-        
-
-
-       
     }
 
     private void SetsNeighboringTerritories() {
@@ -91,7 +91,7 @@ public class UniWarSystem { // singleton
             new Territory("Mongolia",5),
         }));
          _continents.Add("Europa", new Continent("Africa", 7, new List<Territory>() {
-            new Territory("EurpoaOccidentale",4),
+            new Territory("EuropaOccidentale",4),
             new Territory("EuropaMeridionale",6),
             new Territory("GranBretagna",4),
             new Territory("Islanda",3),
@@ -167,12 +167,19 @@ public class UniWarSystem { // singleton
         user.Goal = _goals[0];
         cpu.Goal = _goals[0];
 
-        // turno
+
+        // Turno
+
+        /*
         if (gen.Next(2)==0) 
             user.Turn = new Turn(TurnPhases.Attack);
         else 
             cpu.Turn = new Turn(TurnPhases.Attack);
-        
+        */
+
+        user.Turn = new Turn(TurnPhases.Attack);
+        CurrentTurn = user.Turn;
+        CurrentTurn.currentPlayer = user;
         
         return (user, cpu);
     }
@@ -180,27 +187,34 @@ public class UniWarSystem { // singleton
     // OPERAZIONE DI SISTEMA UC6 -> mostra elenco territori confinanti "attaccabili"
     public List<Territory> AttackableTerritories(string territoryName) {
         /*
-            dato il nome di un territorio
+            dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'avversario.
         */
 
-        return [];
+        // N.B: il metadato che contiene il nome del territorio nella mappa è con gli spazi
+        //      es: "America Del Sud" => noi vogliamo rimuovere gli spazi perchè le mappe
+        //          in nella mappa di sistema ha le chiavi in questo modo!
+
+        string territoryNameWithoutSpaces = territoryName.RemoveSpaces();
+        List<Territory> neighboringTerritories = _territories[territoryNameWithoutSpaces].NeighboringTerritories;
+        // dobbiamo restituire quelli che non appartengono all'utente
+        Player? player = CurrentTurn?.currentPlayer;
+        if (player != null) 
+            neighboringTerritories.RemoveAll(territory => player.Territories.Contains(territory));
+    
+        return neighboringTerritories;
     }
-
-
-
-
 
 
     // metodi per impostare i territori confinanti
     private void AmericaDelNord() {
          // 1. Alaska
-        _territories["Alska"].NeighboringTerritories.AddRange([
+        _territories["Alaska"].NeighboringTerritories.AddRange([
             _territories["Kamchatka"], 
             _territories["TerritoriDelNordOvest"], 
             _territories["Alberta"],]);
         // 2. Alberta
          _territories["Alberta"].NeighboringTerritories.AddRange([
-            _territories["Alska"], 
+            _territories["Alaska"], 
             _territories["TerritoriDelNordOvest"],
             _territories["Ontario"],
             _territories["StatiUnitiOccidentali"],]);
@@ -254,19 +268,19 @@ public class UniWarSystem { // singleton
         _territories["Venezuela"].NeighboringTerritories.AddRange([
             _territories["AmericaCentrale"],
             _territories["Brasile"],
-            _territories["Peru"]
+            _territories["Perù"]
         ]);
 
         // 11. Brasile
         _territories["Brasile"].NeighboringTerritories.AddRange([
             _territories["Venezuela"],
-            _territories["Peru"],
+            _territories["Perù"],
             _territories["Argentina"],
             _territories["AfricaDelNord"]
         ]);
 
         // 12. Perù
-        _territories["Peru"].NeighboringTerritories.AddRange([
+        _territories["Perù"].NeighboringTerritories.AddRange([
             _territories["Venezuela"],
             _territories["Brasile"],
             _territories["Argentina"]
@@ -274,7 +288,7 @@ public class UniWarSystem { // singleton
 
         // 13. Argentina
         _territories["Argentina"].NeighboringTerritories.AddRange([
-            _territories["Peru"],
+            _territories["Perù"],
             _territories["Brasile"]
         ]);
     }
@@ -335,7 +349,7 @@ public class UniWarSystem { // singleton
             _territories["EuropaSettentrionale"],
             _territories["EuropaMeridionale"],
             _territories["Afghanistan"],
-            _territories["Ural"],
+            _territories["Urali"],
             _territories["MedioOriente"]
         ]);
     }
@@ -388,7 +402,7 @@ public class UniWarSystem { // singleton
     }
     private void Asia() {
         // 27. Ural
-        _territories["Ural"].NeighboringTerritories.AddRange([
+        _territories["Urali"].NeighboringTerritories.AddRange([
             _territories["Ucraina"],
             _territories["Afghanistan"],
             _territories["Siberia"],
@@ -397,7 +411,7 @@ public class UniWarSystem { // singleton
 
         // 28. Siberia
         _territories["Siberia"].NeighboringTerritories.AddRange([
-            _territories["Ural"],
+            _territories["Urali"],
             _territories["Cina"],
             _territories["Mongolia"],
             _territories["Jacuzia"]
@@ -436,7 +450,7 @@ public class UniWarSystem { // singleton
         // 33. Afghanistan
         _territories["Afghanistan"].NeighboringTerritories.AddRange([
             _territories["Ucraina"],
-            _territories["Ural"],
+            _territories["Urali"],
             _territories["Cina"],
             _territories["India"],
             _territories["MedioOriente"]
@@ -444,7 +458,7 @@ public class UniWarSystem { // singleton
 
         // 34. Cina
         _territories["Cina"].NeighboringTerritories.AddRange([
-            _territories["Ural"],
+            _territories["Urali"],
             _territories["Siberia"],
             _territories["Mongolia"],
             _territories["Afghanistan"],

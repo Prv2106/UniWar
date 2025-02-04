@@ -8,10 +8,11 @@ namespace UniWar {
             di una nuova partita.
         */
 
-        public Player User {get; private set;}
-        public Player CPU {get; private set;}
+        private Player User {get; set;}
+        private Player CPU {get; set;}
 
         public List<string> UserTerritories {get;} = [];
+        // proprietà pubblica perchè deve essere accessibile allo XAML
         
 
         
