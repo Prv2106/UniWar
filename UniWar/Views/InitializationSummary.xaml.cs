@@ -24,13 +24,15 @@ namespace UniWar {
 
         private void BuildThePage() {
             // nomi dei territori per le carte
-            foreach (var territory in User.Territories) 
+            foreach (var territory in User.Territories.Values) 
                 // mettiamo gli spazi
-                UserTerritories.Add(Regex.Replace(territory.Name, "(?<!^)([A-Z])", " $1"));
+                UserTerritories.Add(territory.Name.AddSpaces());
+
+             
             BindingContext = this; // serve far si che CollectionView possa accedere alle proprietà
 
             // colore carro armato
-            string iconSrcUser = User.Territories[0].Tanks[0].GetTankIconByColor();
+            string iconSrcUser = User.Territories.Values.First().Tanks[0].GetTankIconByColor();
             TankIcon.Source = iconSrcUser; // TankIcon è il name dell'Image nello XAML
 
             // obiettivo
@@ -40,7 +42,7 @@ namespace UniWar {
         private async void OnConfirmButtonClicked(object o, EventArgs args) {
             // passiamo gli oggetti player alla pagina successiva
             // che mostrerà la mappa
-            await Navigation.PushAsync(new TablePage(User,CPU));
+            await Navigation.PushAsync(TablePage.Instance);
             Navigation.RemovePage(this);
         }
 

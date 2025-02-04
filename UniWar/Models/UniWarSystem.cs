@@ -1,4 +1,4 @@
-using System.Linq;
+using Windows.System;
 
 public class UniWarSystem { // singleton
     private static UniWarSystem? _instance;
@@ -6,8 +6,12 @@ public class UniWarSystem { // singleton
     private readonly Dictionary<string, Territory> _territories; // collezione di tutti i continenti gestiti dal gioco
 
     private readonly List<Goal> _goals; // collezione di tutti gli obiettivi
-    private List<Player> _players; 
     private Turn? CurrentTurn {get; set;}
+    public Player? User {get; set;}
+    public Player? Cpu {get; set;}
+
+    private static Random gen = new Random();
+    // dichiarato come static perchè lo usiamo in più metodi!
 
 
     // Proprietà pubblica per accedere all'istanza Singleton
@@ -24,19 +28,167 @@ public class UniWarSystem { // singleton
         _continents = new Dictionary<string, Continent>();
         _territories = [];
         _goals = [new Goal("Conquista almeno 3 continenti e almeno 28 territori")];
-        _players = [];
         InitializeAll();
     }
 
     private void InitializeAll() {
+        /*
+            Metodo che "carica" i dati necessari al gioco
+        */
+
         // creiamo i continenti
         CreateContinents();
 
         // impostiamo, per ogni territorio, i territori confinanti
         SetsNeighboringTerritories();
-        
     }
 
+    
+    // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
+    public (Player, Player) InitializeGame() {
+        /* 
+            è, sostanzialmente, il metodo che inizializza la partita...
+            - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
+            - “mischia” le “carte” dei territori e le distribuisce equamente tra i partecipanti.
+            - assegna un obiettivo ai partecipanti.
+            - sceglie chi inizia il turno tra cpu e utente
+
+        */
+
+        // qui il sistema deve distribuire equamente i territori ai due giocatori
+        User = new Player();
+        Cpu = new Player();
+
+        // recuperiamo tutti i territori
+        List<Territory> allTerritories = new List<Territory>();
+        foreach (Continent c in _continents.Values) {
+            foreach (Territory ter in c.Territories) {
+                allTerritories.Add(ter);
+            }
+        }
+
+        // eseguiamo uno shuffle (metodo implementato nell'extension)
+        allTerritories.Shuffle();
+
+        // 21 territori a User e 21 alla CPU
+        var firstHalf = allTerritories.Take(21).ToList();
+        var secondHalf = allTerritories.Skip(21).ToList();
+        foreach (var ter in firstHalf) 
+            User.Territories.Add(ter.Name, ter);
+        foreach (var ter in secondHalf) 
+            Cpu.Territories.Add(ter.Name, ter);
+        
+
+        // scegliamo due colori random, i colori sono 6
+        int colorForUser = gen.Next(6);
+        int colorForCpu;
+        do { // vogliamo assolutamente evitare che i colori siano uguali
+            colorForCpu = gen.Next(6);
+        } while (colorForUser == colorForCpu);
+           
+        // per ogni territorio del'utente, associamo 3 carri armati 
+        foreach (Territory territory in User.Territories.Values)
+            territory.Tanks.AddRange([new Tank(colorForUser), new Tank(colorForUser), new Tank(colorForUser)]);
+        
+        // per ogni territorio della CPU, associamo 3 carri armati 
+        foreach (Territory territory in Cpu.Territories.Values)
+            territory.Tanks.AddRange([new Tank(colorForCpu), new Tank(colorForCpu), new Tank(colorForCpu)]);
+
+        // obiettivo ai partecipanti
+        User.Goal = _goals[0];
+        Cpu.Goal = _goals[0];
+
+
+        // Turno
+
+        /*
+        if (gen.Next(2)==0) 
+            user.Turn = new Turn(TurnPhases.Attack);
+        else 
+            cpu.Turn = new Turn(TurnPhases.Attack);
+        */
+
+        User.Turn = new Turn(TurnPhases.Attack);
+        CurrentTurn = User.Turn;
+        CurrentTurn.currentPlayer = User;
+        
+        return (User, Cpu);
+    }
+
+
+    // OPERAZIONE DI SISTEMA UC6 -> mostra elenco territori confinanti "attaccabili"
+    // invocata dalla pagina "TablePage"
+    public List<string> AttackableTerritories(string territoryName) {
+        /*
+            Dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'avversario.
+        */
+
+        List<Territory> attackableNeighboringTerritories = [];
+        attackableNeighboringTerritories.AddRange(_territories[territoryName].NeighboringTerritories);
+        // dobbiamo restituire quelli che non appartengono all'utente
+        
+        if (User != null) {
+            attackableNeighboringTerritories.RemoveAll(territory => User.Territories.ContainsValue(territory));
+        }
+        
+        List<string> attackableNeighboringTerritoriesNames = [];
+        foreach (var item in attackableNeighboringTerritories) {
+            attackableNeighboringTerritoriesNames.Add(item.Name);
+        }
+
+        return attackableNeighboringTerritoriesNames;
+    }
+
+
+    // OPERAZIONE DI SISTEMA UC6 --> attacco di un territorio da parte dell'utente
+    // invocata dalla pagina "AttackableTerritoriesPage"
+    public (List<int>, List<int>) AttackTerritory(string attackingTerritory, string attackedTerritory) {
+        // come prima cosa, dobbiamo verificare se il territorio di partenza ha almeno 2 carri armati 
+        Territory from = User!.Territories[attackingTerritory];
+        int numTanksAttacker = from.Tanks.Count;
+        if (numTanksAttacker > 1) { // possiamo procedere con l'attacco... 
+            Territory to = Cpu!.Territories[attackedTerritory];
+            List<int> userDice = [];
+            List<int> cpuDice = [];
+            // simuliamo il lancio dei dadi dell'attaccante: un dado per ogni carro armato - 1
+            int counter = 1;
+            for (int i = 0; i < numTanksAttacker - 1; i++) {
+                userDice.Add(gen.Next(6)+1); 
+                if (counter == 3) break; // non si possono lanciare più di 3 dadi
+                counter++;
+            }
+            
+            // simuliamo il lancio dei dadi della difesa: un dado per ogni carro armato
+            counter = 0;
+            for (int i = 0; i < to.Tanks.Count; i++) {
+                cpuDice.Add(gen.Next(6)+1); 
+                if (counter == 3) break; // non si possono lanciare più di 3 dadi
+                counter++;
+            }
+            // ordiniamo i dadi in modo decrescente:
+            userDice.Sort((a,b) => b.CompareTo(a));
+            cpuDice.Sort((a,b) => b.CompareTo(a));
+
+            // confrontiamo le due liste (dadi) per un numero di volte pari alla lunghezza della lista più corta
+            for (int i = 0; i < Math.Min(userDice.Count, cpuDice.Count); i++) {
+                if (userDice[i] <= cpuDice[i]) {
+                    // se è minore o pari, vince la difesa
+                    // rimuoviamo un carro armato da quel territorio posseduto dall'utente
+                    from.Tanks.RemoveAt(0);
+                } else {
+                    // confronto "vinto" dall'utente
+                    to.Tanks.RemoveAt(0);
+                }
+            }
+            return (userDice, cpuDice);
+            //TODO: deve anche restituire un booleano se il territorio nemico è stato conquistato!
+        } else { // l'utente ha solo un carro armato
+            throw new Exception("l'utente ha solo un carro armato");
+        }
+    }
+
+
+    // SOTTO, i metodi di caricamento dei dati (relativi all'InitializeAll()).
     private void SetsNeighboringTerritories() {
         // qui, territorio per territorio, bisogna impostare manualmente quelli confinanti...
         // procediamo per continente
@@ -47,8 +199,6 @@ public class UniWarSystem { // singleton
         Asia();
         Oceania();
     }
-
-    
 
     private void CreateContinents() {
         _continents.Add("AmericaDelNord", new Continent("AmericaDelNord", 9, new List<Territory>() {
@@ -110,98 +260,6 @@ public class UniWarSystem { // singleton
         foreach (Continent con in _continents.Values) 
             foreach (Territory ter in con.Territories) 
                 _territories.Add(ter.Name, ter);
-    }
-
-
-    // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
-    public (Player, Player) InitializeGame() {
-        /* 
-            è, sostanzialmente, il metodo che inizializza la partita...
-            - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
-            - “mischia” le “carte” dei territori e le distribuisce equamente tra i partecipanti.
-            - assegna un obiettivo ai partecipanti.
-            - sceglie chi inizia il turno tra cpu e utente
-
-        */
-
-        Random gen = new Random();
-
-        // qui il sistema deve distribuire equamente i territori ai due giocatori
-        Player user = new Player(isCpu: false);
-        Player cpu = new Player(isCpu: true);
-        _players.AddRange([cpu, user]);
-
-        // recuperiamo tutti i territori
-        List<Territory> allTerritories = new List<Territory>();
-        foreach (Continent c in _continents.Values) {
-            foreach (Territory ter in c.Territories) {
-                allTerritories.Add(ter);
-            }
-        }
-
-        // eseguiamo uno shuffle (metodo implementato nell'extension)
-        allTerritories.Shuffle();
-
-        // 21 territori a User e 21 alla CPU
-        var firstHalf = allTerritories.Take(21).ToList();
-        var secondHalf = allTerritories.Skip(21).ToList();
-        user.Territories = firstHalf;
-        cpu.Territories = secondHalf;
-
-        // scegliamo due colori random, i colori sono 6
-        int colorForUser = gen.Next(6);
-        int colorForCpu;
-        do { // vogliamo assolutamente evitare che i colori siano uguali
-            colorForCpu = gen.Next(6);
-        } while (colorForUser == colorForCpu);
-           
-        // per ogni territorio del'utente, associamo 3 carri armati 
-        foreach (Territory territory in user.Territories)
-            territory.Tanks.AddRange([new Tank(colorForUser), new Tank(colorForUser), new Tank(colorForUser)]);
-        
-        // per ogni territorio della CPU, associamo 3 carri armati 
-        foreach (Territory territory in cpu.Territories)
-            territory.Tanks.AddRange([new Tank(colorForCpu), new Tank(colorForCpu), new Tank(colorForCpu)]);
-
-        // obiettivo ai partecipanti
-        user.Goal = _goals[0];
-        cpu.Goal = _goals[0];
-
-
-        // Turno
-
-        /*
-        if (gen.Next(2)==0) 
-            user.Turn = new Turn(TurnPhases.Attack);
-        else 
-            cpu.Turn = new Turn(TurnPhases.Attack);
-        */
-
-        user.Turn = new Turn(TurnPhases.Attack);
-        CurrentTurn = user.Turn;
-        CurrentTurn.currentPlayer = user;
-        
-        return (user, cpu);
-    }
-
-    // OPERAZIONE DI SISTEMA UC6 -> mostra elenco territori confinanti "attaccabili"
-    public List<Territory> AttackableTerritories(string territoryName) {
-        /*
-            dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'avversario.
-        */
-
-        // N.B: il metadato che contiene il nome del territorio nella mappa è con gli spazi
-        //      es: "America Del Sud" => noi vogliamo rimuovere gli spazi perchè le mappe
-        //          in nella mappa di sistema ha le chiavi in questo modo!
-
-        string territoryNameWithoutSpaces = territoryName.RemoveSpaces();
-        List<Territory> neighboringTerritories = _territories[territoryNameWithoutSpaces].NeighboringTerritories;
-        // dobbiamo restituire quelli che non appartengono all'utente
-        Player? player = CurrentTurn?.currentPlayer;
-        if (player != null) 
-            neighboringTerritories.RemoveAll(territory => player.Territories.Contains(territory));
-    
-        return neighboringTerritories;
     }
 
 

@@ -13,7 +13,7 @@ public static class StringExtensions {
 	public static string AddSpaces(this string text) {
         // SINTASSI extension: Il primo parametro del metodo deve avere 
         // il modificatore this seguito dal tipo che si intende estendere! 
-        Regex.Replace(text, "(?<!^)([A-Z])", " $1");
+        return Regex.Replace(text, "(?<!^)([A-Z])", " $1");
 
         /*
             il Replace method della classe Regex, il quale vuole tre parametri:
@@ -24,14 +24,10 @@ public static class StringExtensions {
             - replacement --> " $1" aggiungiamo uno spazio prima della lettera maiuscola "catturata"
         */
 
-        return text;
+        // N.B: le stringhe sono immutabili, dobbiamo restituirne una per forza
 	}
 
     public static string RemoveSpaces(this string text) {
-        string[] words = text.Split(' '); // lo spazio è il separatore
-        text = "";
-        foreach (var word in words) 
-            text += word;
-        return text;
+        return text.Replace(" ", "");
     }
 }

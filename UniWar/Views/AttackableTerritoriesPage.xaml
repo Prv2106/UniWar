@@ -45,6 +45,7 @@
                                             HorizontalOptions="Center"
                                             Text="{Binding}"/>
                                         <Button 
+                                            CommandParameter="{Binding}"
                                             Clicked="OnTerritoryClicked"
                                             WidthRequest="150"
                                             BackgroundColor="Transparent"/>

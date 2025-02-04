@@ -45,7 +45,7 @@
                      <CollectionView.ItemTemplate>
                             <DataTemplate>
                             <HorizontalStackLayout>
-                                   <Frame Padding="25"
+                                   <Frame Padding="10"
                                    CornerRadius="12"
                                    HasShadow="True"
                                    BackgroundColor="White"
@@ -53,7 +53,7 @@
                                    WidthRequest="160"
                                    HeightRequest="100">
                                    <Label Text="{Binding}" 
-                                          WidthRequest ="90"
+                                          WidthRequest ="99"
                                           HorizontalOptions="Center"
                                           VerticalOptions="Center"/>
                             </Frame>
