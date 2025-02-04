@@ -7,6 +7,7 @@
 #include <map>
 #include <vector>
 #include <set>
+#include<algorithm>
 #include "json.hpp"  // Libreria JSON per C++
 #include "uniwar_lib.h"
 
@@ -37,11 +38,15 @@ using namespace std;
 // Funzione per il rinforzo dei territori
 FUNCTION_LIB const char* reinforcement (const char* jsonData, int newTanks);
 
+FUNCTION_LIB const char* cpuAttack (const char* jsonData);
+
 
 //***************** Funzioni di test  ***************/ 
 FUNCTION_LIB void testWin();
 FUNCTION_LIB void testFrontiers();
 FUNCTION_LIB void testRinforzi(int newTanks);
+
+
 
 
 

@@ -5,19 +5,30 @@ using json = nlohmann::json;
 using namespace std;
 
 namespace uniwar{
-/****** Implementazione di Player ************/
 
-
+/******************************************** Implementazione di Player *************************************/
 // Implementazione del costruttore (con lista di inizializzazione)
 Player::Player(const map<string, vector<string>> & neighbors, const  map<string, int> & tanks, const string & player): neighborsMap(neighbors), tankCountMap(tanks), playerId(player) {}
 
 // Implementazione del getter della mappa dei territori vicini
-const  map<string, vector<string>>& Player::getNeighbors() const{
+const  map<string, vector<string>>& Player::getNeighborsMap() const{
     return neighborsMap;
 }
 
+// Implementazione del getter della lista di vicini per un dato territorio
+const vector<string> & Player::getNeighbors(const string& territory){
+    static const vector<string> emptyVector;  // Evita dangling reference
+
+    if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
+        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
+        return emptyVector;
+    }
+    return neighborsMap.at(territory);
+
+}
+
 // Implementazione del getter della mappa con il numero di carri armati
-const  map<string, int> & Player::getTanks() const {
+const  map<string, int> & Player::getTanksMap() const {
     return tankCountMap;
 }
 
@@ -28,7 +39,7 @@ const string & Player::getName() const{
 // Implementazione del metodo per aggiungere un territorio e i suoi vicini
 void Player::addTerritory(const string & territory, const vector<string> & neighbors, int count){
     if(territory.empty() || neighbors.empty()){
-        clog << "Territorio non valido" << endl;
+         cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
         return;
     }
 
@@ -41,14 +52,14 @@ void Player::addTerritory(const string & territory, const vector<string> & neigh
         neighborsMap[territory] = neighbors; // crea una nuova entry
     }
     else{
-        clog << "Il territorio è già presente in neighborsMap" << endl;
+        clog << "Il territorio" << territory <<"è già presente in neighborsMap" << endl;
     }
     
     if(tankCountMap.find(territory) == tankCountMap.end()){ // la chiave non esiste
         tankCountMap[territory] = count; // crea una nuova entry
     }
     else{
-        clog << "Il territorio è già presente in tankCountMap" << endl;
+        clog << "Il territorio" << territory <<"è già presente in neighborsMap" << endl;
     }
 
 }
@@ -69,7 +80,7 @@ void Player::modifyTankCount(const string & territory, int newCount){
 // Implementazione del metodo per rimuovere un territorio
 void Player::removeTerritory(const string & territory){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
-        cerr << "Il territorio inserito non è valido" << endl;
+        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
         return;
     }
     neighborsMap.erase(territory);
@@ -81,7 +92,7 @@ void Player::removeTerritory(const string & territory){
 // Implementazione del metodo per ottenere il numero di carri armati dato il territorio
 const int Player::getTanksCount(const string &territory) const {
     if ((territory.empty()) || (neighborsMap.find(territory) == neighborsMap.end()) || (tankCountMap.find(territory) == tankCountMap.end())) {
-        cerr << "Il territorio inserito non è valido" << endl;
+        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
         return -1;  
     }
     return tankCountMap.at(territory);  // .at() è un metodo degli std::map (e anche di std::vector, std::unordered_map, ecc.) che permette di accedere a un elemento in modo sicuro, lanciando un'eccezione se la chiave non esiste.
@@ -200,11 +211,6 @@ vector<Player> initializePlayers(const char* jsonData){
 }
 
 
-
-
-
-
-
 // Funzione responsabile di estrarre la frontiera dei territori non posseduti da un giocatore (a partire dalla mappa dei vicini)
 const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map) {
     set<string> ownedTerritories = getTerritoriesFromMap(map);
@@ -246,8 +252,6 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
 
     return ownedFrontier;
 }
-
-
 
 
 // Funzione che restituisce un booleano:
@@ -301,7 +305,6 @@ bool win(const set<string> & territories){
     return false;
 
 } // fine del namespace uniwar
-
 
 
 }

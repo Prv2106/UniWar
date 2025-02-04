@@ -30,11 +30,13 @@ namespace uniwar{
 
         // I getter sono definiti in modo tale che il valore restituito non è modificabile e che i getter stessi non possono modificare gli attributi della classe Player
         // Restituiamo un riferimento costante
-        const  map<string, vector<string>> & getNeighbors() const;
+        const  map<string, vector<string>> & getNeighborsMap() const;
         
-        const  map<string, int> & getTanks() const;
+        const  map<string, int> & getTanksMap() const;
 
-        const string & getName() const;
+        const vector<string> & getNeighbors(const string& territory);
+
+        const string& getName() const;
 
         const int getTanksCount(const string & territory) const;
 
