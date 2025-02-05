@@ -1,5 +1,5 @@
 public enum TankColors {
-    Red,
+    Red = 1,
     Green,
     Yellow,
     Black,
