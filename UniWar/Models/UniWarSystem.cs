@@ -142,49 +142,74 @@ public class UniWarSystem { // singleton
 
     // OPERAZIONE DI SISTEMA UC6 --> attacco di un territorio da parte dell'utente
     // invocata dalla pagina "AttackableTerritoriesPage"
-    public (List<int>, List<int>) AttackTerritory(string attackingTerritory, string attackedTerritory) {
+    public (List<int>, List<int>, string result) AttackTerritory(string attackingTerritory, string attackedTerritory) {
         // come prima cosa, dobbiamo verificare se il territorio di partenza ha almeno 2 carri armati 
         Territory from = User!.Territories[attackingTerritory];
         int numTanksAttacker = from.Tanks.Count;
         if (numTanksAttacker > 1) { // possiamo procedere con l'attacco... 
             Territory to = Cpu!.Territories[attackedTerritory];
-            List<int> userDice = [];
-            List<int> cpuDice = [];
-            // simuliamo il lancio dei dadi dell'attaccante: un dado per ogni carro armato - 1
-            int counter = 1;
-            for (int i = 0; i < numTanksAttacker - 1; i++) {
-                userDice.Add(gen.Next(6)+1); 
-                if (counter == 3) break; // non si possono lanciare più di 3 dadi
-                counter++;
+            int numTanksDefender = to.Tanks.Count;
+            List<int> userDice;
+            List<int> cpuDice;
+            // lanciamo i dadi
+            RollTheDice(out userDice, out cpuDice, numTanksAttacker, numTanksDefender);
+            // aggiorniamo gli oggetti User e CPU (num di carri armati dei territori coinvolti)
+            string result = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
+            // Dopo un attacco, verifichiamo se il territorio avversario è stato conquistato 
+            if (true) {
+                
             }
-            
-            // simuliamo il lancio dei dadi della difesa: un dado per ogni carro armato
-            counter = 0;
-            for (int i = 0; i < to.Tanks.Count; i++) {
-                cpuDice.Add(gen.Next(6)+1); 
-                if (counter == 3) break; // non si possono lanciare più di 3 dadi
-                counter++;
-            }
-            // ordiniamo i dadi in modo decrescente:
-            userDice.Sort((a,b) => b.CompareTo(a));
-            cpuDice.Sort((a,b) => b.CompareTo(a));
 
-            // confrontiamo le due liste (dadi) per un numero di volte pari alla lunghezza della lista più corta
-            for (int i = 0; i < Math.Min(userDice.Count, cpuDice.Count); i++) {
-                if (userDice[i] <= cpuDice[i]) {
-                    // se è minore o pari, vince la difesa
-                    // rimuoviamo un carro armato da quel territorio posseduto dall'utente
-                    from.Tanks.RemoveAt(0);
-                } else {
-                    // confronto "vinto" dall'utente
-                    to.Tanks.RemoveAt(0);
-                }
-            }
-            return (userDice, cpuDice);
-            //TODO: deve anche restituire un booleano se il territorio nemico è stato conquistato!
+            //TODO: restituire stringa con recap situazione
+            
+            return (userDice, cpuDice, result);
+            
         } else { // l'utente ha solo un carro armato
-            throw new Exception("l'utente ha solo un carro armato");
+            throw new Exception("Non puoi attaccare un territorio da uno in cui hai un solo carro armato!");
         }
+    }
+
+    
+
+    private void RollTheDice(out List<int> userDice, out List<int> cpuDice, in int numTanksAttacker, in int numTanksDefender) {
+        userDice = [];
+        cpuDice = [];
+        // simuliamo il lancio dei dadi dell'attaccante: un dado per ogni carro armato - 1
+        int counter = 1;
+        for (int i = 0; i < numTanksAttacker - 1; i++) {
+            userDice.Add(gen.Next(6)+1); 
+            if (counter == 3) break; // non si possono lanciare più di 3 dadi
+            counter++;
+        }
+        // simuliamo il lancio dei dadi della difesa: un dado per ogni carro armato
+        counter = 0;
+        for (int i = 0; i < numTanksDefender; i++) {
+            cpuDice.Add(gen.Next(6)+1); 
+            if (counter == 3) break; // non si possono lanciare più di 3 dadi
+            counter++;
+        }
+        // ordiniamo i dadi in modo decrescente:
+        userDice.Sort((a,b) => b.CompareTo(a));
+        cpuDice.Sort((a,b) => b.CompareTo(a));
+    }
+
+    private string CompareDiceAndRemoveTanks(in List<int> userDice, in List<int> cpuDice, Territory attacking, Territory defending) {
+        // confrontiamo le due liste (dadi) per un numero di volte pari alla lunghezza della lista più corta
+        int counterForUser = 0;
+        int counterForCpu = 0;
+        for (int i = 0; i < Math.Min(userDice.Count, cpuDice.Count); i++) {
+            if (userDice[i] <= cpuDice[i]) {
+                // se è minore o pari, vince la difesa
+                // rimuoviamo un carro armato da quel territorio posseduto dall'utente
+                attacking.Tanks.RemoveAt(0);
+                counterForUser++;
+            } else {
+                // confronto "vinto" dall'utente
+                defending.Tanks.RemoveAt(0);
+                counterForCpu++;
+            }
+        }
+        return $"ESITO: carri armati persi: {counterForUser}, carri armati sconfitti: {counterForUser}";
     }
 
 

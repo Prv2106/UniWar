@@ -138,15 +138,13 @@ namespace UniWar {
             var button = sender as Button;
             var territoryName = button?.ClassId;
             if (territoryName != null) {
-                // togliamo gli spazi 
-                territoryName.RemoveSpaces();
                 if (UserWantsToAttack) { // se è il turno di attacco dell'utente
                     // come prima cosa dobbiamo capire se il territorio cliccato è posseduto dall'utente
                     if (button?.CommandParameter != null && button?.CommandParameter.ToString() == "user") {
                         // allora l'utente può attaccare da questo territorio
                         // invochiamo l'operazione di sistema che restituisce
                         // l'elenco dei territori attaccabili sulla base dei territori confinanti!
-                        List<string> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName);
+                        List<string> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName.RemoveSpaces());
                         if (neighboringTerritories.Count > 0) {
                             // mostriamo la modale dove l'utente clicca il territorio da attaccare
                             await Navigation.PushModalAsync(new AttackableTerritoriesPage(neighboringTerritories, territoryName));

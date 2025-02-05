@@ -28,6 +28,8 @@ public static class StringExtensions {
 	}
 
     public static string RemoveSpaces(this string text) {
-        return text.Replace(" ", "");
+        string[] words = text.Split(' '); // lo spazio è il separatore
+        string newText = string.Join("", words);
+        return newText;
     }
 }
