@@ -3,7 +3,7 @@ In C#, la direttiva using System.Runtime.InteropServices; serve a importare il n
 Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità tra il codice gestito (C#) e il codice non gestito (come quello C++).
 */
 using System.Runtime.InteropServices;
-using System.Text.Json;   
+using System.Text.Json;
 
 
 namespace UniWar {
