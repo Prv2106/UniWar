@@ -45,7 +45,7 @@ public class UniWarSystem { // singleton
 
     
     // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
-    public (Player, Player) InitializeGame() {
+    public void InitializeGame() {
         /* 
             è, sostanzialmente, il metodo che inizializza la partita...
             - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
@@ -111,8 +111,6 @@ public class UniWarSystem { // singleton
         User.Turn = new Turn(TurnPhases.Attack);
         CurrentTurn = User.Turn;
         CurrentTurn.currentPlayer = User;
-        
-        return (User, Cpu);
     }
 
 

@@ -9,7 +9,6 @@ namespace UniWar {
         */
 
         private Player User {get; set;}
-        private Player CPU {get; set;}
 
         public List<string> UserTerritories {get;} = [];
         // proprietà pubblica perchè deve essere accessibile allo XAML
@@ -18,7 +17,8 @@ namespace UniWar {
         
         public InitializationSummary() {
             InitializeComponent();
-            (User, CPU) = UniWarSystem.Instance.InitializeGame();
+            UniWarSystem.Instance.InitializeGame();
+            User = UniWarSystem.Instance.User!;
             BuildThePage();           
         }
 
