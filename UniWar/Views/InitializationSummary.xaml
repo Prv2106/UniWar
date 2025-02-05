@@ -88,7 +88,7 @@
                      WidthRequest="100"
                      BackgroundColor="Green"
                      Clicked="OnConfirmButtonClicked"
-                     Margin="40"/>
+                     Margin="20"/>
                      
             </VerticalStackLayout>
             

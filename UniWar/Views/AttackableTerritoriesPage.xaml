@@ -61,6 +61,16 @@
                      </CollectionView.ItemTemplate>
               </CollectionView>
 
+              <Label  
+                x:Name="WarningText"
+                IsVisible="false"
+                Text="OOOOO"
+                TextColor="White"
+                Padding="10"
+                HorizontalOptions="Center"
+                Margin="0,0,0,35"
+                Background="Black"/>
+
               <Button
                 Text="Annulla"
                 WidthRequest="130"

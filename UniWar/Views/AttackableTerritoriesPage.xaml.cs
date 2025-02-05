@@ -1,6 +1,3 @@
-using System.Text.RegularExpressions;
-using System.Xml.XPath;
-
 namespace UniWar {
     public partial class AttackableTerritoriesPage : ContentPage {
         public List<string> AttackableTerritories {get;} = [];
@@ -18,21 +15,33 @@ namespace UniWar {
         }
 
         private async void OnTerritoryClicked (object sender, EventArgs eventArgs) {
-            // qui dovremmo invocare l'operazione di sistema che simula lo scontro.
+            // qui invochiamo l'operazione di sistema che simula lo scontro.
             var button = sender as Button;
-            /*
-                il metodo di UniWarSystem che restituisce una tupla contenente:
-                    - List<int> dado utente
-                    - List<int> dado cpu
-            */
             List<int> userDice;
             List<int> cpuDice;
-            (userDice, cpuDice) = UniWarSystem.Instance.AttackTerritory(AttackingTerritoryName, button!.CommandParameter.ToString()!.RemoveSpaces());
-            // dopo quest'operazione, il sistema ha già aggiornato la situazione dei giocatori...
-            TablePage.Instance.DeployTanks();
-            TablePage.Instance.BuildUserInformation();
-            // chiudiamo la modale attuale
-            await Navigation.PopModalAsync();
+            string result;
+            try {
+                (userDice, cpuDice, result) = UniWarSystem.Instance.AttackTerritory(AttackingTerritoryName.RemoveSpaces(), button!.CommandParameter.ToString()!.RemoveSpaces());
+                // dopo quest'operazione, il sistema ha già aggiornato la situazione dei giocatori...
+                // aggiorniamo la UI
+                TablePage.Instance.DeployTanks();
+                TablePage.Instance.BuildUserInformation();
+                // chiudiamo la modale attuale
+                // await Navigation.PopModalAsync();
+                // apriamo la modale che mostra i risultati dei dadi
+                await Navigation.PushModalAsync(new ShowDiceResultPage(userDice, cpuDice, result));
+                Navigation.RemovePage(this);
+                
+            }
+            catch (Exception e) {
+                WarningText.Text = e.Message;
+                WarningText.IsVisible = true;
+                await Task.Delay(3000);
+                WarningText.IsVisible = false;
+            }
+            
+            
+            
             
         }
 
