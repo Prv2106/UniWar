@@ -27,7 +27,7 @@
                 Margin="20,0,20,20"/>
 
         <Button Text="Prova"
-                Clicked="OnCpuAttack"
+                Clicked="OnWinCheck"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 HeightRequest="70"

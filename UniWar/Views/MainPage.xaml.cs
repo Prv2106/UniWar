@@ -169,7 +169,7 @@ namespace UniWar {
                         { "AmericaCentrale", 2 },
                         { "Ontario", 7 },
                         { "TerritoriDelNordOvest", 3 },
-                        { "Groenlandia", 20 }
+                        { "Groenlandia", 5 }
                     }
                 },
                 new MapData
@@ -233,6 +233,216 @@ namespace UniWar {
 
         
         
+
+
+        // Funzione per fare il check della vittoria
+
+        [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern bool winCheck (string jsonData);
+
+        private async void OnWinCheck(object sender, EventArgs e) {
+
+            // Sintassi con Object Initializer (viene chiamato il costruttore senza parametri in modo implicito) 
+            // TODO: SOSTITUIRE CON I VALORI EFFETTIVI DELLE CLASSI
+            List<MapData> winnerMap = new List<MapData>
+            {
+                new MapData
+                {
+                    PlayerId = "Player",
+                    Neighbors = new Dictionary<string, List<string>>
+                    {
+                        { "Alaska", new List<string> { "Alberta", "TerritoriDelNordOvest" } },
+                        { "Alberta", new List<string> { "Alaska", "StatiUnitiOccidentali" } },
+                        { "StatiUnitiOccidentali", new List<string> { "Alberta", "StatiUnitiOrientali" } },
+                        { "StatiUnitiOrientali", new List<string> { "StatiUnitiOccidentali", "Ontario" } },
+                        { "AmericaCentrale", new List<string> { "StatiUnitiOrientali", "Ontario" } },
+                        { "Ontario", new List<string> { "StatiUnitiOrientali", "AmericaCentrale", "TerritoriDelNordOvest", "Groenlandia", "Quebec" } },
+                        { "TerritoriDelNordOvest", new List<string> { "Ontario", "Alaska", "Groenlandia" } },
+                        { "Groenlandia", new List<string> { "Ontario", "TerritoriDelNordOvest", "Quebec" } },
+                        { "Quebec", new List<string> { "Ontario", "Groenlandia", "StatiUnitiOrientali" } },
+                        { "Venezuela", new List<string> { "Perù", "Brasile", "Argentina" } },
+                        { "Perù", new List<string> { "Venezuela", "Brasile", "Argentina" } },
+                        { "Brasile", new List<string> { "Venezuela", "Perù", "Argentina", "Congo", "AfricaDelSud" } },
+                        { "Argentina", new List<string> { "Venezuela", "Perù", "Brasile", "Congo" } },
+                        { "AfricaDelNord", new List<string> { "Egitto", "AfricaOrientale", "Congo" } },
+                        { "Egitto", new List<string> { "AfricaDelNord", "AfricaOrientale", "MedioOriente" } },
+                        { "AfricaOrientale", new List<string> { "AfricaDelNord", "Egitto", "Congo", "Madagascar" } },
+                        { "Congo", new List<string> { "AfricaDelNord", "Egitto", "Brasile", "AfricaOrientale", "AfricaDelSud" } },
+                        { "AfricaDelSud", new List<string> { "Congo", "Brasile", "Madagascar" } },
+                        { "Madagascar", new List<string> { "AfricaDelSud", "AfricaOrientale" } },
+                        { "Kamchatka", new List<string> { "Jacuzia", "Giappone", "Cina" } },
+                        { "Jacuzia", new List<string> { "Kamchatka", "Siberia" } },
+                        { "Cita", new List<string> { "Giappone", "Cina", "Siam", "India" } },
+                        { "Giappone", new List<string> { "Kamchatka", "Cita", "Cina" } },
+                        { "Cina", new List<string> { "Giappone", "Kamchatka", "Siam", "India", "Urali" } },
+                        { "Siam", new List<string> { "Cina", "India", "MedioOriente" } },
+                        { "India", new List<string> { "Siam", "Cina", "MedioOriente", "Afghanistan" } },
+                        { "MedioOriente", new List<string> { "India", "Cina", "Siam", "Afghanistan", "Urali", "AfricaOrientale" } },
+                        { "Afghanistan", new List<string> { "India", "MedioOriente", "Urali", "Siberia" } },
+                        { "Urali", new List<string> { "Cina", "MedioOriente", "Afghanistan", "Siberia", "Mongolia" } },
+                        { "Siberia", new List<string> { "Jacuzia", "Afghanistan", "Urali", "Mongolia" } },
+                        { "Mongolia", new List<string> { "Urali", "Siberia", "Cina" } }
+                    },
+                    Tanks = new Dictionary<string, int>
+                    {
+                        { "Alaska", 5 },
+                        { "Alberta", 3 },
+                        { "StatiUnitiOccidentali", 6 },
+                        { "StatiUnitiOrientali", 4 },
+                        { "AmericaCentrale", 2 },
+                        { "Ontario", 7 },
+                        { "TerritoriDelNordOvest", 3 },
+                        { "Groenlandia", 5 },
+                        { "Quebec", 4 },
+                        { "Venezuela", 3 },
+                        { "Perù", 2 },
+                        { "Brasile", 4 },
+                        { "Argentina", 3 },
+                        { "AfricaDelNord", 5 },
+                        { "Egitto", 2 },
+                        { "AfricaOrientale", 3 },
+                        { "Congo", 6 },
+                        { "AfricaDelSud", 3 },
+                        { "Madagascar", 2 },
+                        { "Kamchatka", 4 },
+                        { "Jacuzia", 3 },
+                        { "Cita", 4 },
+                        { "Giappone", 5 },
+                        { "Cina", 7 },
+                        { "Siam", 3 },
+                        { "India", 6 },
+                        { "MedioOriente", 4 },
+                        { "Afghanistan", 3 },
+                        { "Urali", 6 },
+                        { "Siberia", 3 },
+                        { "Mongolia", 4 }
+                    }
+                }
+            };
+
+
+            List<MapData> loserMap = new List<MapData>
+            {
+                new MapData
+                {
+                    PlayerId = "Player",
+                    Neighbors = new Dictionary<string, List<string>>
+                    {
+                        { "Alaska", new List<string> { "Alberta", "TerritoriDelNordOvest" } },
+                        { "Alberta", new List<string> { "Alaska", "StatiUnitiOccidentali" } },
+                        { "StatiUnitiOccidentali", new List<string> { "Alberta", "StatiUnitiOrientali" } },
+                        { "StatiUnitiOrientali", new List<string> { "StatiUnitiOccidentali", "Ontario" } },
+                        { "AmericaCentrale", new List<string> { "StatiUnitiOrientali", "Ontario" } },
+                        { "Ontario", new List<string> { "StatiUnitiOrientali", "AmericaCentrale", "TerritoriDelNordOvest", "Groenlandia", "Quebec" } },
+                        { "TerritoriDelNordOvest", new List<string> { "Ontario", "Alaska", "Groenlandia" } },
+                        { "Groenlandia", new List<string> { "Ontario", "TerritoriDelNordOvest", "Quebec" } },
+                        { "Quebec", new List<string> { "Ontario", "Groenlandia", "StatiUnitiOrientali" } },
+                        { "Venezuela", new List<string> { "Perù", "Brasile", "Argentina" } },
+                        { "Perù", new List<string> { "Venezuela", "Brasile", "Argentina" } },
+                        { "Brasile", new List<string> { "Venezuela", "Perù", "Argentina", "Congo", "AfricaDelSud" } },
+                        { "Argentina", new List<string> { "Venezuela", "Perù", "Brasile", "Congo" } },
+                        { "Congo", new List<string> { "Brasile", "AfricaDelSud", "AfricaOrientale", "AfricaDelNord" } },
+                        { "AfricaDelSud", new List<string> { "Congo", "Brasile", "Madagascar" } },
+                        { "Madagascar", new List<string> { "AfricaDelSud", "AfricaOrientale" } },
+                        { "Kamchatka", new List<string> { "Jacuzia", "Giappone", "Cina" } },
+                        { "Jacuzia", new List<string> { "Kamchatka", "Siberia" } },
+                        { "Cina", new List<string> { "Giappone", "Kamchatka", "Siam", "India", "Urali" } },
+                        { "Siam", new List<string> { "Cina", "India", "MedioOriente" } },
+                        { "India", new List<string> { "Siam", "Cina", "MedioOriente", "Afghanistan" } },
+                        { "MedioOriente", new List<string> { "India", "Cina", "Siam", "Afghanistan", "Urali", "AfricaOrientale" } },
+                        { "Afghanistan", new List<string> { "India", "MedioOriente", "Urali", "Siberia" } },
+                        { "Urali", new List<string> { "Cina", "MedioOriente", "Afghanistan", "Siberia", "Mongolia" } },
+                        { "Siberia", new List<string> { "Jacuzia", "Afghanistan", "Urali", "Mongolia" } },
+                        { "Mongolia", new List<string> { "Urali", "Siberia", "Cina" } },
+                        { "GranBretagna", new List<string> { "EuropaOccidentale", "EuropaMeridionale", "EuropaSettentrionale" } },
+                        { "EuropaSettentrionale", new List<string> { "GranBretagna", "EuropaOccidentale", "Islanda", "Scandinavia" } },
+                        { "Islanda", new List<string> { "GranBretagna", "EuropaSettentrionale" } }
+                    },
+                    Tanks = new Dictionary<string, int>
+                    {
+                        { "Alaska", 3 },
+                        { "Alberta", 2 },
+                        { "StatiUnitiOccidentali", 4 },
+                        { "StatiUnitiOrientali", 5 },
+                        { "AmericaCentrale", 2 },
+                        { "Ontario", 7 },
+                        { "TerritoriDelNordOvest", 3 },
+                        { "Groenlandia", 5 },
+                        { "Quebec", 4 },
+                        { "Venezuela", 3 },
+                        { "Perù", 2 },
+                        { "Brasile", 4 },
+                        { "Argentina", 3 },
+                        { "Congo", 6 },
+                        { "AfricaDelSud", 3 },
+                        { "Madagascar", 2 },
+                        { "Kamchatka", 4 },
+                        { "Jacuzia", 3 },
+                        { "Cina", 7 },
+                        { "Siam", 3 },
+                        { "India", 6 },
+                        { "MedioOriente", 4 },
+                        { "Afghanistan", 3 },
+                        { "Urali", 6 },
+                        { "Siberia", 3 },
+                        { "Mongolia", 4 },
+                        { "GranBretagna", 2 },
+                        { "EuropaSettentrionale", 5 },
+                        { "Islanda", 3 }
+                    }
+                }
+            };
+
+
+
+            // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
+            // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
+            string jsonData = JsonSerializer.Serialize(winnerMap, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+
+            // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
+            // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
+            // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
+
+            bool isWin = winCheck(jsonData); 
+
+            Console.WriteLine("Il giocatore ha vinto? -> {0}", isWin);
+
+            
+            jsonData = JsonSerializer.Serialize(loserMap, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+
+            // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
+            // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
+            // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
+
+            isWin = winCheck(jsonData); 
+
+            Console.WriteLine("Il giocatore ha vinto? -> {0}", isWin);
+         
+
+
+        }
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     } //fine classe
 }

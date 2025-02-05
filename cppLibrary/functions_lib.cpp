@@ -34,14 +34,18 @@ static string jsonResult; // Variabile statica per evitare memory leak
     - finito lo spostamento strategico la cpu invocherà la funzione "win" per capire se la condizione di vittoria è o meno soddisfatta
     - se win restituisce true allora viene restituito un json a C# con lo stato del terreno aggiornato e con un indicazione circa il fatto che la cpu ha vinto
     - se win restituisce false, la cpu può scegliere 2 strade:
-        - continuare ad attaccare (lo farà se la condizione di attacco è soddisfatta)
-        - termina il proprio turno restituendo un json a C# contenente le informazioni sulla battaglia: 
+        - continuare ad attaccare (ricomincia il ciclo di valutazione dei territori da attaccare da capo)
+        - termina il proprio turno restituendo un json a C# contenente le informazioni sulla battaglia (se ciclando tra i vari territori non è possibile effettuare un altro attacco): 
             - viene creato un vettore di json in cui avremo un campo numerato "Battaglia" che permetterà di capire a quale battaglia si riferisce ciascun oggetto json,
               questo perché la cpu potrebbe ingaggiare più battaglie nello stesso turno
             - in ciascun oggetto json rappresentante una battaglia vengono memorizzati:
                 - contesto di gioco (cioè le mappe)
                 - risultati dei dadi lanciati (sia dalla CPU che dal giocatore, per permettere poi alla UI di riprodurre l'andamento della battaglia)
                 - condizione di vittoria (booleano)
+                - territorio attaccato
+                - territorio attaccante
+                - numero della battaglia
+                - nomi dei gioatori coinvolti
 */
 
 const char* cpuAttack (const char* jsonData){
@@ -107,7 +111,7 @@ const char* cpuAttack (const char* jsonData){
                 bool engagedBattle = false;
 
                 // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non soddisfa la condizione di attacco e dobbiamo passare al vicino successivo
-                while((enemyTanksCount < cpuTanksCount)){ // finché è soddisfatta la condizione di attacco continua ad attaccare lo stesso territorio (o fino a quando non lo ha conquistato)
+                while((enemyTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ // finché è soddisfatta la condizione di attacco continua ad attaccare lo stesso territorio (o fino a quando non lo ha conquistato)
                     engagedBattle = true;
 
                     clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " idoneo per essere attaccato ("<< enemyTanksCount << ") carri armati" << endl; // debug
@@ -334,6 +338,19 @@ const char* reinforcement (const char* jsonData, int newTanks){
     return jsonResult.c_str();
 
 }
+
+
+
+// Funzione che permette a C# di verificare se il giocatore ha vinto o meno
+bool winCheck (const char* jsonData){
+    vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
+    return uniwar::win(uniwar::getTerritoriesFromMap(players[0].getTanksMap()));
+}
+
+
+
+
+
 
 
 

@@ -40,15 +40,19 @@ FUNCTION_LIB const char* reinforcement (const char* jsonData, int newTanks);
 
 FUNCTION_LIB const char* cpuAttack (const char* jsonData);
 
+FUNCTION_LIB bool winCheck (const char* jsonData);
+
+
+
+
+
+
+
 
 //***************** Funzioni di test  ***************/ 
 FUNCTION_LIB void testWin();
 FUNCTION_LIB void testFrontiers();
 FUNCTION_LIB void testRinforzi(int newTanks);
-
-
-
-
 
 void printTestRinforzo(const uniwar::Player & cpuPlayer);
 
