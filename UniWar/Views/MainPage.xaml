@@ -7,13 +7,13 @@
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
         <Image Source="banner.png"
-            WidthRequest="950"
-            HeightRequest="170"
+            WidthRequest="800"
+            HeightRequest="130"
             Aspect="AspectFit"/>
 
-        <Image Source="mappa.png"
-            WidthRequest="780"
-            HeightRequest="400"
+        <Image Source="sponsor.png"
+            WidthRequest="700"
+            HeightRequest="380"
             Aspect="AspectFit"
             Margin="0,0,0,20"/>
 
@@ -23,19 +23,7 @@
                 VerticalOptions="Center"
                 HeightRequest="70"
                 WidthRequest="180"
-                FontSize="20"
-                Margin="20,0,20,20"/>
-
-        <Button Text="Prova"
-                Clicked="OnReinforcement"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                HeightRequest="70"
-                WidthRequest="180"
-                FontSize="20"
-                Margin="20,0,20,20"/>
-
-    
+                FontSize="20"/>
     </StackLayout>
 
 </ContentPage>

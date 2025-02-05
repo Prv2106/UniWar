@@ -20,8 +20,10 @@ namespace UniWar {
 						var appWindow = w.GetAppWindow(); 
 						if (appWindow != null) {
 							int width = 1200;  // Larghezza finestra
-							int height = 1300; // Altezza finestra
-							appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));							
+							int height = 1250; // Altezza finestra
+							appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
+                            appWindow.Move(new Windows.Graphics.PointInt32(5, 10));
+                            			
 						}
 					});
 				});
