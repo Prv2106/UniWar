@@ -110,9 +110,10 @@ namespace UniWar {
 
             IntPtr resultPtr = reinforcement(jsonData, 10); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
 
-            // In questo caso, usiamo Marshal.PtrToStringAnsi(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
-            //  Marshal.PtrToStringAnsi(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
-            string resultJson = Marshal.PtrToStringAnsi(resultPtr) ?? string.Empty; 
+            // In questo caso, usiamo Marshal.PtrToStringUTF8(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
+            // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
+            string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
+
 
 
             
@@ -214,9 +215,9 @@ namespace UniWar {
 
             
 
-            // In questo caso, usiamo Marshal.PtrToStringAnsi(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
-            //  Marshal.PtrToStringAnsi(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
-            string resultJson = Marshal.PtrToStringAnsi(resultPtr) ?? string.Empty;
+            // In questo caso, usiamo Marshal.PtrToStringUTF8(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
+            // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
+            string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(resultJson) || resultJson == "[]") {
                 Console.WriteLine("La CPU ha deciso di non attaccare.");
@@ -423,24 +424,6 @@ namespace UniWar {
 
 
         }
-
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

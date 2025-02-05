@@ -48,12 +48,6 @@ namespace uniwar{
 
         void removeTerritory(const string & territory);
 
-        // funzione per il debug
-        void printData() const;
-
-
-
-
 };
 
 
@@ -91,10 +85,6 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map);
 
 
 } // fine del namespace uniwar
-
-
-
-
 
 
 #endif // Fine della libreria

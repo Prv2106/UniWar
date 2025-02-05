@@ -7,6 +7,7 @@ using namespace std;
 namespace uniwar{
 
 /******************************************** Implementazione di Player *************************************/
+
 // Implementazione del costruttore (con lista di inizializzazione)
 Player::Player(const map<string, vector<string>> & neighbors, const  map<string, int> & tanks, const string & player): neighborsMap(neighbors), tankCountMap(tanks), playerId(player) {}
 
@@ -52,14 +53,14 @@ void Player::addTerritory(const string & territory, const vector<string> & neigh
         neighborsMap[territory] = neighbors; // crea una nuova entry
     }
     else{
-        clog << "Il territorio" << territory <<"è già presente in neighborsMap" << endl;
+        clog << "Il territorio" << territory <<" è già presente in neighborsMap" << endl;
     }
     
     if(tankCountMap.find(territory) == tankCountMap.end()){ // la chiave non esiste
         tankCountMap[territory] = count; // crea una nuova entry
     }
     else{
-        clog << "Il territorio" << territory <<"è già presente in neighborsMap" << endl;
+        clog << "Il territorio" << territory <<" è già presente in neighborsMap" << endl;
     }
 
 }
@@ -68,7 +69,7 @@ void Player::addTerritory(const string & territory, const vector<string> & neigh
 // Implementazione del metodo per modificare il numero di carri armati di un territorio
 void Player::modifyTankCount(const string & territory, int newCount){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end())){
-        cerr << "Il territorio inserito non è valido" << endl;
+        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
         return;
     }
     else{
@@ -98,40 +99,12 @@ const int Player::getTanksCount(const string &territory) const {
     return tankCountMap.at(territory);  // .at() è un metodo degli std::map (e anche di std::vector, std::unordered_map, ecc.) che permette di accedere a un elemento in modo sicuro, lanciando un'eccezione se la chiave non esiste.
 }
 
-
-
-
-
-// Implementazione di printData
-void Player::printData() const{
-    // non usiamo endl adesso per evitare di svuotare il buffer per ogni stampa ma lo facciamo alla fine
-    cout << "Lista dei territori con i vicini:\n"; 
-
-    // iteriamo sulla mappa neighborsMap utilizzando il for range
-    // con auto il tipo è determinato in modo implicito, il tipo sarà <const string, vector<string>>
-    for(const auto & pair: neighborsMap){
-        // stampiamo il nome del territorio posseduto dal giocatore
-        cout << pair.first << ""; // stampiamo ogni suo vicino separato da uno spazio
-        for (const auto & neighbor: pair.second){
-            cout << neighbor << "";
-        }
-        cout << "\n"; // andiamo a capo dopo aver stampato tutti i vicini di un territorio
-    }
-    cout << "Lista dei territori posseduti da "<< playerId<< " insieme all'indicazione relativa al numero di carri armati:\n"; 
-
-    for(const auto & pair : tankCountMap){
-        cout << pair.first << ": " << pair.second << "\n";
-
-    }
-    cout << "=============" << endl; // forziamo lo svuotamento del buffer
-
-
-}
-
 /****** Fine implementazione di Player */
 
 /* Inizializzazione di continents*/
 
+
+// Questa mappa viene utilizzata dalla funzione "win" per verificare se il giocatore ha vinto
 const map<string, vector<string>> continents = {
 
     {"AmericaDelNord", {"Alaska", "Alberta", "StatiUnitiOccidentali", "StatiUnitiOrientali","AmericaCentrale", "Ontario", "TerritoriDelNordOvest", "Groenlandia", "Quebec"}},
@@ -144,10 +117,7 @@ const map<string, vector<string>> continents = {
 };
 
 
-
-
 /* Funzioni */
-
 
 // Funzione che inizializza il contesto di gioco per i giocatori in base al json ottenuto da C#
 vector<Player> initializePlayers(const char* jsonData){
@@ -163,11 +133,9 @@ vector<Player> initializePlayers(const char* jsonData){
             ]
         */
 
-
         // Creiamo un vettore di oggetti Player
         vector<Player> players;
          
-
         // Cicliamo su ogni giocatore nel JSON
         // player è un riferimento ad un oggetto json (auto permette di determinare il tipo dinamicamente)
         for (auto& player : parsedData) {
@@ -230,6 +198,9 @@ const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map) {
     return notOwnedTerritories;
 
 }
+
+
+// Funzione responsabile di estrarre la frontiera dei territori posseduti da un giocatore (a partire dalla mappa dei vicini)
 const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
     set<string> ownedTerritories = getTerritoriesFromMap(map);
     set<string> ownedFrontier;

@@ -267,10 +267,8 @@ const char* cpuAttack (const char* jsonData){
 
 
 
-
-
 // Funzione per il rinforzo dei territori della CPU
-/*  La funzione di rinforzo segue questa logica: il cpu player assegna i nuovi carri armati tramite un roundrobin a ciascuno dei suoi territori di frontiera.
+/*  La funzione di rinforzo segue questa logica: il cpu player assegna i nuovi carri armati tramite un round robin a ciascuno dei suoi territori di frontiera.
     In particolare, da precedenza ai territori di frontiera con 1 solo carro armato per poi applicare un round robin su tutti.
     - per prima cosa si recuperano i territori di frontiera posseduti
     - a questo punto si fa un primo ciclo dove si assegna a tali territori 1 carro armato alla volta 
@@ -295,10 +293,9 @@ const char* reinforcement (const char* jsonData, int newTanks){
             clog << "numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
             clog << "Nuovi carri a disposizione: " << newTanks << endl;
         }
-        if(newTanks == 0){
-            printTestRinforzo(cpuPlayer);
+        if(newTanks == 0)
             break;
-        }
+        
 
     }
 
@@ -313,11 +310,9 @@ const char* reinforcement (const char* jsonData, int newTanks){
         clog << "numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
         clog << "Nuovi carri a disposizione: " << newTanks << endl;
 
-        if(newTanks == 0){
-            printTestRinforzo(cpuPlayer);
+        if(newTanks == 0)
             break;
-        }
-            
+                    
         }
     }
 
@@ -346,115 +341,3 @@ bool winCheck (const char* jsonData){
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
     return uniwar::win(uniwar::getTerritoriesFromMap(players[0].getTanksMap()));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/************************* TEST  *************************/
-
-
-void testRinforzi(int newTanks){
-    clog << "TEST RINFORZO\n" << endl; 
-    uniwar::Player cpuPlayer(cpuPlayerNeighborsMap, cpuPlayerTankCountMap, "cpuPlayer");
-    set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
-    clog << "Nuovi carri a disposizione: " << newTanks << endl;
-    for(auto & territory: ownedFrontiers){
-        int tankCount = cpuPlayer.getTanksCount(territory);
-        clog << "numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-        if(tankCount== 1 && newTanks > 0){
-            cpuPlayer.modifyTankCount(territory, tankCount + 1);
-            newTanks--;
-            clog << "numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-            clog << "Nuovi carri a disposizione: " << newTanks << endl;
-        }
-        if(newTanks == 0){
-            printTestRinforzo(cpuPlayer);
-            return;
-        }
-
-    }
-
-    while(newTanks > 0){
-        for(auto & territory: ownedFrontiers){
-        int tankCount = cpuPlayer.getTanksCount(territory);
-
-        clog << "numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-        cpuPlayer.modifyTankCount(territory, tankCount + 1);
-
-        newTanks--;
-        clog << "numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-        clog << "Nuovi carri a disposizione: " << newTanks << endl;
-
-        if(newTanks == 0){
-            printTestRinforzo(cpuPlayer);
-            return;
-        }
-            
-        }
-    }
-
-}
-
-
-void printTestRinforzo(const uniwar::Player & cpuPlayer){
-    for(const auto & territory: cpuPlayer.getTanksMap()){
-        clog << "\n " << territory.first << ": " << cpuPlayer.getTanksCount(territory.first) << "\n" << endl;
-    }
-}
-
-
-void testWin(){
-    clog << "Prova 1 (dovrebbe essere true)\n" << endl;
-    clog << uniwar::win(uniwar::getTerritoriesFromMap(winnerMap1)) << "\n" << endl;
-    clog << "Prova 1 (dovrebbe essere true)\n" << endl;
-    clog << uniwar::win(uniwar::getTerritoriesFromMap(WinnerMap2)) << "\n" << endl;
-
-    clog << "Prova 2 (dovrebbe essere false)\n" << endl;
-    clog << uniwar::win(uniwar::getTerritoriesFromMap(neighborsMapIncomplete)) << "\n" << endl;
-    
-    clog << "Prova 2 (dovrebbe essere false)\n" << endl;
-    clog << uniwar::win(uniwar::getTerritoriesFromMap(tanksMapIncomplete)) << "\n" << endl;
-}
-
-void testFrontiers(){
-    clog << "Test frontiere NON POSSEDUTE: (risultato atteso -> {\"Perù\", \"AmericaCentrale\", \"AfricaDelNord\"}) \n" << endl;
-    
-    set<string> result = uniwar::getNotOwnedFrontier(frontierTestMap);
-
-    
-    clog << "{";
-    for (auto it = result.begin(); it != result.end(); ++it) {
-        clog << "\"" << *it << "\"";
-        if (next(it) != result.end()) {
-            clog << ", ";  
-        }
-    }
-    clog << "}" << endl;
-
-    clog << "Test frontiere POSSEDUTE: (risultato atteso -> {\"Ontario\", \"Groenlandia\"}) \n" << endl;
-
-    result = uniwar::getOwnedFrontier(cpuPlayerNeighborsMap);
-
-    clog << "{";
-    for (auto it = result.begin(); it != result.end(); ++it) {
-        clog << "\"" << *it << "\"";
-        if (next(it) != result.end()) {
-            clog << ", ";  
-        }
-    }
-    clog << "}" << endl;
-
-
-
-}
-
