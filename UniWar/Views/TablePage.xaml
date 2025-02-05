@@ -1286,9 +1286,7 @@
 
 
     <!-- A partire da qui, mettiamo le informazioni grafiche per l'utente -->
-
-
-         <Frame Padding="25"
+         <Frame
                CornerRadius="12"
                HasShadow="True"
                BackgroundColor="White"
@@ -1324,7 +1322,8 @@
                      HorizontalOptions="Center"/>
               </HorizontalStackLayout>
               <!-- Riepilogo obiettivo -->
-              <HorizontalStackLayout>
+              <HorizontalStackLayout
+                Margin="10,10,10,20">
                 <Label
                     VerticalOptions="Center"
                     Text="OBIETTIVO:"
@@ -1333,11 +1332,11 @@
                 <Label 
                     VerticalOptions="Center"
                     x:Name="GoalDescr"
-                    Margin="10"
                     Text="...."
                      FontSize="15"
                      FontAttributes="Bold"
                      TextColor="#333"
+                     Margin="10,0,0,0"
                      HorizontalOptions="Center"/>
               </HorizontalStackLayout>
             </VerticalStackLayout>
@@ -1350,8 +1349,8 @@
                 TextColor="White"
                 Text="ATTACCA"
                 FontSize="21"
+                Margin="10,-33,10,10"
                 WidthRequest="250"
-                Margin="30"
                 IsVisible="False"
                 Clicked="OnAttackButtonClicked"
                 BackgroundColor="DarkRed"/>
@@ -1360,7 +1359,7 @@
                 TextColor="White"
                 Text="PASSA"
                 FontSize="21"
-                Margin="30"
+                Margin="10,-33,10,10"
                 IsVisible="False"
                 Clicked="OnPassButtonClicked"
                 WidthRequest="250"

@@ -513,3 +513,5 @@ C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\defend4.s
 C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\defend5.scale-100.png
 C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\defend6.scale-100.png
 C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\dice.scale-100.png
+C:\UniWar\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\sponsor.scale-100.png
+C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\sponsor.scale-100.png

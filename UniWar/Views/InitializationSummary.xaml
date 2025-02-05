@@ -1,19 +1,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              NavigationPage.HasBackButton="False"
-             x:Class="UniWar.InitializationSummary">
+             x:Class="UniWar.InitializationSummary"
+             >
 
-   <VerticalStackLayout Padding="20">
-        
+   <VerticalStackLayout 
+       VerticalOptions="Center"
+       Padding="10,0,10,20">
         <!-- Simulazione Material Card -->
-        <Frame Padding="25"
-               CornerRadius="12"
+        <Frame CornerRadius="12"
                HasShadow="True"
-               BackgroundColor="White"
-               Margin="10"> <!-- Simula la profondità della Material Card -->
+               BackgroundColor="White"> 
             
             <VerticalStackLayout>
-              
               <!-- Titolo -->
               <Label Text="La tua partita:"
                      FontSize="25"
@@ -32,15 +31,14 @@
 
               <HorizontalStackLayout 
                      VerticalOptions="Center"
-                     HorizontalOptions="Center"
-                     Margin="20">
+                     HorizontalOptions="Center">
                      <Image x:Name="TankIcon" Source="black_tank.png"
-                            WidthRequest="150"/>
+                            WidthRequest="120"/>
               </HorizontalStackLayout>
 
               <CollectionView ItemsSource="{Binding UserTerritories}"
                                    ItemsLayout="HorizontalList"
-                                   Margin="0,20,0,40">
+                                   Margin="0,15,0,40">
                      
                      <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -50,14 +48,14 @@
                                    HasShadow="True"
                                    BackgroundColor="White"
                                    BorderColor="Black"
-                                   WidthRequest="160"
+                                   WidthRequest="140"
                                    HeightRequest="100">
                                    <Label Text="{Binding}" 
                                           WidthRequest ="99"
                                           HorizontalOptions="Center"
                                           VerticalOptions="Center"/>
                             </Frame>
-                            <Label Margin="3"/>
+                            <Label Margin="2"/>
                             </HorizontalStackLayout>
                             
                             </DataTemplate>
@@ -67,13 +65,13 @@
               <Grid>
                      <Image Source="goal.png"
                             WidthRequest="450"
-                            HeightRequest="150"/>
+                            HeightRequest="140"/>
                      <Label x:Name="GoalDescription" Text="Distruggi le armate avversarie"
                             Padding="50"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             MaximumWidthRequest="330"
-                            Margin="120,0,0,0"/>
+                            Margin="115,0,0,0"/>
               </Grid>
               
        
@@ -82,13 +80,13 @@
               <!-- Bottone -->
               <Button Text="Conferma"
                      TextColor="White"
+                     Margin="0,5,0,0"
                      CornerRadius="8"
                      Padding="10"
                      HorizontalOptions="Center"
                      WidthRequest="100"
                      BackgroundColor="Green"
-                     Clicked="OnConfirmButtonClicked"
-                     Margin="20"/>
+                     Clicked="OnConfirmButtonClicked"/>
                      
             </VerticalStackLayout>
             
