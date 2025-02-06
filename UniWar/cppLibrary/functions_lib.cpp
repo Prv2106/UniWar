@@ -1,9 +1,7 @@
-#include "functions_lib.h"
-#include "uniwar_lib.h"
-#include "test.h"
+#include "functions_lib.hpp"
+#include "uniwar_lib.hpp"
 using json = nlohmann::json;
 using namespace std;
-
 
 
 

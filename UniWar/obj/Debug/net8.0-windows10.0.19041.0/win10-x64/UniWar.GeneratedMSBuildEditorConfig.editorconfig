@@ -49,6 +49,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.AttackableTer
 build_metadata.AdditionalFiles.TargetPath = Views\AttackableTerritoriesPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\AttackableTerritoriesPage.xaml
 
+[C:/UniWar/UniWar/UniWar/Views/GenericModal.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.GenericModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\GenericModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\GenericModal.xaml
+
 [C:/UniWar/UniWar/UniWar/Views/InitializationSummary.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.InitializationSummary.xaml

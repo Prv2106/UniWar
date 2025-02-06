@@ -8,7 +8,7 @@
 #include <set>
 using namespace std;
 
-
+#define NODISCARD [[nodiscard]]
 
 namespace uniwar{
 
@@ -30,15 +30,15 @@ namespace uniwar{
 
         // I getter sono definiti in modo tale che il valore restituito non è modificabile e che i getter stessi non possono modificare gli attributi della classe Player
         // Restituiamo un riferimento costante
-        const  map<string, vector<string>> & getNeighborsMap() const;
+        NODISCARD const  map<string, vector<string>> & getNeighborsMap() const;
         
-        const  map<string, int> & getTanksMap() const;
+        NODISCARD const  map<string, int> & getTanksMap() const;
 
-        const vector<string> & getNeighbors(const string& territory);
+        NODISCARD const vector<string> & getNeighbors(const string& territory);
 
-        const string& getName() const;
+        NODISCARD const string& getName() const;
 
-        const int getTanksCount(const string & territory) const;
+        NODISCARD const int getTanksCount(const string & territory) const;
 
 
         // metodo per aggiungere un territorio e i suoi vicini
@@ -63,7 +63,7 @@ extern  const map<string, vector<string>> continents;
 
 // Funzione che si occupa di estrarre la lista dei territori a partire da una mappa
 template <typename T>
-const set<string> getTerritoriesFromMap(const map<string, T> & map) {
+NODISCARD const set<string> getTerritoriesFromMap(const map<string, T> & map) {
     set<string> territories;
     for (const auto& pair : map) {
         territories.insert(pair.first);
@@ -72,14 +72,14 @@ const set<string> getTerritoriesFromMap(const map<string, T> & map) {
 }
 
 
-bool win(const set<string> & territories);
+NODISCARD bool win(const set<string> & territories);
 
 
-vector<uniwar::Player> initializePlayers(const char* jsonData);
+NODISCARD vector<uniwar::Player> initializePlayers(const char* jsonData);
 
-const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map);
+NODISCARD const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map);
 
-const set<string> getOwnedFrontier(const map<string, vector<string>> & map);
+NODISCARD const set<string> getOwnedFrontier(const map<string, vector<string>> & map);
 
 
 
