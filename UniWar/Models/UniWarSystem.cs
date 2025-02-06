@@ -110,7 +110,7 @@ public class UniWarSystem { // singleton
             cpu.Turn = new Turn(TurnPhases.Attack);
         */
 
-        User.Turn = new Turn(TurnPhases.Attack);
+        User.Turn = new Turn(TurnPhases.Reinforcement);
         CurrentTurn = User.Turn;
         CurrentTurn.currentPlayer = User;
     }

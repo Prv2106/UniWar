@@ -88,15 +88,16 @@ namespace UniWar {
             // è il turno dell'utente
             switch (User.Turn.Phase) {
                 case TurnPhases.Reinforcement:
-                    // prima apriamo una modale dove mostriamo il numero di carri armati che vanno aggiunti
-                    await Navigation.PushModalAsync(new NewUserReinforcementTurn());
-                    // adesso, l'utente, al click su un territorio suo, può aggiungere un carro armato a quel territorio
-                    
-
-                    // una volta terminati i carri armati da posizionare, finisce la fase di rinforzo
-
+                    // a livello di UI aggiungiamo il contatore dei numeri dei carri armati da poter aggiungere rimanenti
+                    //TODO:
+                    // l'utente, al click su un territorio suo, può aggiungere un carro armato a quel territorio..
+                    // una volta terminati i carri armati da posizionare, però, finisce la fase di rinforzo
+                    int tanksToAdd = User.Territories.Count / 2;
+                    User.Turn!.NumTanksToAddInReinforcementPhase = tanksToAdd;
+                    await Navigation.PushModalAsync(new NewUserReinforcementTurn(tanksToAdd));
                     break;
                 case TurnPhases.Attack:
+                    // 1. adattiamo la UI
                     // mostriamo il pulsante "attacca"
                     AttackButton.IsVisible = true;
                     // mostriamo il pulsante "passa"
@@ -176,45 +177,48 @@ namespace UniWar {
         private async void OnTerritoryClicked(object sender, EventArgs e) {
             // recuperiamo il metadato (nome) associato al territorio cliccato
             var button = sender as Button;
-            var territoryName = button?.ClassId;
+            var territoryNameWithSpaces = button?.ClassId;
+            string territoryName = territoryNameWithSpaces!.RemoveSpaces();
             if (territoryName != null) {
                 switch (User.Turn!.Phase) {
-                    case TurnPhases.Reinforcement when button?.CommandParameter.ToString() == "user":
+                    case TurnPhases.Reinforcement when button!.CommandParameter.ToString() == "user":
                         // se clicchiamo su un territorio in questa fase, vogliamo aggiungere un carro armato!
-                        // User.Territories[territoryName.RemoveSpaces()].
-
+                        if (User.Turn!.NumTanksToAddInReinforcementPhase > 0) {
+                            User.Territories[territoryName].addTanks(User.TankColor, 1);
+                            User.Turn!.NumTanksToAddInReinforcementPhase--;
+                        } else {
+                            // sono finiti i carri armati da posizionare
+                            User.Turn!.Phase = TurnPhases.Attack;
+                            HandleTurns();
+                        }
+                        
                         break;
-                    case TurnPhases.Attack:
+                    case TurnPhases.Attack when button!.CommandParameter.ToString() == "user":
+                        if (UserWantsToAttack) { // l'utente ha prima fatto "click" su ATTACCA
+                            // allora l'utente può attaccare da questo territorio
+                            // ci serve l'elenco dei territori attaccabili sulla base dei territori confinanti!
+                            List<string> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName);
+                            if (neighboringTerritories.Count > 0) 
+                                // mostriamo la modale dove l'utente clicca il territorio da attaccare
+                                await Navigation.PushModalAsync(new AttackableTerritoriesPage(neighboringTerritories, territoryName));
+                            else // l'utente deve selezionare un altro territorio
+                                ShowInformation("I territori confinanti appartengono tutti a te, scegli un altro territorio..");
+                        } else { 
+                                // l'utente non ha ancora indicato esplicitamente di voler attaccare ...
+                                // mostriamo semplicemente il nome del territorio
+                                // perchè potrebbe essere nascosto dal carro armato
+                                tooltipLabel.Text = territoryName;  
+                                tooltipLabel.IsVisible = true;      
+                                await Task.Delay(2500);
+                                tooltipLabel.IsVisible = false; 
+                        }
                         break;
                     case TurnPhases.StrategicShift:
                         break;
                     default:
-                        break;
-                }
-                if (UserWantsToAttack) { // se è il turno di attacco dell'utente
-                    // come prima cosa dobbiamo capire se il territorio cliccato è posseduto dall'utente
-                    if (button?.CommandParameter != null && button?.CommandParameter.ToString() == "user") {
-                        // allora l'utente può attaccare da questo territorio
-                        // invochiamo l'operazione di sistema che restituisce
-                        // l'elenco dei territori attaccabili sulla base dei territori confinanti!
-                        List<string> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName.RemoveSpaces());
-                        if (neighboringTerritories.Count > 0) {
-                            // mostriamo la modale dove l'utente clicca il territorio da attaccare
-                            await Navigation.PushModalAsync(new AttackableTerritoriesPage(neighboringTerritories, territoryName));
-                        } else {// l'utente deve selezionare un altro territorio
-                            ShowInformation("I territori confinanti appartengono tutti a te, scegli un altro territorio..");
-                        }
-                    } else {
-                        // l'utente ha selezionato il territorio avversario da cui non può attaccare
+                        // l'utente ha selezionato un territorio avversario 
                         ShowInformation("Devi selezionare un territorio che appartiene a te!");
-                    }
-                } else { // l'utente non ha detto di voler attaccare
-                    // mostriamo semplicemente il nome del territorio
-                    // perchè potrebbe essere nascosto dal carro armato
-                    tooltipLabel.Text = territoryName;  
-                    tooltipLabel.IsVisible = true;      
-                    await Task.Delay(2500);
-                    tooltipLabel.IsVisible = false; 
+                        break;
                 }
             }
         }
@@ -347,7 +351,7 @@ namespace UniWar {
 
             DeployTanks();
 
-            CPU.Turn.Phase = TurnPhases.Attack;
+            CPU.Turn!.Phase = TurnPhases.Attack;
         }
 
 
