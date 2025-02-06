@@ -1,6 +1,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="UniWar.ShowDiceResultPage">
+             x:Class="UniWar.GenericModal">
 
         <!-- Material Card -->
         <Frame Padding="25"
@@ -11,93 +11,34 @@
                VerticalOptions="Center">
             
             <VerticalStackLayout>
-
-              <!-- Icona dei dadi e testo -->
-              <HorizontalStackLayout
-                HorizontalOptions="Center">
+                
+                <!-- Icona di informazione e testo -->
                 <Image
-                Source="dice.png"
-                WidthRequest="120"
+                Source ="info.png "
+                WidthRequest="100"
+                HeightRequest="100" 
+                Margin="5"               
                 />
-                <Label
-                    VerticalOptions="Center"
-                    Text="Risultato dell'attacco"
-                    FontSize="24"
-                    />
-              </HorizontalStackLayout>
-
-
-              
-              <!-- dadi utente -->
-              <Label Text="I tuoi dadi"
-                     FontSize="15"
-                     TextColor="#666"
-                     HorizontalOptions="Center"
-                     Margin="0,5,0,10"/>
-
-                <HorizontalStackLayout
-                    HorizontalOptions="Center">
-                    <Image
-                    Source="attack5.png"
-                    WidthRequest="120"
-                    Margin="10"
-                    />
-                    <Image
-                    Source="attack6.png"
-                    WidthRequest="120"
-                    Margin="10"
-                    />
-                    <Image
-                    Source="attack2.png"
-                    WidthRequest="120"
-                    Margin="10"
-                    />
-              </HorizontalStackLayout>
-
-
-              <!-- dadi cpu -->
-              <Label Text="Dadi avversario"
-                     FontSize="15"
-                     TextColor="#666"
-                     HorizontalOptions="Center"
-                     Margin="0,5,0,10"/>
-
-                <HorizontalStackLayout
-                    HorizontalOptions="Center">
-                    <Image
-                    Source="defend5.png"
-                    WidthRequest="120"
-                    Margin="10"
-                    />
-                    <Image
-                    Source="defend6.png"
-                    WidthRequest="120"
-                    Margin="10"
-                    />
-                    <Image
-                    Source="defend.png"
-                    WidthRequest="120"
-                    Margin="10"
-                    />
-              </HorizontalStackLayout>
-
 
                 
 
-             
-              <!-- Testo per avvisi (es: eccezioni) -->
-              <Label  
-                x:Name="WarningText"
-                IsVisible="false"
-                Text="OOOOO"
-                TextColor="White"
-                Padding="10"
-                HorizontalOptions="Center"
-                Margin="0,0,0,35"
-                Background="Black"/>
+            
+              <Label Text="Attenzione"
+                     FontSize="15"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     Margin="0,5,0,10"/>
 
+                <Label 
+                HorizontalOptions="Center"
+                x:Name = "textInfo"
+                VerticalOptions="Center"
+                FontSize="24"
+                />
+
+               
               <Button
-                Text="Ok, mostrami la mappa"
+                Text="Chiudi avviso"
                 WidthRequest="200"
                 Clicked="OnConfirmButtonClicked"
                 Margin="0,30,0,0"

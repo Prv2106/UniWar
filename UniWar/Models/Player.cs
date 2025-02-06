@@ -23,4 +23,16 @@ public class Player {
             num += territory.Tanks.Count;
         return num;
     }
+
+
+
+    public void AddTerritory(Territory territory){
+        Territories.Add(territory.Name, territory);
+    }
+
+    public void RemoveTerritory(Territory territory){
+        Territories.Remove(territory.Name);
+    }
+    
+    
 }
