@@ -185,7 +185,7 @@ namespace UniWar {
                     case TurnPhases.Reinforcement when button!.CommandParameter.ToString() == "user":
                         // se clicchiamo su un territorio in questa fase, vogliamo aggiungere un carro armato!
                         if (User.Turn!.NumTanksToAddInReinforcementPhase > 0) {
-                            User.Territories[territoryName].addTanks(User.TankColor, 1);
+                            User.Territories[territoryName].AddTanks(User.TankColor, 1);
                             User.Turn!.NumTanksToAddInReinforcementPhase--;
                         } else {
                             // sono finiti i carri armati da posizionare
@@ -230,7 +230,6 @@ namespace UniWar {
                 tooltipLabel.IsVisible = false; 
             }
         }
-        }
         
 
         private async void ShowInformation(string text) {
@@ -258,13 +257,6 @@ namespace UniWar {
             }
         }
         
-
-    public async void OpenNewModal(ContentPage page) {
-        await Task.Delay(1000);
-        await Navigation.PushModalAsync(page);
-    }
-
-
     
     [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern IntPtr reinforcement (string jsonData, int newTanks);
