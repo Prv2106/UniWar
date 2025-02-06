@@ -1,3 +1,11 @@
+/*
+In C#, la direttiva using System.Runtime.InteropServices; serve a importare il namespace System.Runtime.InteropServices, che contiene classi e metodi per interagire con il codice nativo (ad esempio, codice C o C++). 
+Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità tra il codice gestito (C#) e il codice non gestito (come quello C++).
+*/
+using System.Runtime.InteropServices;
+using System.Text.Json;
+
+
 namespace UniWar {
     public partial class TablePage : ContentPage {
     /*
@@ -17,9 +25,9 @@ namespace UniWar {
     private static TablePage? _instance;
     private Player User {get; set;}
     private Player CPU {get; set;}
-    private string IconSrcUser {get;}
+    private string IconSrcUser {get;} // percorso icona carro armato col colore 
     private string IconSrcCpu {get;}
-    private bool UserWantsToAttack {get; set;} = false;
+    private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
 
     public static TablePage Instance {
         get {
@@ -56,19 +64,157 @@ namespace UniWar {
         CheckIfIsUserTurn();
     }
 
-    private async void CheckIfIsUserTurn() {
-        await Task.Delay(1500);
-        if (User.Turn != null && User.Turn.Phase == TurnPhases.Attack) {
+
+
+
+
+
+    [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern IntPtr reinforcement (string jsonData, int newTanks);
+
+
+
+
+
+
+
+
+
+
+
+
+    public async void CheckIfIsUserTurn() {
+        await Task.Delay(1000);
+        if (User.Turn != null) {
             // è il turno dell'utente, mostriamo una modal view dove gli comunichiamo che è il suo turno
             await Navigation.PushModalAsync(new NewUserTurn());
+            switch (User.Turn.Phase) {
+                case TurnPhases.Reinforcement:
+                    // TODO:
+                    break;
+                case TurnPhases.Attack:
+                    // mostrimo il pulsante "attacca"
+                    AttackButton.IsVisible = true;
+                    // mostriamo il pulsante "passa"
+                    PassButton.IsVisible = true;
+                    break;
 
-            // mostrimo il pulsante "attacca"
-            AttackButton.IsVisible = true;
-            // mostriamo il pulsante "passa"
-            PassButton.IsVisible = true;
-        } else {
+                case TurnPhases.StrategicShift:
+                    // TODO:
+                    break;
+            }
+        } else if(CPU.Turn != null) {
             // è il turno della CPU
+            switch (CPU.Turn.Phase) {
+                case TurnPhases.Reinforcement:
+                    Console.WriteLine("TURNO DELLA CPU");
+                    // TODO:
 
+                    // Creazione della mappa da passare a C++
+                    List<MapData> playersMaps = new List<MapData> {
+
+                        new MapData {
+                            PlayerId = "cpuPlayer",
+                            // Usiamo un Espressione LINQ per creare un nuovo dizionario nella forma Dictionary<string, List<string>> a partire dal dizionario Dictionary<string, Territory>
+                            // In questo caso creiamo un nuovo dizionario in cui la chiave è il nome del territorio e in cui il valore è la lista dei nomi dei territori confinanti
+                            Neighbors = CPU.Territories.ToDictionary(
+                                // Chiave del nuovo dizionario
+                                // sfrutta una lambda expression in questo caso prende t e restituisce t.key, cioè usiamo la sua chiave come chiave del nuovo dizionario (t è la coppia chiave-valore del vecchio dizionrio)
+                                t => t.Key,
+                                // Valore del nuovo dizionario
+                                // Select(n => n.Name) estrae solamente il nome dei territori vicini (perché NeighboringTerritories è una lista di oggetti)
+                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                            ),
+
+                            Tanks = CPU.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.Tanks.Count
+
+                            )
+
+                        }
+                    };
+
+                    // Per debug
+                    Console.WriteLine("Mappa inizializzata, contenuto di MapData");
+                    Console.WriteLine("PlayerID = {0}",playersMaps[0].PlayerId);
+                    Console.WriteLine("Mappa dei vicini:");
+                    foreach(var t in playersMaps[0].Neighbors){
+                        Console.WriteLine("Territorio: {0}", t.Key);
+                        Console.WriteLine("Territori confinanti: {0}", string.Join(", ", t.Value)); // join è un metodo statico di string che prende un separatore e un array di elementi e li unisce in una singola stringa
+                    }
+                    Console.WriteLine("Mappa dei carri armati:");
+                    foreach(var t in playersMaps[0].Tanks){
+                        Console.WriteLine("Territorio: {0}", t.Key);
+                        Console.WriteLine(" Numero carri armati: {0}", t.Value);
+                    }
+
+
+                     // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
+                    // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
+                    string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
+                    Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+
+                    // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
+                    // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
+                    // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
+
+
+                    // Strategia di rifornimento delle truppe:
+                    // Ad ogni nuovo turno i giocatori ricevono un numero di nuove truppe pari al numero di carri armati posseduti diviso 2 (arrotondato per difetto)
+                    int newTanks = CPU.Territories.Values.Count / 2;
+
+
+                    IntPtr resultPtr = reinforcement(jsonData, newTanks); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
+
+                    // In questo caso, usiamo Marshal.PtrToStringUTF8(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
+                    // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
+                    string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
+
+
+
+                    
+                    // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
+                    // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
+
+                    // JsonSerializer.Deserialize<MapData>(resultJson) converte (deserializza) quella stringa JSON in una mappa (MapData)
+                    // updatedMaps diventa quindi MapData (che quindi può essere utilizzata per aggiornare le classi in C#).
+                    var updatedMap = JsonSerializer.Deserialize<MapData>(resultJson);
+                    
+                   
+                    // Scorriamo i territori della CPU e de il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati tanti carri armati quanti ne mancano
+                    foreach(var territory in updatedMap.Tanks){
+                        if(CPU.Territories.ContainsKey(territory.Key)){
+                            // recuperiamo il territorio della cpu
+                            var cpuTerritory = CPU.Territories[territory.Key];
+                            int difference = territory.Value - cpuTerritory.Tanks.Count;
+                            if(difference > 0){
+                                for(int i=0; i<difference; i++){
+                                    cpuTerritory.Tanks.Add(new Tank(CPU.tankColor));
+                                }
+                            }
+                        }                        
+                    }
+
+                    
+
+                    DeployTanks();
+                    // CPU passa alla fase di attacco
+                    CPU.Turn.Phase = TurnPhases.Attack;
+                    CheckIfIsUserTurn();
+                    break;
+                case TurnPhases.Attack:
+                    // TODO:
+
+
+
+
+                    // CPU passa il turno
+                    CPU.Turn = null;
+                    User.Turn = new Turn(TurnPhases.Attack);
+                    CheckIfIsUserTurn();
+                    break;
+            }
         }
     }
 
@@ -83,21 +229,21 @@ namespace UniWar {
         // che ci permette di capire quali sono i territori selezionabili per l'attacco!
         foreach (Territory territory in User.Territories.Values) {
             // prendiamoci la Grid corrispondente
-            var territoryInMap = this.FindByName<Grid>(territory.Name);
+            var territoryInMap = this.FindByName<Grid>(territory.Name); // Grid meno profonda nello schermo 
             if (territoryInMap != null) {
                 foreach (var child in territoryInMap.Children) {
                     switch (child) {
-                        case Image img:
+                        case Image img: // sulla grid meno profonda si poggia quest'immagine
                             img.Source = IconSrcUser;
                             break;
-                        case Grid grid:
+                        case Grid grid: // griglia per il contatore (meno profonda della precedente)
                             // la grid contenente 
                             foreach (var gridChild in grid.Children)
                                 if (gridChild is Label label)
                                     label.Text = territory.Tanks.Count.ToString();
                             break;
                         case Button btn:
-                            btn.CommandParameter = "user"; // sono quelli dell'utente
+                            btn.CommandParameter = "user"; // CommandParameter è un metadato per distinguere i territori dell'utente 
                             break;
                         default: 
                             continue;
@@ -174,13 +320,15 @@ namespace UniWar {
             attackBanner.IsVisible = false;
         }
 
+
+
         private void OnAttackButtonClicked(object sender, EventArgs e) {
             if (!UserWantsToAttack) {
                 // mostriamo un banner in cui informiamo l'utente di dove selezionare
                 // un territorio dal quale effettuare l'attacco
                 ShowInformation("Seleziona il territorio da cui vuoi effettuare l'attacco");  
                 UserWantsToAttack = true;
-                AttackButton.Text = "ANNULLA ATTACCO";      
+                AttackButton.Text = "ANNULLA";      
             } else {                 
                 UserWantsToAttack = false;
                 ShowInformation("Ora, clickando su un territorio, ne vedrai soltanto il nome");
@@ -188,8 +336,28 @@ namespace UniWar {
             }
         }
 
-        private void OnPassButtonClicked(object sender, EventArgs e) {
+
+
+        // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu
+        // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
+        private async void OnPassButtonClicked(object sender, EventArgs e) {
             // Interagisci con la classe Singleton UniWarSystem 
+            // TODO:
+
+            // Fine del turno dell'utente
+            User.Turn = null;
+
+
+            AttackButton.IsVisible = false;
+            PassButton.IsVisible = false;
+
+            await Task.Delay(500);
+            // Inizio del turno della CPU
+            CPU.Turn = new Turn(TurnPhases.Reinforcement);
+
+
+            // aggiorniamo la UI
+            CheckIfIsUserTurn(); // Adesso è il turno della CPU
             
         }
   }

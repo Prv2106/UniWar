@@ -269,10 +269,12 @@ const char* cpuAttack (const char* jsonData){
 
 // Funzione per il rinforzo dei territori della CPU
 /*  La funzione di rinforzo segue questa logica: il cpu player assegna i nuovi carri armati tramite un round robin a ciascuno dei suoi territori di frontiera.
-    In particolare, da precedenza ai territori di frontiera con 1 solo carro armato per poi applicare un round robin su tutti.
+    In particolare, da precedenza ai territori di frontiera con 1 solo carro armato per poi applicare un round robin a tutti quelli che hanno un numero di carri armati inferiore al numero massimo di carri assegnati ad un territorio
     - per prima cosa si recuperano i territori di frontiera posseduti
-    - a questo punto si fa un primo ciclo dove si assegna a tali territori 1 carro armato alla volta 
-      (prima solamente a quelli che hanno soltanto 1 carro armato e poi se restano altri carri da assegnare si assegnano con un round robin)
+    - a questo punto si fa un primo ciclo dove si assegna un carro armato alla volta ai territori di frontiera che ne possiedono solo 1
+    - poi si fa un ulteriore ciclo nel quale si assegna un carroarmato alla volta ai territori di frontiera il cui numero di carri armati è inferiore al numero massimo di carri posseduti da un territorio di frontiera
+    - infine, si fa un round robin finale in cui viene assegnato un carro armato ciascuno
+    Nota: i vari cicli vengono fatti fino a quando i nuovi carri disponibili terminano
 
 */
 const char* reinforcement (const char* jsonData, int newTanks){
@@ -281,13 +283,35 @@ const char* reinforcement (const char* jsonData, int newTanks){
         return "Nessun Contesto fornito";
 
     uniwar::Player& cpuPlayer = players[0]; 
-
     set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
+
+    int max = 0;
+    // Recuperiamo il numero massimo di carri armati
+    for(const auto& territory: ownedFrontiers){
+        if(cpuPlayer.getTanksCount(territory) > max)
+            max = cpuPlayer.getTanksCount(territory);
+    }
+
     clog << "Nuovi carri a disposizione: " << newTanks << endl;
     for(auto & territory: ownedFrontiers){
         int tankCount = cpuPlayer.getTanksCount(territory);
         clog << "numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
         if(tankCount== 1 && newTanks > 0){
+            cpuPlayer.modifyTankCount(territory, tankCount + 1);
+            newTanks--;
+            clog << "numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
+            clog << "Nuovi carri a disposizione: " << newTanks << endl;
+        }
+        if(newTanks == 0)
+            break;
+        
+
+    }
+
+    for(auto & territory: ownedFrontiers){
+        int tankCount = cpuPlayer.getTanksCount(territory);
+        clog << "numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
+        if((tankCount < max) && newTanks > 0){
             cpuPlayer.modifyTankCount(territory, tankCount + 1);
             newTanks--;
             clog << "numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;

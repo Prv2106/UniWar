@@ -1291,80 +1291,90 @@
                HasShadow="True"
                BackgroundColor="White"
                Margin="10"> <!-- Simula la profondità della Material Card -->
-            <VerticalStackLayout>
-              <HorizontalStackLayout>
-                 <!-- Riepilogo colore e numero armate -->
-                <Image
-                    x:Name="UserTankIcon"
-                    Source="red_tank.png"
-                    WidthRequest="50"/>
-                <Label 
-                    x:Name="NumTanks"
-                    VerticalOptions="Center"
-                    Margin="10"
-                    Text="63"
-                     FontSize="15"
-                     FontAttributes="Bold"
-                     TextColor="#333"
-                     HorizontalOptions="Center"/>
-                <!-- Riepilogo numero territori posseduti -->
-                <Image
-                    Source="flag.png"
-                    WidthRequest="40"
-                    Margin="50,0,0,0"/>
-                <Label 
-                    VerticalOptions="Center"
-                    Margin="10"
-                    Text="21"
-                     FontSize="15"
-                     FontAttributes="Bold"
-                     TextColor="#333"
-                     HorizontalOptions="Center"/>
-              </HorizontalStackLayout>
-              <!-- Riepilogo obiettivo -->
-              <HorizontalStackLayout
-                Margin="10,10,10,20">
-                <Label
-                    VerticalOptions="Center"
-                    Text="OBIETTIVO:"
-                    TextColor="#333"
-                    FontSize="15" />
-                <Label 
-                    VerticalOptions="Center"
-                    x:Name="GoalDescr"
-                    Text="...."
-                     FontSize="15"
-                     FontAttributes="Bold"
-                     TextColor="#333"
-                     Margin="10,0,0,0"
-                     HorizontalOptions="Center"/>
-              </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <VerticalStackLayout>
+                <HorizontalStackLayout>
+                    <!-- Riepilogo colore e numero armate -->
+                    <Image
+                        x:Name="UserTankIcon"
+                        Source="red_tank.png"
+                        WidthRequest="50"/>
+                    <Label 
+                        x:Name="NumTanks"
+                        VerticalOptions="Center"
+                        Margin="10"
+                        Text="63"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#333"
+                        HorizontalOptions="Center"/>
+                    <!-- Riepilogo numero territori posseduti -->
+                    <Image
+                        Source="flag.png"
+                        WidthRequest="40"
+                        Margin="50,0,0,0"/>
+                    <Label 
+                        VerticalOptions="Center"
+                        Margin="10"
+                        Text="21"
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#333"
+                        HorizontalOptions="Center"/>
+                </HorizontalStackLayout>
+                <!-- Riepilogo obiettivo -->
+                <HorizontalStackLayout
+                    Margin="10,10,10,20">
+                    <Label
+                        VerticalOptions="Center"
+                        Text="OBIETTIVO:"
+                        TextColor="#333"
+                        FontSize="15" />
+                    <Label 
+                        VerticalOptions="Center"
+                        x:Name="GoalDescr"
+                        Text="...."
+                        FontSize="15"
+                        FontAttributes="Bold"
+                        TextColor="#333"
+                        Margin="10,0,0,0"
+                        HorizontalOptions="Center"/>
+                </HorizontalStackLayout>
             </VerticalStackLayout>
-        </Frame>
-        <!-- Pulsanti per Scegliere se Attaccare o meno -->
-        <HorizontalStackLayout
-            HorizontalOptions="Center">
-            <Button
-                x:Name="AttackButton"
-                TextColor="White"
-                Text="ATTACCA"
-                FontSize="21"
-                Margin="10,-33,10,10"
-                WidthRequest="250"
-                IsVisible="False"
-                Clicked="OnAttackButtonClicked"
-                BackgroundColor="DarkRed"/>
-            <Button
-                x:Name="PassButton"
-                TextColor="White"
-                Text="PASSA"
-                FontSize="21"
-                Margin="10,-33,10,10"
-                IsVisible="False"
-                Clicked="OnPassButtonClicked"
-                WidthRequest="250"
-                />
+            
+            <BoxView WidthRequest="45" 
+                HorizontalOptions="FillAndExpand" 
+                BackgroundColor="White"
+            />
+
+
+
+            <!-- Pulsanti allineati a destra -->
+            <VerticalStackLayout HorizontalOptions="End" Margin="20,0,0,0">
+                <Button x:Name="AttackButton"
+                        TextColor="White"
+                        Text="ATTACCA"
+                        FontSize="14"
+                        WidthRequest="120"
+                        HeightRequest="40"
+                        Margin="0,5,0,5"
+                        IsVisible="False"
+                        Clicked="OnAttackButtonClicked"
+                        BackgroundColor="DarkRed"/>
+                <Button x:Name="PassButton"
+                        TextColor="White"
+                        Text="PASSA"
+                        FontSize="14"
+                        WidthRequest="120"
+                        HeightRequest="40"
+                        Margin="0,5,0,5"
+                        IsVisible="False"
+                        Clicked="OnPassButtonClicked"/>
+            </VerticalStackLayout>
         </HorizontalStackLayout>
+        </Frame>
+
+
 
         <!-- Questa è la label che dice all'utente di selezionare un territorio da cui effettuare l'attacco -->
         <Label x:Name="attackBanner"

@@ -8,7 +8,7 @@ namespace UniWar {
             di una nuova partita.
         */
 
-        private Player User {get; set;}
+        private Player User {get;} // Ci teniamo un riferimento all'utente perché questa pagina è dedicata solo a lui
 
         public List<string> UserTerritories {get;} = [];
         // proprietà pubblica perchè deve essere accessibile allo XAML
@@ -17,11 +17,13 @@ namespace UniWar {
         
         public InitializationSummary() {
             InitializeComponent();
-            UniWarSystem.Instance.InitializeGame();
+            UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
             User = UniWarSystem.Instance.User!;
             BuildThePage();           
         }
 
+
+        // Per estrarre le informazioni da visualizzare nella card
         private void BuildThePage() {
             // nomi dei territori per le carte
             foreach (var territory in User.Territories.Values) 

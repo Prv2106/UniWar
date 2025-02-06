@@ -60,25 +60,21 @@ public class UniWarSystem { // singleton
         Cpu = new Player();
 
         // recuperiamo tutti i territori
-        List<Territory> allTerritories = new List<Territory>();
-        foreach (Continent c in _continents.Values) {
-            foreach (Territory ter in c.Territories) {
-                allTerritories.Add(ter);
-            }
-        }
-
+        List<Territory> allTerritories = [];
+        foreach (Territory t in _territories.Values) 
+                allTerritories.Add(t);
+        
         // eseguiamo uno shuffle (metodo implementato nell'extension)
         allTerritories.Shuffle();
 
         // 21 territori a User e 21 alla CPU
-        var firstHalf = allTerritories.Take(21).ToList();
-        var secondHalf = allTerritories.Skip(21).ToList();
+        var firstHalf = allTerritories.Take(21).ToList(); // restituisce i primi 21 elementi
+        var secondHalf = allTerritories.Skip(21).ToList(); // restituisce i restanti elementi dopo i primi 21
         foreach (var ter in firstHalf) 
             User.Territories.Add(ter.Name, ter);
         foreach (var ter in secondHalf) 
             Cpu.Territories.Add(ter.Name, ter);
         
-
         // scegliamo due colori random, i colori sono 6
         int colorForUser = gen.Next(6);
         int colorForCpu;
@@ -98,8 +94,13 @@ public class UniWarSystem { // singleton
         User.Goal = _goals[0];
         Cpu.Goal = _goals[0];
 
+        // Necessario per l'inserimento di nuovi carri armati
+        User.tankColor = colorForUser;
+        Cpu.tankColor = colorForCpu;
 
         // Turno
+
+        // TODO: implementare la casualità del turno (Lo facciamo solo dopo che si vede che funziona tutto)
 
         /*
         if (gen.Next(2)==0) 
@@ -108,6 +109,7 @@ public class UniWarSystem { // singleton
             cpu.Turn = new Turn(TurnPhases.Attack);
         */
 
+        // Riferiemnti utili
         User.Turn = new Turn(TurnPhases.Attack);
         CurrentTurn = User.Turn;
         CurrentTurn.currentPlayer = User;
