@@ -28,6 +28,7 @@ namespace UniWar {
     private string IconSrcUser {get;} // percorso icona carro armato col colore 
     private string IconSrcCpu {get;}
     private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
+    // public ContentPage? NewPage {get; set;} 
 
     public static TablePage Instance {
         get {
@@ -37,6 +38,11 @@ namespace UniWar {
         }
     }
 
+
+    public async void OpenNewModal(ContentPage page) {
+        await Task.Delay(500);
+        await Navigation.PushModalAsync(page);
+    }
 
     private TablePage() {
         Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
@@ -66,20 +72,8 @@ namespace UniWar {
 
 
 
-
-
-
     [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern IntPtr reinforcement (string jsonData, int newTanks);
-
-
-
-
-
-
-
-
-
 
 
 
@@ -107,9 +101,6 @@ namespace UniWar {
             // è il turno della CPU
             switch (CPU.Turn.Phase) {
                 case TurnPhases.Reinforcement:
-                    Console.WriteLine("TURNO DELLA CPU");
-                    // TODO:
-
                     // Creazione della mappa da passare a C++
                     List<MapData> playersMaps = new List<MapData> {
 
@@ -125,35 +116,18 @@ namespace UniWar {
                                 // Select(n => n.Name) estrae solamente il nome dei territori vicini (perché NeighboringTerritories è una lista di oggetti)
                                 t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
                             ),
-
-                            Tanks = CPU.Territories.ToDictionary(
+                            
+                            Tanks = CPU.Territories.ToDictionary( // es: {"America": 2}
                                 t => t.Key,
                                 t => t.Value.Tanks.Count
 
                             )
-
                         }
                     };
 
-                    // Per debug
-                    Console.WriteLine("Mappa inizializzata, contenuto di MapData");
-                    Console.WriteLine("PlayerID = {0}",playersMaps[0].PlayerId);
-                    Console.WriteLine("Mappa dei vicini:");
-                    foreach(var t in playersMaps[0].Neighbors){
-                        Console.WriteLine("Territorio: {0}", t.Key);
-                        Console.WriteLine("Territori confinanti: {0}", string.Join(", ", t.Value)); // join è un metodo statico di string che prende un separatore e un array di elementi e li unisce in una singola stringa
-                    }
-                    Console.WriteLine("Mappa dei carri armati:");
-                    foreach(var t in playersMaps[0].Tanks){
-                        Console.WriteLine("Territorio: {0}", t.Key);
-                        Console.WriteLine(" Numero carri armati: {0}", t.Value);
-                    }
-
-
-                     // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
+                    // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
                     // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
                     string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
-                    Console.WriteLine("JSON inviato a C++:\n" + jsonData);
 
                     // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
                     // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
@@ -163,7 +137,6 @@ namespace UniWar {
                     // Strategia di rifornimento delle truppe:
                     // Ad ogni nuovo turno i giocatori ricevono un numero di nuove truppe pari al numero di carri armati posseduti diviso 2 (arrotondato per difetto)
                     int newTanks = CPU.Territories.Values.Count / 2;
-
 
                     IntPtr resultPtr = reinforcement(jsonData, newTanks); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
 
@@ -197,7 +170,6 @@ namespace UniWar {
                     }
 
                     
-
                     DeployTanks();
                     // CPU passa alla fase di attacco
                     CPU.Turn.Phase = TurnPhases.Attack;
@@ -205,8 +177,6 @@ namespace UniWar {
                     break;
                 case TurnPhases.Attack:
                     // TODO:
-
-
 
 
                     // CPU passa il turno
@@ -293,7 +263,9 @@ namespace UniWar {
                         List<string> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName.RemoveSpaces());
                         if (neighboringTerritories.Count > 0) {
                             // mostriamo la modale dove l'utente clicca il territorio da attaccare
+                            AttackableTerritoriesPage attackableTerritoriesPage = new AttackableTerritoriesPage(neighboringTerritories, territoryName);
                             await Navigation.PushModalAsync(new AttackableTerritoriesPage(neighboringTerritories, territoryName));
+
                         } else {// l'utente deve selezionare un altro territorio
                             ShowInformation("I territori confinanti appartengono tutti a te, scegli un altro territorio..");
                         }

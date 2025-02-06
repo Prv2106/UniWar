@@ -209,7 +209,7 @@ public class UniWarSystem { // singleton
                 counterForCpu++;
             }
         }
-        return $"ESITO: carri armati persi: {counterForUser}, carri armati sconfitti: {counterForUser}";
+        return $"l'utente ha perso {counterForUser} carri armati, mentre la CPU ne ha persi {counterForCpu}";
     }
 
 
