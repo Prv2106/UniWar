@@ -1,5 +1,5 @@
 
-public struct MapData{
+public struct MapData {
     public string PlayerId {get; set;}
     public Dictionary<string, List<string>> Neighbors {get; set;}
 
