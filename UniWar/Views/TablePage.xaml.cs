@@ -4,6 +4,7 @@ Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità 
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 
 namespace UniWar {
@@ -220,7 +221,15 @@ namespace UniWar {
                         ShowInformation("Devi selezionare un territorio che appartiene a te!");
                         break;
                 }
+            } else { // l'utente non ha detto di voler attaccare
+                // mostriamo semplicemente il nome del territorio
+                // perchè potrebbe essere nascosto dal carro armato
+                tooltipLabel.Text = territoryName;  
+                tooltipLabel.IsVisible = true;      
+                await Task.Delay(2500);
+                tooltipLabel.IsVisible = false; 
             }
+        }
         }
         
 
@@ -248,7 +257,12 @@ namespace UniWar {
                 AttackButton.Text = "ATTACCA";      
             }
         }
+        
 
+    public async void OpenNewModal(ContentPage page) {
+        await Task.Delay(1000);
+        await Navigation.PushModalAsync(page);
+    }
 
 
     
@@ -344,7 +358,7 @@ namespace UniWar {
                     var cpuTerritory = CPU.Territories[territory.Key];
                     int difference = territory.Value - cpuTerritory.Tanks.Count;
                     if(difference > 0)
-                        cpuTerritory.addTanks(CPU.TankColor, difference);
+                        cpuTerritory.AddTanks(CPU.TankColor, difference);
                     
                 }                        
             }
@@ -358,7 +372,7 @@ namespace UniWar {
 
 
 
-        void CpuAttack(){
+        private void CpuAttack(){
         
                     List<MapData> playersMaps = new List<MapData>(){
                         new MapData {
@@ -393,18 +407,20 @@ namespace UniWar {
                     string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
                     Console.WriteLine("JSON inviato a C++:\n" + jsonData);
                     IntPtr resultPtr = cpuAttack(jsonData);
-                    string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
+                    string? resultJson = Marshal.PtrToStringUTF8(resultPtr);
 
                     if((resultJson == string.Empty) || resultJson == "[]"){
                         Console.WriteLine("La CPU ha deciso di non attaccare");
-                        
+                        OpenNewModal(new GenericModal("La CPU ha deciso di non attaccare"));
                     }
                     else{
-                        List<BattleResult> battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson);
+                        List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
                         // Per il debug
                         Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
-                        
-                        // simulateBattle(); // TODO:
+                        if(battleResults is not null){
+                            SimulateBattle(battleResults); 
+                        }
+                       
                     }
 
                     // CPU passa il turno
@@ -415,7 +431,7 @@ namespace UniWar {
 
 
 
-        bool isWin(){
+        bool IsWin(){
             List<MapData> playersMaps = new List<MapData>(){
                         new MapData {
                             PlayerId = User.Name,
@@ -440,7 +456,64 @@ namespace UniWar {
 
 
 
+        private void SimulateBattle(List<BattleResult> battleList){
+            
+            foreach( var battle in battleList){
+                /*
+                    Per la UI serve:
+                    - territorio da cui la CPU sta attaccando
+                    - territorio dell'user attaccato
+                    - dado utente
+                    - dado cpu
+                    - num carri armati persi dall'utente
+                    - num carri armati persi dalla cpu 
+                */
 
+
+                // TODO: 
+                // verificare per ogni territorio di User:
+                //  - se possiede ancora quel territorio e in caso affermativo se il numero di carri armati di tale territorio è rimasto o meno invariato
+
+                foreach(var territory in User.Territories.Values){
+                    if(battle.DefendingTanksCountMap.ContainsKey(territory.Name)){
+                        int difference = battle.DefendingTanksCountMap[territory.Name] - territory.Tanks.Count;
+                        if(difference > 0){
+                            territory.AddTanks(User.TankColor, difference);
+                        }
+                        else if(difference < 0){
+                            // TODO: Implementare metodo di Territory removeTanks(int num = 1)
+                        }
+                        /*
+                            // Scorriamo i territori della CPU e de il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati tanti carri armati quanti ne mancano
+                            foreach(var territory in updatedMap.Tanks){
+                                if(CPU.Territories.ContainsKey(territory.Key)){
+                                    // recuperiamo il territorio della cpu
+                                    var cpuTerritory = CPU.Territories[territory.Key];
+                                    int difference = territory.Value - cpuTerritory.Tanks.Count;
+                                    if(difference > 0)
+                                cpuTerritory.AddTanks(CPU.TankColor, difference);
+                        
+                        
+                        */
+
+                    }
+                    else{
+                        User.RemoveTerritory(territory);
+                    }
+                }
+
+                // verificare per ogni territorio di CPU
+                // - se possiede lo stesso numero di carri armati di prima oppure no
+
+
+                
+
+            }
+        }
+
+
+
+        
 
 
 

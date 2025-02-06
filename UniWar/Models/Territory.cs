@@ -21,7 +21,7 @@ public class Territory {
 
 
     
-    public void addTanks(int tankColor, int num = 1){
+    public void AddTanks(int tankColor, int num = 1){
             for(int i=0; i<num; ++i){
                 Tanks.Add(new Tank(tankColor));
             }

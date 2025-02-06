@@ -70,10 +70,11 @@ public class UniWarSystem { // singleton
         // 21 territori a User e 21 alla CPU
         var firstHalf = allTerritories.Take(21).ToList(); // restituisce i primi 21 elementi
         var secondHalf = allTerritories.Skip(21).ToList(); // restituisce i restanti elementi dopo i primi 21
-        foreach (var ter in firstHalf) 
-            User.Territories.Add(ter.Name, ter);
+        foreach (var ter in firstHalf)
+            User.AddTerritory(ter);
+
         foreach (var ter in secondHalf) 
-            Cpu.Territories.Add(ter.Name, ter);
+            Cpu.AddTerritory(ter);
         
         // scegliamo due colori random, i colori sono 6
         int colorForUser = gen.Next(6);
@@ -84,12 +85,12 @@ public class UniWarSystem { // singleton
            
         // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in User.Territories.Values){
-            territory.addTanks(colorForUser,3);
+            territory.AddTanks(colorForUser,3);
         }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
         foreach (Territory territory in Cpu.Territories.Values){
-            territory.addTanks(colorForCpu,3);
+            territory.AddTanks(colorForCpu,1);
         }
             
         // obiettivo ai partecipanti
