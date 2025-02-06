@@ -98,7 +98,6 @@ public class UniWarSystem { // singleton
         User.tankColor = colorForUser;
         Cpu.tankColor = colorForCpu;
 
-        // Turno
 
         // TODO: implementare la casualità del turno (Lo facciamo solo dopo che si vede che funziona tutto)
 
@@ -109,7 +108,6 @@ public class UniWarSystem { // singleton
             cpu.Turn = new Turn(TurnPhases.Attack);
         */
 
-        // Riferiemnti utili
         User.Turn = new Turn(TurnPhases.Attack);
         CurrentTurn = User.Turn;
         CurrentTurn.currentPlayer = User;
@@ -159,8 +157,6 @@ public class UniWarSystem { // singleton
             if (true) {
                 
             }
-
-            //TODO: restituire stringa con recap situazione
             
             return (userDice, cpuDice, result);
             

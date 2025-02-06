@@ -28,7 +28,6 @@ namespace UniWar {
     private string IconSrcUser {get;} // percorso icona carro armato col colore 
     private string IconSrcCpu {get;}
     private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
-    // public ContentPage? NewPage {get; set;} 
 
     public static TablePage Instance {
         get {
@@ -67,7 +66,7 @@ namespace UniWar {
         BuildUserInformation();
 
         // pop-up da mostrare quando il turno passa dalla CPU all'utente
-        CheckIfIsUserTurn();
+        HandleTurns();
     }
 
 
@@ -77,20 +76,28 @@ namespace UniWar {
 
 
 
-    public async void CheckIfIsUserTurn() {
+    public async void HandleTurns() {
         await Task.Delay(1000);
         if (User.Turn != null) {
-            // è il turno dell'utente, mostriamo una modal view dove gli comunichiamo che è il suo turno
-            await Navigation.PushModalAsync(new NewUserTurn());
+            // è il turno dell'utente
             switch (User.Turn.Phase) {
                 case TurnPhases.Reinforcement:
-                    // TODO:
+                    // prima apriamo una modale dove mostriamo il numero di carri armati che vanno aggiunti
+                    await Navigation.PushModalAsync(new NewUserReinforcementTurn());
+                    // adesso, l'utente, al click su un territorio suo, può aggiungere un carro armato a quel territorio
+                    
+
+                    // una volta terminati i carri armati da posizionare, finisce la fase di rinforzo
+
                     break;
                 case TurnPhases.Attack:
+                    // modale in cui avvisiamo che è il turno di attacco dell'utente:
+                    await Navigation.PushModalAsync(new NewUserTurn());
                     // mostrimo il pulsante "attacca"
                     AttackButton.IsVisible = true;
                     // mostriamo il pulsante "passa"
                     PassButton.IsVisible = true;
+                    PassButton.Text = "PASSA";
                     break;
 
                 case TurnPhases.StrategicShift:
@@ -173,7 +180,7 @@ namespace UniWar {
                     DeployTanks();
                     // CPU passa alla fase di attacco
                     CPU.Turn.Phase = TurnPhases.Attack;
-                    CheckIfIsUserTurn();
+                    HandleTurns();
                     break;
                 case TurnPhases.Attack:
                     // TODO:
@@ -182,7 +189,7 @@ namespace UniWar {
                     // CPU passa il turno
                     CPU.Turn = null;
                     User.Turn = new Turn(TurnPhases.Attack);
-                    CheckIfIsUserTurn();
+                    HandleTurns();
                     break;
             }
         }
@@ -254,6 +261,19 @@ namespace UniWar {
             var button = sender as Button;
             var territoryName = button?.ClassId;
             if (territoryName != null) {
+                switch (User.Turn!.Phase) {
+                    case TurnPhases.Reinforcement when button?.CommandParameter.ToString() == "user":
+                        // se clicchiamo su un territorio in questa fase, vogliamo aggiungere un carro armato!
+                        // User.Territories[territoryName.RemoveSpaces()].
+
+                        break;
+                    case TurnPhases.Attack:
+                        break;
+                    case TurnPhases.StrategicShift:
+                        break;
+                    default:
+                        break;
+                }
                 if (UserWantsToAttack) { // se è il turno di attacco dell'utente
                     // come prima cosa dobbiamo capire se il territorio cliccato è posseduto dall'utente
                     if (button?.CommandParameter != null && button?.CommandParameter.ToString() == "user") {
@@ -329,7 +349,7 @@ namespace UniWar {
 
 
             // aggiorniamo la UI
-            CheckIfIsUserTurn(); // Adesso è il turno della CPU
+            HandleTurns(); // Adesso è il turno della CPU
             
         }
   }
