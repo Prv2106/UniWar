@@ -67,24 +67,19 @@ namespace UniWar {
 
 
 
-
-
-    [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
-    public static extern IntPtr reinforcement (string jsonData, int newTanks);
-
-
-
-
-
-
-
-
-
-
-
-
     public async void CheckIfIsUserTurn() {
         await Task.Delay(1000);
+        while(CPU.Turn != null) { // è il turno della CPU
+            switch (CPU.Turn.Phase) {
+                case TurnPhases.Reinforcement:
+                    CpuReinforcement();   
+                    break;
+                case TurnPhases.Attack:
+                    CpuAttack();
+                    break;
+            }
+        }
+
         if (User.Turn != null) {
             // è il turno dell'utente, mostriamo una modal view dove gli comunichiamo che è il suo turno
             await Navigation.PushModalAsync(new NewUserTurn());
@@ -93,7 +88,7 @@ namespace UniWar {
                     // TODO:
                     break;
                 case TurnPhases.Attack:
-                    // mostrimo il pulsante "attacca"
+                    // mostriamo il pulsante "attacca"
                     AttackButton.IsVisible = true;
                     // mostriamo il pulsante "passa"
                     PassButton.IsVisible = true;
@@ -103,119 +98,8 @@ namespace UniWar {
                     // TODO:
                     break;
             }
-        } else if(CPU.Turn != null) {
-            // è il turno della CPU
-            switch (CPU.Turn.Phase) {
-                case TurnPhases.Reinforcement:
-                    Console.WriteLine("TURNO DELLA CPU");
-                    // TODO:
-
-                    // Creazione della mappa da passare a C++
-                    List<MapData> playersMaps = new List<MapData> {
-
-                        new MapData {
-                            PlayerId = "cpuPlayer",
-                            // Usiamo un Espressione LINQ per creare un nuovo dizionario nella forma Dictionary<string, List<string>> a partire dal dizionario Dictionary<string, Territory>
-                            // In questo caso creiamo un nuovo dizionario in cui la chiave è il nome del territorio e in cui il valore è la lista dei nomi dei territori confinanti
-                            Neighbors = CPU.Territories.ToDictionary(
-                                // Chiave del nuovo dizionario
-                                // sfrutta una lambda expression in questo caso prende t e restituisce t.key, cioè usiamo la sua chiave come chiave del nuovo dizionario (t è la coppia chiave-valore del vecchio dizionrio)
-                                t => t.Key,
-                                // Valore del nuovo dizionario
-                                // Select(n => n.Name) estrae solamente il nome dei territori vicini (perché NeighboringTerritories è una lista di oggetti)
-                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
-                            ),
-
-                            Tanks = CPU.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.Tanks.Count
-
-                            )
-
-                        }
-                    };
-
-                    // Per debug
-                    Console.WriteLine("Mappa inizializzata, contenuto di MapData");
-                    Console.WriteLine("PlayerID = {0}",playersMaps[0].PlayerId);
-                    Console.WriteLine("Mappa dei vicini:");
-                    foreach(var t in playersMaps[0].Neighbors){
-                        Console.WriteLine("Territorio: {0}", t.Key);
-                        Console.WriteLine("Territori confinanti: {0}", string.Join(", ", t.Value)); // join è un metodo statico di string che prende un separatore e un array di elementi e li unisce in una singola stringa
-                    }
-                    Console.WriteLine("Mappa dei carri armati:");
-                    foreach(var t in playersMaps[0].Tanks){
-                        Console.WriteLine("Territorio: {0}", t.Key);
-                        Console.WriteLine(" Numero carri armati: {0}", t.Value);
-                    }
-
-
-                     // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
-                    // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
-                    string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
-                    Console.WriteLine("JSON inviato a C++:\n" + jsonData);
-
-                    // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
-                    // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
-                    // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
-
-
-                    // Strategia di rifornimento delle truppe:
-                    // Ad ogni nuovo turno i giocatori ricevono un numero di nuove truppe pari al numero di carri armati posseduti diviso 2 (arrotondato per difetto)
-                    int newTanks = CPU.Territories.Values.Count / 2;
-
-
-                    IntPtr resultPtr = reinforcement(jsonData, newTanks); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
-
-                    // In questo caso, usiamo Marshal.PtrToStringUTF8(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
-                    // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
-                    string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
-
-
-
-                    
-                    // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
-                    // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
-
-                    // JsonSerializer.Deserialize<MapData>(resultJson) converte (deserializza) quella stringa JSON in una mappa (MapData)
-                    // updatedMaps diventa quindi MapData (che quindi può essere utilizzata per aggiornare le classi in C#).
-                    var updatedMap = JsonSerializer.Deserialize<MapData>(resultJson);
-                    
-                   
-                    // Scorriamo i territori della CPU e de il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati tanti carri armati quanti ne mancano
-                    foreach(var territory in updatedMap.Tanks){
-                        if(CPU.Territories.ContainsKey(territory.Key)){
-                            // recuperiamo il territorio della cpu
-                            var cpuTerritory = CPU.Territories[territory.Key];
-                            int difference = territory.Value - cpuTerritory.Tanks.Count;
-                            if(difference > 0){
-                                for(int i=0; i<difference; i++){
-                                    cpuTerritory.Tanks.Add(new Tank(CPU.tankColor));
-                                }
-                            }
-                        }                        
-                    }
-
-                    
-
-                    DeployTanks();
-                    // CPU passa alla fase di attacco
-                    CPU.Turn.Phase = TurnPhases.Attack;
-                    CheckIfIsUserTurn();
-                    break;
-                case TurnPhases.Attack:
-                    // TODO:
-
-
-
-
-                    // CPU passa il turno
-                    CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Attack);
-                    CheckIfIsUserTurn();
-                    break;
-            }
-        }
+        } 
+        
     }
 
     public void BuildUserInformation() {
@@ -322,7 +206,9 @@ namespace UniWar {
 
 
 
-        private void OnAttackButtonClicked(object sender, EventArgs e) {
+
+
+          private void OnAttackButtonClicked(object sender, EventArgs e) {
             if (!UserWantsToAttack) {
                 // mostriamo un banner in cui informiamo l'utente di dove selezionare
                 // un territorio dal quale effettuare l'attacco
@@ -338,28 +224,201 @@ namespace UniWar {
 
 
 
+    
+    [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern IntPtr reinforcement (string jsonData, int newTanks);
+
+    [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern IntPtr cpuAttack (string jsonData);
+
+    
+    [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
+    public static extern bool winCheck (string jsonData);
+
+
+
+      
+
         // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu
         // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
         private async void OnPassButtonClicked(object sender, EventArgs e) {
-            // Interagisci con la classe Singleton UniWarSystem 
-            // TODO:
-
             // Fine del turno dell'utente
             User.Turn = null;
-
 
             AttackButton.IsVisible = false;
             PassButton.IsVisible = false;
 
             await Task.Delay(500);
-            // Inizio del turno della CPU
+
             CPU.Turn = new Turn(TurnPhases.Reinforcement);
 
-
-            // aggiorniamo la UI
             CheckIfIsUserTurn(); // Adesso è il turno della CPU
-            
         }
-  }
+        
     
+
+        void CpuReinforcement(){
+            Console.WriteLine("TURNO DELLA CPU");
+            // Creazione della mappa da passare a C++
+            List<MapData> playersMaps = new List<MapData> {
+                new MapData {
+                    PlayerId = CPU.Name,
+                    // Usiamo un Espressione LINQ per creare un nuovo dizionario nella forma Dictionary<string, List<string>> a partire dal dizionario Dictionary<string, Territory>
+                    // In questo caso creiamo un nuovo dizionario in cui la chiave è il nome del territorio e in cui il valore è la lista dei nomi dei territori confinanti
+                    Neighbors = CPU.Territories.ToDictionary(
+                        // Chiave del nuovo dizionario
+                        // sfrutta una lambda expression in questo caso prende t e restituisce t.key, cioè usiamo la sua chiave come chiave del nuovo dizionario (t è la coppia chiave-valore del vecchio dizionrio)
+                        t => t.Key,
+                        // Valore del nuovo dizionario
+                        // Select(n => n.Name) estrae solamente il nome dei territori vicini (perché NeighboringTerritories è una lista di oggetti)
+                        t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                    ),
+
+                    Tanks = CPU.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.Tanks.Count
+
+                    )
+
+                }
+            };
+
+            // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
+            // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
+            string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
+            Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+
+            // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
+            // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
+            // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
+
+            // Strategia di rifornimento delle truppe:
+            // Ad ogni nuovo turno i giocatori ricevono un numero di nuove truppe pari al numero di carri armati posseduti diviso 2 (arrotondato per difetto)
+            int newTanks = CPU.Territories.Values.Count / 2;
+
+            IntPtr resultPtr = reinforcement(jsonData, newTanks); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
+
+            // In questo caso, usiamo Marshal.PtrToStringUTF8(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
+            // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
+            string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
+
+            // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
+            // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
+
+            // JsonSerializer.Deserialize<MapData>(resultJson) converte (deserializza) quella stringa JSON in una mappa (MapData)
+            // updatedMaps diventa quindi MapData (che quindi può essere utilizzata per aggiornare le classi in C#).
+            var updatedMap = JsonSerializer.Deserialize<MapData>(resultJson);
+            
+        
+            // Scorriamo i territori della CPU e de il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati tanti carri armati quanti ne mancano
+            foreach(var territory in updatedMap.Tanks){
+                if(CPU.Territories.ContainsKey(territory.Key)){
+                    // recuperiamo il territorio della cpu
+                    var cpuTerritory = CPU.Territories[territory.Key];
+                    int difference = territory.Value - cpuTerritory.Tanks.Count;
+                    if(difference > 0)
+                        cpuTerritory.addTanks(CPU.TankColor, difference);
+                    
+                }                        
+            }
+
+            DeployTanks();
+
+            CPU.Turn.Phase = TurnPhases.Attack;
+        }
+
+
+
+
+
+        void CpuAttack(){
+        
+                    List<MapData> playersMaps = new List<MapData>(){
+                        new MapData {
+                            PlayerId = CPU.Name,
+                            Neighbors = CPU.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                            ),
+                            Tanks= CPU.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.Tanks.Count
+                            )
+
+                        },
+
+                        new MapData{
+                            PlayerId = User.Name,
+                            Neighbors = User.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                            ),
+                            Tanks= User.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.Tanks.Count
+                            )
+
+                        }            
+
+                    };
+
+
+                    string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
+                    Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+                    IntPtr resultPtr = cpuAttack(jsonData);
+                    string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
+
+                    if((resultJson == string.Empty) || resultJson == "[]"){
+                        Console.WriteLine("La CPU ha deciso di non attaccare");
+                        
+                    }
+                    else{
+                        List<BattleResult> battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson);
+                        // Per il debug
+                        Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
+                        
+                        // simulateBattle(); // TODO:
+                    }
+
+                    // CPU passa il turno
+                    CPU.Turn = null;
+                    User.Turn = new Turn(TurnPhases.Attack);
+         }    
+
+
+
+
+        bool isWin(){
+            List<MapData> playersMaps = new List<MapData>(){
+                        new MapData {
+                            PlayerId = User.Name,
+                            Neighbors = User.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                            ),
+                            Tanks= User.Territories.ToDictionary(
+                                t => t.Key,
+                                t => t.Value.Tanks.Count
+                            )
+                        }
+            };
+        
+
+            string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
+
+            return winCheck(jsonData);
+        
+        }
+
+
+
+
+
+
+
+
+    }
 }
+
+
+

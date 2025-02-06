@@ -9,7 +9,7 @@
 #include <set>
 #include<algorithm>
 #include "json.hpp"  // Libreria JSON per C++
-#include "uniwar_lib.h"
+#include "uniwar_lib.hpp"
 
 
 using namespace std;

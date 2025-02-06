@@ -56,8 +56,8 @@ public class UniWarSystem { // singleton
         */
 
         // qui il sistema deve distribuire equamente i territori ai due giocatori
-        User = new Player();
-        Cpu = new Player();
+        User = new Player("UserPlayer");
+        Cpu = new Player("CpuPlayer");
 
         // recuperiamo tutti i territori
         List<Territory> allTerritories = [];
@@ -83,20 +83,22 @@ public class UniWarSystem { // singleton
         } while (colorForUser == colorForCpu);
            
         // per ogni territorio del'utente, associamo 3 carri armati 
-        foreach (Territory territory in User.Territories.Values)
-            territory.Tanks.AddRange([new Tank(colorForUser), new Tank(colorForUser), new Tank(colorForUser)]);
+        foreach (Territory territory in User.Territories.Values){
+            territory.addTanks(colorForUser,3);
+        }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
-        foreach (Territory territory in Cpu.Territories.Values)
-            territory.Tanks.AddRange([new Tank(colorForCpu), new Tank(colorForCpu), new Tank(colorForCpu)]);
-
+        foreach (Territory territory in Cpu.Territories.Values){
+            territory.addTanks(colorForCpu,3);
+        }
+            
         // obiettivo ai partecipanti
         User.Goal = _goals[0];
         Cpu.Goal = _goals[0];
 
         // Necessario per l'inserimento di nuovi carri armati
-        User.tankColor = colorForUser;
-        Cpu.tankColor = colorForCpu;
+        User.TankColor = colorForUser;
+        Cpu.TankColor = colorForCpu;
 
         // Turno
 
