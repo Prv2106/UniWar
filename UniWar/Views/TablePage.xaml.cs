@@ -51,6 +51,10 @@ namespace UniWar {
         BuildGraphics();
     }
     
+    public async void OpenNewModal(ContentPage page) {
+        await Task.Delay(500);
+        await Navigation.PushModalAsync(page);
+    }
 
 
     private void BuildGraphics() {
