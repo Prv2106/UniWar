@@ -102,3 +102,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.WinModal.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\WinModal.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\WinModal.xaml
+
+[C:/UniWar/UniWar/UniWar/Views/YesOrNotModal.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.YesOrNotModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\YesOrNotModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\YesOrNotModal.xaml
