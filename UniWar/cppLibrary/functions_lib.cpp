@@ -83,8 +83,6 @@ const char* cpuAttack (const char* jsonData){
             // Scorriamo la lista dei vicini del potenziale territorio attaccante
             for(const auto & neighborTerritory: cpuPlayer.getNeighbors(cpuTerritory)){
 
-              
-
                 // Se il territorio appartiene alla cpu lo saltiamo
                 if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
 
@@ -106,14 +104,10 @@ const char* cpuAttack (const char* jsonData){
                 int enemyTanksCount = enemy.getTanksCount(neighborTerritory);
                 int cpuTanksCount = cpuPlayer.getTanksCount(cpuTerritory);
                 
-                bool engagedBattle = false;
 
                 // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non soddisfa la condizione di attacco e dobbiamo passare al vicino successivo
-                while((enemyTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ // finché è soddisfatta la condizione di attacco continua ad attaccare lo stesso territorio (o fino a quando non lo ha conquistato)
-                    engagedBattle = true;
-
+                while((enemyTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4) && (battleResults.size() < 3 )){ 
                     clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " idoneo per essere attaccato ("<< enemyTanksCount << ") carri armati" << endl; // debug
-                    
                     clog << "Ciclo while di battaglia: carri CPU = " << cpuTanksCount << ", Carri giocatore = "<< enemyTanksCount << ", Conquered = " << conquered << endl; // debug
                     
                     /** INIZIO DELLA BATTAGLIA **/
@@ -223,13 +217,12 @@ const char* cpuAttack (const char* jsonData){
                     // Aggiungiamo il json della battaglia nel vettore di json (perché potrebbero essere ingaggiate anche più battaglie)
                     battleResults.push_back(battleJson);
 
-                    if(win){ // Se la cpu ha vinto restituiamo il risultato subito
+                    if(win || (battleResults.size() > 2)){ 
                         jsonResult = json(battleResults).dump();
                         return jsonResult.c_str();
                     }
 
-                    if(conquered){
-                        clog << "Siccome una conquista è stata fatta usciamo dal while della battaglia" << endl;
+                    if(conquered){ // Siccome una conquista è stata fatta usciamo dal while della battaglia
                         break;
                     }
 
