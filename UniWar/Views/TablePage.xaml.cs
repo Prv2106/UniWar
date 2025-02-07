@@ -484,8 +484,6 @@ namespace UniWar {
 
 
 
-
-
         private async Task CpuAttack(){
         
                     List<MapData> playersMaps = new List<MapData>(){
