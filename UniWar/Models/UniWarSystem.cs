@@ -90,7 +90,7 @@ public class UniWarSystem { // singleton
         
         // per ogni territorio della CPU, associamo 3 carri armati 
         foreach (Territory territory in Cpu.Territories.Values){
-            territory.AddTanks(colorForCpu,1);
+            territory.AddTanks(colorForCpu,3);
         }
             
         // obiettivo ai partecipanti
@@ -143,6 +143,7 @@ public class UniWarSystem { // singleton
 
     // OPERAZIONE DI SISTEMA UC6 --> attacco di un territorio da parte dell'utente
     // invocata dalla pagina "AttackableTerritoriesPage"
+    //TODO: questa va spostate in TablePage
     public (List<int>, List<int>, string result) AttackTerritory(string attackingTerritory, string attackedTerritory) {
         // come prima cosa, dobbiamo verificare se il territorio di partenza ha almeno 2 carri armati 
         Territory from = User!.Territories[attackingTerritory];

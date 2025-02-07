@@ -15,17 +15,17 @@
               <!-- Titolo -->
               <Image
                 Source="muscle.png"
-                WidthRequest="250"
+                WidthRequest="220"
                 />
               <!-- Testo che spiega all'utente che deve fare -->
               <Label Text="Rinforziamo l'armata!"
                      FontSize="25"
                      TextColor="#666"
                      HorizontalOptions="Center"
-                     Margin="0,5,0,10"/>
+                     Margin="0,35,0,10"/>
 
-             <Label Text="In base ai territori che possiede, hai la possibilità di aggiungere il seguente numero di carri armati, ad uno ad uno, sui territori che ritieni più opportuni:"
-                     FontSize="20"
+             <Label Text="In base ai territori che possiedi, hai la possibilità di aggiungere il seguente numero di carri armati, ad uno ad uno, sui territori che ritieni più opportuni:"
+                     FontSize="17.5"
                      TextColor="#666"
                      HorizontalOptions="Center"
                      Margin="0,5,0,0"/>
@@ -46,7 +46,7 @@
                      WidthRequest="100"
                      BackgroundColor="Green"
                      Clicked="OnConfirmButtonClicked"
-                     Margin="40"/>
+                     Margin="20"/>
                      
             </VerticalStackLayout>
             

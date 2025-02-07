@@ -65,11 +65,9 @@ namespace UniWar {
         // costruiamo la parte delle informazioni per l'utente sotto la mappa
         BuildUserInformation();
 
-        // pop-up da mostrare quando il turno passa dalla CPU all'utente
+        // gestiamo i turni
         HandleTurns();
     }
-
-
 
 
     public async void HandleTurns() {
@@ -98,6 +96,7 @@ namespace UniWar {
                     await Navigation.PushModalAsync(new NewUserReinforcementTurn(tanksToAdd));
                     break;
                 case TurnPhases.Attack:
+                    await Navigation.PushModalAsync(new NewUserTurn());
                     // 1. adattiamo la UI
                     // mostriamo il pulsante "attacca"
                     AttackButton.IsVisible = true;
@@ -187,6 +186,9 @@ namespace UniWar {
                         if (User.Turn!.NumTanksToAddInReinforcementPhase > 0) {
                             User.Territories[territoryName].AddTanks(User.TankColor, 1);
                             User.Turn!.NumTanksToAddInReinforcementPhase--;
+                            // aggiorniamo la mappa 
+                            DeployTanks();
+                            BuildUserInformation();
                         } else {
                             // sono finiti i carri armati da posizionare
                             User.Turn!.Phase = TurnPhases.Attack;

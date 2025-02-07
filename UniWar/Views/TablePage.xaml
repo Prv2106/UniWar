@@ -45,7 +45,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -73,7 +73,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -102,7 +102,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -131,7 +131,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -160,7 +160,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -189,7 +189,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -218,7 +218,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -247,7 +247,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -276,7 +276,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -305,7 +305,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -334,7 +334,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -363,7 +363,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -401,7 +401,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -430,7 +430,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -466,7 +466,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -495,7 +495,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -524,7 +524,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -553,7 +553,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -582,7 +582,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -611,7 +611,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -640,7 +640,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -669,7 +669,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -698,7 +698,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -727,7 +727,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -756,7 +756,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -785,7 +785,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -814,7 +814,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -843,7 +843,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -878,7 +878,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -907,7 +907,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -936,7 +936,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -965,7 +965,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -994,7 +994,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1023,7 +1023,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1052,7 +1052,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1081,7 +1081,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1110,7 +1110,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1139,7 +1139,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1168,7 +1168,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1197,7 +1197,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1226,7 +1226,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
@@ -1255,7 +1255,7 @@
                 HasShadow="True"/>
                 <Label Text="1"
                         TextColor="Black"
-                        FontSize="12"
+                        FontSize="10"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         HorizontalTextAlignment="Center"
