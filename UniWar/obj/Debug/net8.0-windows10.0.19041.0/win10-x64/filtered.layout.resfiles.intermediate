@@ -53,9 +53,12 @@ attack3.scale-100.png
 attack4.scale-100.png
 attack5.scale-100.png
 attack6.scale-100.png
+award.scale-100.png
 banner.scale-100.png
 black_tank.scale-100.png
 blue_tank.scale-100.png
+cannon.scale-100.png
+conquest.scale-100.png
 defend1.scale-100.png
 defend2.scale-100.png
 defend3.scale-100.png
@@ -64,12 +67,12 @@ defend5.scale-100.png
 defend6.scale-100.png
 dice.scale-100.png
 flag.scale-100.png
+game_over.scale-100.png
 goal.scale-100.png
 green_tank.scale-100.png
 info.scale-100.png
 mappa.scale-100.png
 muscle.scale-100.png
-purple_tank.scale-100.png
 red_tank.scale-100.png
 sad.scale-100.png
 shield.scale-100.png
@@ -77,9 +80,9 @@ shock.scale-100.png
 soldier.scale-100.png
 sponsor.scale-100.png
 white_flag.scale-100.png
+win.scale-100.png
 world_war.scale-100.png
 yellow_tank.scale-100.png
-your_turn.scale-100.png
 splashSplashScreen.scale-100.png
 splashSplashScreen.scale-125.png
 splashSplashScreen.scale-150.png

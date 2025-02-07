@@ -540,7 +540,7 @@ namespace UniWar {
 
                     // CPU passa il turno
                     CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Attack);
+                    User.Turn = new Turn(TurnPhases.Reinforcement);
          }    
 
 
