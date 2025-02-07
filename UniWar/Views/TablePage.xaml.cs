@@ -88,7 +88,7 @@ namespace UniWar {
             switch (User.Turn.Phase) {
                 case TurnPhases.Reinforcement:
                     // a livello di UI aggiungiamo il contatore dei numeri dei carri armati da poter aggiungere rimanenti
-                    //TODO:
+                    
                     // l'utente, al click su un territorio suo, può aggiungere un carro armato a quel territorio..
                     // una volta terminati i carri armati da posizionare, però, finisce la fase di rinforzo
                     int tanksToAdd = User.Territories.Count / 2;
