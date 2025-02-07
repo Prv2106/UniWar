@@ -49,6 +49,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.AttackableTer
 build_metadata.AdditionalFiles.TargetPath = Views\AttackableTerritoriesPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\AttackableTerritoriesPage.xaml
 
+[C:/UniWar/UniWar/UniWar/Views/ConqueredTerritoryModal.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ConqueredTerritoryModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\ConqueredTerritoryModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\ConqueredTerritoryModal.xaml
+
 [C:/UniWar/UniWar/UniWar/Views/GenericModal.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.GenericModal.xaml
@@ -67,17 +73,17 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.MainPage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\MainPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\MainPage.xaml
 
+[C:/UniWar/UniWar/UniWar/Views/NewUserAttackTurn.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.NewUserAttackTurn.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\NewUserAttackTurn.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\NewUserAttackTurn.xaml
+
 [C:/UniWar/UniWar/UniWar/Views/NewUserReinforcementTurn.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.NewUserReinforcementTurn.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\NewUserReinforcementTurn.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\NewUserReinforcementTurn.xaml
-
-[C:/UniWar/UniWar/UniWar/Views/NewUserTurn.xaml]
-build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.NewUserTurn.xaml
-build_metadata.AdditionalFiles.TargetPath = Views\NewUserTurn.xaml
-build_metadata.AdditionalFiles.RelativePath = Views\NewUserTurn.xaml
 
 [C:/UniWar/UniWar/UniWar/Views/ShowDiceResultPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
@@ -90,3 +96,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.TablePage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\TablePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\TablePage.xaml
+
+[C:/UniWar/UniWar/UniWar/Views/WinModal.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.WinModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\WinModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\WinModal.xaml

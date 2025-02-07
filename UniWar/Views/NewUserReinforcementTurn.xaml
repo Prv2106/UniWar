@@ -24,18 +24,11 @@
                      HorizontalOptions="Center"
                      Margin="0,35,0,10"/>
 
-             <Label Text="In base ai territori che possiedi, hai la possibilità di aggiungere il seguente numero di carri armati, ad uno ad uno, sui territori che ritieni più opportuni:"
+             <Label Text="Aggiungi i carri armati, ad uno ad uno, sui territori che ritieni più opportuni"
                      FontSize="17.5"
                      TextColor="#666"
                      HorizontalOptions="Center"
-                     Margin="0,5,0,0"/>
-
-             <Label x:Name="tanksNumber"
-                     FontSize="15"
-                     TextColor="#666"
-                     HorizontalOptions="Center"
-                     />
-                    
+                     Margin="0,5,0,0"/>                    
 
               <!-- Bottone -->
               <Button Text="Capito"

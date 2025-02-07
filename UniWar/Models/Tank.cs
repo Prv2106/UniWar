@@ -9,8 +9,6 @@ public class Tank {
         switch (TankColor) {
             case TankColors.Black:
                 return "black_tank.png";
-            case TankColors.Purple:
-                return "purple_tank.png";
             case TankColors.Yellow:
                 return "yellow_tank.png";
             case TankColors.Green:

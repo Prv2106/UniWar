@@ -1,8 +1,8 @@
 using System.Xml.XPath;
 
 namespace UniWar {
-    public partial class NewUserTurn : ContentPage {
-        public NewUserTurn() {
+    public partial class NewUserAttackTurn : ContentPage {
+        public NewUserAttackTurn() {
             InitializeComponent();
             
         }
