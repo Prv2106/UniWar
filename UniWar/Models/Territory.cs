@@ -26,6 +26,17 @@ public class Territory {
                 Tanks.Add(new Tank(tankColor));
             }
     }
+    public void RemoveTanks(int num = 1){
+            for(int i=0; i<num; ++i){
+                if(Tanks.Count > 0){
+                    Tanks.Remove(Tanks.Last());
+                }
+                else{
+                    break;
+                }
+            }
+    }
+
 
 
 
