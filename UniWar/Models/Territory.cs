@@ -19,12 +19,18 @@ public class Territory {
         return Name;
     }
 
+    public void AddTanks(int tankColor, int num = 1) {
+        for(int i=0; i<num; ++i) 
+            Tanks.Add(new Tank(tankColor));
+    }
 
-    
-    public void AddTanks(int tankColor, int num = 1){
-            for(int i=0; i<num; ++i){
-                Tanks.Add(new Tank(tankColor));
-            }
+    public void RemoveTanks(int num = 1){
+        for(int i=0; i<num; ++i) {
+            if (Tanks.Count > 0) 
+                Tanks.Remove(Tanks.Last());
+            else
+                break;
+        }
     }
     public void RemoveTanks(int num = 1){
             for(int i=0; i<num; ++i){
@@ -36,6 +42,7 @@ public class Territory {
                 }
             }
     }
+
 
 
 

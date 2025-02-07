@@ -1,7 +1,8 @@
 namespace UniWar {
     public partial class ShowDiceResultPage : ContentPage {
+        private TaskCompletionSource _tsc;
 
-        public ShowDiceResultPage(List<int> userDice, List<int> cpuDice, string result) {
+        public ShowDiceResultPage(List<int> userDice, List<int> cpuDice, string result, TaskCompletionSource tsc) {
             InitializeComponent();
 
             for (int i = 0; i < userDice.Count; i++) {
@@ -17,9 +18,12 @@ namespace UniWar {
             }
 
             WarningText.Text = result;
+
+            _tsc = tsc;
         }
 
         public async void OnConfirmButtonClicked(object sender, EventArgs args) {
+            _tsc.TrySetResult();
             await Navigation.PopModalAsync();
         }
     }

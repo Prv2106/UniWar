@@ -1314,6 +1314,7 @@
                         WidthRequest="40"
                         Margin="50,0,0,0"/>
                     <Label 
+                        x:Name="NumTerritories"
                         VerticalOptions="Center"
                         Margin="10"
                         Text="21"
@@ -1351,28 +1352,34 @@
 
             <!-- Pulsanti allineati a destra -->
             <VerticalStackLayout HorizontalOptions="End" Margin="20,0,0,0">
+
                  <!-- Contatore carri armati rimanenti in fase di rinforzo -->
-                <HorizontalStackLayout HorizontalOptions="Center">
+                 <VerticalStackLayout x:Name="tankReinforcementView"
+                    IsVisible ="False">
+                    <HorizontalStackLayout HorizontalOptions="Center">
                     <!-- Icona Carro armato rimanente -->
                         <Image x:Name="tankReinforcementIcon"
                             Source="green_tank.png"
                             Margin="0,0,0,-10"
-                        WidthRequest="55"/>
+                            WidthRequest="55"/>
                         <Image Source="add.png"
                             Margin ="-17,0,0,29"
                             WidthRequest="20"/>
-                </HorizontalStackLayout>
-                <!-- Doppia label per numero carri armanti rimanenti rinforzo -->
-                <Label x:Name="textTankReinforcement"
-                    HorizontalTextAlignment="Center"
-                    MaximumWidthRequest="140"
-                    FontSize="12"
-                    Text="Numero di carri armati ancora da posizionare: "/>
-                <Label x:Name="counterTankReinforcement"
-                    HorizontalOptions="Center"
-                    FontAttributes="Bold"
-                    Margin="0,0,0,-10"
-                    Text="10"/>
+                    </HorizontalStackLayout>
+                    <!-- Doppia label per numero carri armanti rimanenti rinforzo -->
+                    <Label 
+                        HorizontalTextAlignment="Center"
+                        MaximumWidthRequest="136"
+                        FontSize="11"
+                        Text="Numero di carri armati ancora da posizionare: "/>
+                    <Label x:Name="counterTankReinforcement"
+                        HorizontalOptions="Center"
+                        FontAttributes="Bold"
+                        Margin="0,0,0,-10"
+                        Text="10"/>
+                 </VerticalStackLayout>
+
+                
 
                 <Button x:Name="AttackButton"
                         TextColor="White"
