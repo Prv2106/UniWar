@@ -83,7 +83,7 @@ const char* cpuAttack (const char* jsonData){
             // Scorriamo la lista dei vicini del potenziale territorio attaccante
             for(const auto & neighborTerritory: cpuPlayer.getNeighbors(cpuTerritory)){
 
-                clog << "Valutazione del territorio da attaccare: " << neighborTerritory << endl; // debug
+              
 
                 // Se il territorio appartiene alla cpu lo saltiamo
                 if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
@@ -100,7 +100,7 @@ const char* cpuAttack (const char* jsonData){
 
                 uniwar::Player& enemy = *owner; // assegnamo il giocatore ad un tipo riferimento per semplificarne la gestione
 
-                clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " di proprietà di "<< enemy.getName() << endl; // debug
+        
 
                 // adesso dobbiamo verificare la condizione di attacco
                 int enemyTanksCount = enemy.getTanksCount(neighborTerritory);

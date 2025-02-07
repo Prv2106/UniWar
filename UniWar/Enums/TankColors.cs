@@ -1,8 +1,8 @@
 public enum TankColors {
-    Red = 1,
-    Green,
-    Yellow,
-    Black,
-    Purple,
-    Blue
+    Red = 0,
+    Green = 1,
+    Yellow = 2,
+    Black = 3,
+    Purple = 4,
+    Blue = 5
 }

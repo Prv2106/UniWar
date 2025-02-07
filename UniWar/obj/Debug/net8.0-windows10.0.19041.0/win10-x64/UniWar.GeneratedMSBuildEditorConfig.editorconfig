@@ -79,6 +79,24 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.NewUserTurn.x
 build_metadata.AdditionalFiles.TargetPath = Views\NewUserTurn.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\NewUserTurn.xaml
 
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/ShowCpuBattleTerritory.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ShowCpuBattleTerritory.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\ShowCpuBattleTerritory.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\ShowCpuBattleTerritory.xaml
+
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/ShowCpuDiceResultPage.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ShowCpuDiceResultPage.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\ShowCpuDiceResultPage.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\ShowCpuDiceResultPage.xaml
+
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/ShowDefenceResult.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ShowDefenceResult.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\ShowDefenceResult.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\ShowDefenceResult.xaml
+
 [C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/ShowDiceResultPage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ShowDiceResultPage.xaml
@@ -90,15 +108,3 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.TablePage.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\TablePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\TablePage.xaml
-
-[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Resources/Images/Uso di await in async_files/conversation-small-nranh1cg.css]
-build_metadata.AdditionalFiles.GenKind = Css
-build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Resources.Images.Uso_di_await_in_async_files.conversation-small-nranh1cg.css
-build_metadata.AdditionalFiles.TargetPath = Resources\Images\Uso di await in async_files\conversation-small-nranh1cg.css
-build_metadata.AdditionalFiles.RelativePath = Resources\Images\Uso di await in async_files\conversation-small-nranh1cg.css
-
-[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Resources/Images/Uso di await in async_files/root-i0wyxflg.css]
-build_metadata.AdditionalFiles.GenKind = Css
-build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Resources.Images.Uso_di_await_in_async_files.root-i0wyxflg.css
-build_metadata.AdditionalFiles.TargetPath = Resources\Images\Uso di await in async_files\root-i0wyxflg.css
-build_metadata.AdditionalFiles.RelativePath = Resources\Images\Uso di await in async_files\root-i0wyxflg.css

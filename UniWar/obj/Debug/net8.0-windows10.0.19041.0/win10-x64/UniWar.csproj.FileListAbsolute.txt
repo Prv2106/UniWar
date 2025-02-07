@@ -1040,3 +1040,15 @@ C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetiz
 C:\UniWar\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\info.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\muscle.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\muscle.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\add.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\add.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\world_war.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\world_war.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\white_flag.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\shield.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\sad.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\white_flag.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\shield.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\sad.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\shock.scale-100.png
+C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\shock.scale-100.png
