@@ -75,10 +75,10 @@ namespace UniWar {
         while(CPU.Turn != null) { // è il turno della CPU
             switch (CPU.Turn.Phase) {
                 case TurnPhases.Reinforcement:
-                    CpuReinforcement();   
+                    await CpuReinforcement();   
                     break;
                 case TurnPhases.Attack:
-                    CpuAttack();
+                    await CpuAttack();
                     break;
             }
         }
@@ -271,7 +271,7 @@ namespace UniWar {
         private async void ShowInformation(string text) {
             attackBanner.IsVisible = true;
             attackBanner.Text = text;
-            await Task.Delay(3500);
+            await Task.Delay(4000);
             attackBanner.IsVisible = false;
         }
 
@@ -410,7 +410,7 @@ namespace UniWar {
     [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern bool winCheck (string jsonData);   
 
-        void CpuReinforcement(){
+        private async Task CpuReinforcement(){
             Console.WriteLine("TURNO DELLA CPU");
             // Creazione della mappa da passare a C++
             List<MapData> playersMaps = new List<MapData> {
@@ -439,7 +439,7 @@ namespace UniWar {
             // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
             // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
             string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions { WriteIndented = true });
-            Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+            // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
 
             // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
             // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
@@ -476,6 +476,8 @@ namespace UniWar {
             }
 
             DeployTanks();
+            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ","Reinforcement",newTanks));
+            await Task.Delay(4000);
 
             CPU.Turn!.Phase = TurnPhases.Attack;
         }
@@ -484,7 +486,7 @@ namespace UniWar {
 
 
 
-        private void CpuAttack(){
+        private async Task CpuAttack(){
         
                     List<MapData> playersMaps = new List<MapData>(){
                         new MapData {
@@ -517,27 +519,28 @@ namespace UniWar {
 
 
                     string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
-                    Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+                    // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
                     IntPtr resultPtr = cpuAttack(jsonData);
                     string? resultJson = Marshal.PtrToStringUTF8(resultPtr);
 
                     if((resultJson == string.Empty) || resultJson == "[]"){
                         Console.WriteLine("La CPU ha deciso di non attaccare");
-                        OpenNewModal(new GenericModal("La CPU ha deciso di non attaccare"));
+                        await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack"));
+                        await Task.Delay(4000);
                     }
                     else{
                         List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
                         // Per il debug
-                        Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
+                        // Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
                         if(battleResults is not null){
-                            SimulateBattle(battleResults); 
+                            await SimulateBattle(battleResults); 
                         }
                        
                     }
 
                     // CPU passa il turno
                     CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Attack);
+                    User.Turn = new Turn(TurnPhases.Reinforcement);
          }    
 
 
@@ -568,7 +571,7 @@ namespace UniWar {
 
 
 
-        private void SimulateBattle(List<BattleResult> battleList){
+        private async Task SimulateBattle(List<BattleResult> battleList){
             
             foreach( var battle in battleList){
                 /*
@@ -580,47 +583,65 @@ namespace UniWar {
                     - num carri armati persi dall'utente
                     - num carri armati persi dalla cpu 
                 */
-
-
-                // TODO: 
-                // verificare per ogni territorio di User:
-                //  - se possiede ancora quel territorio e in caso affermativo se il numero di carri armati di tale territorio è rimasto o meno invariato
+                 bool territoryLoss = false;
+                 bool tankLoss = false;
 
                 foreach(var territory in User.Territories.Values){
-                    if(battle.DefendingTanksCountMap.ContainsKey(territory.Name)){
-                        int difference = battle.DefendingTanksCountMap[territory.Name] - territory.Tanks.Count;
-                        if(difference > 0){
-                            territory.AddTanks(User.TankColor, difference);
+                    if(battle.DefendingTanksCountMap.TryGetValue(territory.Name, out int value)) {
+                        int difference = value - territory.Tanks.Count;
+                        if(difference < 0){
+                            tankLoss = true;
+                            territory.RemoveTanks(-difference);
                         }
-                        else if(difference < 0){
-                            // TODO: Implementare metodo di Territory removeTanks(int num = 1)
-                        }
-                        /*
-                            // Scorriamo i territori della CPU e de il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati tanti carri armati quanti ne mancano
-                            foreach(var territory in updatedMap.Tanks){
-                                if(CPU.Territories.ContainsKey(territory.Key)){
-                                    // recuperiamo il territorio della cpu
-                                    var cpuTerritory = CPU.Territories[territory.Key];
-                                    int difference = territory.Value - cpuTerritory.Tanks.Count;
-                                    if(difference > 0)
-                                cpuTerritory.AddTanks(CPU.TankColor, difference);
-                        
-                        
-                        */
-
                     }
                     else{
+                        int difference = battle.AttackingTanksCountMap[territory.Name] - territory.Tanks.Count;
+                        if (difference > 0){
+                            territory.AddTanks(User.TankColor,difference);
+                        }
+                        else if(difference < 0){
+                            territory.RemoveTanks(-difference);
+                        }
+
+                        CPU.AddTerritory(territory);
                         User.RemoveTerritory(territory);
+                        territoryLoss = true;
+
                     }
                 }
 
-                // verificare per ogni territorio di CPU
-                // - se possiede lo stesso numero di carri armati di prima oppure no
+                foreach(var territory in CPU.Territories.Values){
+                    if(battle.AttackingTanksCountMap.TryGetValue(territory.Name,out int value)){
+                        int difference = value - territory.Tanks.Count;
+                        if(difference < 0){
+                            territory.RemoveTanks(-difference);
+                        }
+                    }
+                }
 
 
                 
+                await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory));
+                await Task.Delay(4000);
+
+                // Mostriamo il risultato del lancio dei dadi
+                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU));
+                await Task.Delay(5000);
+                await Navigation.PushModalAsync(new ShowDefenceResult(tankLoss, territoryLoss, battle.LossesPlayer));
+                await Task.Delay(3000);
+
+                // Aggiorniamo la mappa
+                DeployTanks();
+                BuildUserInformation();
+                await Task.Delay(1000);
 
             }
+
+            if(battleList.Last().Win){
+                // La CPU ha vinto
+                // TODO: 
+            }
+
         }
 
 
