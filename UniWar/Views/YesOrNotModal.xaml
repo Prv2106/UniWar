@@ -1,0 +1,63 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniWar.YesOrNotModal">
+
+        <!-- Material Card -->
+        <Frame Padding="25"
+               CornerRadius="12"
+               HasShadow="True"
+               BackgroundColor="White"
+               Margin="10"
+               VerticalOptions="Center">
+            
+            <VerticalStackLayout>
+              
+              <!-- Titolo -->
+              <Image
+                Source="question.png"
+                WidthRequest="220"
+                />
+              <!-- Testo che spiega all'utente che deve fare -->
+              <Label HorizontalTextAlignment="Center"
+                    Text="Prima di passare il turno, vuoi effettuare uno spostamento strategico?"
+                     FontSize="25"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     Margin="0,35,0,10"/>
+
+             <Label Text="N.B: Puoi effettuare un solo spostamento tra due tuoi territori confinanti"
+                     FontSize="17.5"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     Margin="0,5,0,0"/>                    
+
+              <HorizontalStackLayout HorizontalOptions="Center">
+                <!-- Bottoni SI o NO -->
+              <Button Text="SI"
+                     TextColor="White"
+                     CornerRadius="8"
+                     Padding="10"
+                     HorizontalOptions="Center"
+                     WidthRequest="100"
+                     BackgroundColor="Green"
+                     Clicked="OnYesButtonClicked"
+                     Margin="20"/>
+                 <Button Text="NO"
+                     TextColor="White"
+                     CornerRadius="8"
+                     Padding="10"
+                     HorizontalOptions="Center"
+                     WidthRequest="100"
+                     BackgroundColor="DarkRed"
+                     Clicked="OnNoButtonClicked"
+                     Margin="20"/>
+
+                     
+              </HorizontalStackLayout>
+              
+                     
+            </VerticalStackLayout>
+            
+        </Frame>
+
+</ContentPage>

@@ -1,13 +1,13 @@
 namespace UniWar
 {
-    public partial class ConqueredTerritoryModal : ContentPage
+    public partial class StrategicShiftModal : ContentPage
     {
         private int _selectedNumber = 1;
         private int _maxValue;
         private TaskCompletionSource<int> _tcs;
 
 
-        public ConqueredTerritoryModal(int maxValue, TaskCompletionSource<int> tcs) {
+        public StrategicShiftModal(int maxValue, TaskCompletionSource<int> tcs) {
             InitializeComponent();
             _maxValue = maxValue;
             _tcs = tcs;

@@ -2,7 +2,7 @@ using System.Xml.XPath;
 
 namespace UniWar {
     public partial class NewUserReinforcementTurn : ContentPage {
-        public NewUserReinforcementTurn(int numtanksToAdd) {
+        public NewUserReinforcementTurn() {
             InitializeComponent();
             
         }
