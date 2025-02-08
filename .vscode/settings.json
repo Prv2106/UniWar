@@ -1,0 +1,17 @@
+{
+    "C_Cpp.dimInactiveRegions": false,
+    "files.associations": {
+        "*.sqlbook": "sql",
+        "*.ndjson": "jsonl",
+        "*.dbclient-js": "javascript",
+        "vector": "cpp",
+        "map": "cpp",
+        "xstring": "cpp",
+        "iostream": "cpp",
+        "ostream": "cpp",
+        "xtree": "cpp",
+        "utility": "cpp",
+        "set": "cpp",
+        "chrono": "cpp"
+    }
+}

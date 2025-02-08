@@ -1,2 +1,11 @@
+*.json
+ 
 *.dll
-*.editorconfig
+ 
+*.exe
+ 
+*.cache
+ 
+**/UniWar.AssemblyInfo.cs
+ 
+*.pdb
