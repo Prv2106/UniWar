@@ -457,6 +457,8 @@ namespace UniWar {
             HandleTurns(); 
         } else {
             // passiamo il turno alla CPU
+            AttackButton.IsVisible = false;
+            PassButton.IsVisible = false;
             PassTurnToCpu();
         }
     }
