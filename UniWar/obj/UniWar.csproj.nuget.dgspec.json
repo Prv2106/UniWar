@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\UniWar.csproj": {}
+    "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj": {}
   },
   "projects": {
-    "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\UniWar.csproj": {
+    "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\UniWar.csproj",
+        "projectUniqueName": "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj",
         "projectName": "UniWar",
-        "projectPath": "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\UniWar.csproj",
-        "packagesPath": "C:\\Users\\provi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\provi\\Documents\\GitHub\\UniWar\\UniWar\\obj\\",
+        "projectPath": "C:\\UniWar\\UniWar\\UniWar\\UniWar.csproj",
+        "packagesPath": "C:\\Users\\giuse\\.nuget\\packages\\",
+        "outputPath": "C:\\UniWar\\UniWar\\UniWar\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\provi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\giuse\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -60,11 +60,11 @@
             },
             "Microsoft.Maui.Controls": {
               "target": "Package",
-              "version": "[8.0.82, )"
+              "version": "[8.0.100, )"
             },
             "Microsoft.Maui.Controls.Compatibility": {
               "target": "Package",
-              "version": "[8.0.82, )"
+              "version": "[8.0.100, )"
             },
             "Npgsql": {
               "target": "Package",

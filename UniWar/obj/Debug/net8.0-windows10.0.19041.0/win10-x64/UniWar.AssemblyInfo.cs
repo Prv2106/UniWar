@@ -17,7 +17,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UniWar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+f486e71e8ec098768e9b684aae520ec2201e9848")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+4f84e5ee118bd7f087811950afac720b6f8648f5")]
 [assembly: System.Reflection.AssemblyProductAttribute("UniWar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UniWar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

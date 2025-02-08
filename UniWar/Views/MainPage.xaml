@@ -1,0 +1,29 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniWar.MainPage"
+             Title=""
+             Padding="20">
+
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+
+        <Image Source="banner.png"
+            WidthRequest="800"
+            HeightRequest="130"
+            Aspect="AspectFit"/>
+
+        <Image Source="sponsor.png"
+            WidthRequest="700"
+            HeightRequest="380"
+            Aspect="AspectFit"
+            Margin="0,0,0,20"/>
+
+        <Button Text="Nuova partita"
+                Clicked="OnNuovaPartitaButtonClicked"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                HeightRequest="70"
+                WidthRequest="180"
+                FontSize="20"/>
+    </StackLayout>
+
+</ContentPage>
