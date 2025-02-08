@@ -606,7 +606,7 @@ namespace UniWar {
 
                     // CPU passa il turno
                     CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Attack);
+                    User.Turn = new Turn(TurnPhases.Reinforcement);
          }    
 
 
@@ -650,13 +650,12 @@ namespace UniWar {
                     - num carri armati persi dalla cpu 
                 */
                  bool territoryLoss = false;
-                 bool tankLoss = false;
+            
 
                 foreach(var territory in User.Territories.Values){
                     if(battle.DefendingTanksCountMap.TryGetValue(territory.Name, out int value)) {
                         int difference = value - territory.Tanks.Count;
                         if(difference < 0){
-                            tankLoss = true;
                             territory.RemoveTanks(-difference);
                         }
                     }
@@ -691,15 +690,18 @@ namespace UniWar {
                 await Task.Delay(4000);
 
                 // Mostriamo il risultato del lancio dei dadi
-                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU));
-                await Task.Delay(5000);
-                await Navigation.PushModalAsync(new ShowDefenceResult(tankLoss, territoryLoss, battle.LossesPlayer));
+                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer));
+                if(territoryLoss){
+                    await Task.Delay(5000);
+                    await Navigation.PushModalAsync(new ShowDefenceResult());
+                }
+                    
                 await Task.Delay(3000);
 
                 // Aggiorniamo la mappa
                 DeployTanks();
                 BuildUserInformation();
-                await Task.Delay(1000);
+                await Task.Delay(2000);
 
             }
 
