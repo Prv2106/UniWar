@@ -277,6 +277,7 @@ namespace UniWar {
                          break;
 
                     case TurnPhases.StrategicShift:
+                        UserWantsToAttack = false;
                         // l'utente vuole spostare i carri armati DA questo territorio cliccato, quindi,
                         // come primissima cosa, dobbiamo capire se il territorio possiede più di un carro armato
                         if (numTanksinTerritory > 1) {
@@ -453,16 +454,17 @@ namespace UniWar {
             // passiamo alla terza ed ultima fase del turno
             User.Turn!.Phase=TurnPhases.StrategicShift;
             ShowInformation("Fai click sul territorio DA cui vuoi spostare i carri armati");
+            HandleTurns(); 
         } else {
             // passiamo il turno alla CPU
             PassTurnToCpu();
         }
-        HandleTurns(); 
     }
 
     private void PassTurnToCpu() {
         User.Turn = null;
         CPU.Turn = new Turn(TurnPhases.Reinforcement);
+        HandleTurns();
     }
         
         
