@@ -1344,6 +1344,7 @@
             </VerticalStackLayout>
             
             <BoxView WidthRequest="45" 
+                HorizontalOptions="FillAndExpand" 
                 BackgroundColor="White"
             />
 

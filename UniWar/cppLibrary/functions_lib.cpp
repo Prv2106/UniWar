@@ -217,7 +217,7 @@ const char* cpuAttack (const char* jsonData){
                     // Aggiungiamo il json della battaglia nel vettore di json (perché potrebbero essere ingaggiate anche più battaglie)
                     battleResults.push_back(battleJson);
 
-                    if(win || (battleResults.size() > 2)){ 
+                    if(win || (battleResults.size() > 1)){ 
                         jsonResult = json(battleResults).dump();
                         return jsonResult.c_str();
                     }

@@ -43,12 +43,6 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Resources.Styles.St
 build_metadata.AdditionalFiles.TargetPath = Resources\Styles\Styles.xaml
 build_metadata.AdditionalFiles.RelativePath = Resources\Styles\Styles.xaml
 
-[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/AttackableTerritoriesPage.xaml]
-build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.AttackableTerritoriesPage.xaml
-build_metadata.AdditionalFiles.TargetPath = Views\AttackableTerritoriesPage.xaml
-build_metadata.AdditionalFiles.RelativePath = Views\AttackableTerritoriesPage.xaml
-
 [C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/ConqueredTerritoryModal.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ConqueredTerritoryModal.xaml
@@ -85,6 +79,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.NewUserReinfo
 build_metadata.AdditionalFiles.TargetPath = Views\NewUserReinforcementTurn.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\NewUserReinforcementTurn.xaml
 
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/SelectableTerritories.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.SelectableTerritories.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\SelectableTerritories.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\SelectableTerritories.xaml
+
 [C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/ShowCpuBattleTerritory.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ShowCpuBattleTerritory.xaml
@@ -109,6 +109,12 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.ShowDiceResul
 build_metadata.AdditionalFiles.TargetPath = Views\ShowDiceResultPage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\ShowDiceResultPage.xaml
 
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/StrategicShiftModal.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.StrategicShiftModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\StrategicShiftModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\StrategicShiftModal.xaml
+
 [C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/TablePage.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.TablePage.xaml
@@ -120,3 +126,9 @@ build_metadata.AdditionalFiles.GenKind = Xaml
 build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.WinModal.xaml
 build_metadata.AdditionalFiles.TargetPath = Views\WinModal.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\WinModal.xaml
+
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/YesOrNotModal.xaml]
+build_metadata.AdditionalFiles.GenKind = Xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.YesOrNotModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\YesOrNotModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\YesOrNotModal.xaml

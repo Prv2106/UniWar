@@ -1,6 +1,3 @@
-using Microsoft.Maui.Controls;
-using System;
-
 namespace UniWar
 {
     public partial class ConqueredTerritoryModal : ContentPage
@@ -8,6 +5,7 @@ namespace UniWar
         private int _selectedNumber = 1;
         private int _maxValue;
         private TaskCompletionSource<int> _tcs;
+
 
         public ConqueredTerritoryModal(int maxValue, TaskCompletionSource<int> tcs) {
             InitializeComponent();

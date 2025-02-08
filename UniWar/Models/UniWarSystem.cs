@@ -83,7 +83,7 @@ public class UniWarSystem { // singleton
            
         // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in User.Territories.Values){
-            territory.AddTanks(colorForUser,3);
+            territory.AddTanks(colorForUser,2);
         }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
@@ -121,21 +121,36 @@ public class UniWarSystem { // singleton
         /*
             Dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'avversario.
         */
-
         List<Territory> attackableNeighboringTerritories = [];
         attackableNeighboringTerritories.AddRange(_territories[territoryName].NeighboringTerritories);
         // dobbiamo restituire quelli che non appartengono all'utente
         
-        if (User != null) {
-            attackableNeighboringTerritories.RemoveAll(territory => User.Territories.ContainsValue(territory));
-        }
+        attackableNeighboringTerritories.RemoveAll(territory => User!.Territories.ContainsValue(territory));
         
         List<string> attackableNeighboringTerritoriesNames = [];
-        foreach (var item in attackableNeighboringTerritories) {
+        foreach (Territory item in attackableNeighboringTerritories) 
             attackableNeighboringTerritoriesNames.Add(item.Name);
-        }
-
+        
         return attackableNeighboringTerritoriesNames;
+    }
+
+    // Mostra elenco territori confinanti "amici"
+    // invocata dalla pagina "TablePage"
+    public List<string> UserNeighboringTerritories(string territoryName) {
+        /*
+            Dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'utente stesso.
+        */
+        List<Territory> userNeighboringTerritories = [];
+        userNeighboringTerritories.AddRange(_territories[territoryName].NeighboringTerritories);
+        // dobbiamo restituire quelli che appartengono all'utente; in altri termini
+        // rimuoviamo quelli appartenenti alla CPU
+        userNeighboringTerritories.RemoveAll(territory => Cpu!.Territories.ContainsValue(territory));
+        
+        List<string> userNeighboringTerritoriesNames = [];
+        foreach (Territory item in userNeighboringTerritories) {
+            userNeighboringTerritoriesNames.Add(item.Name);
+        }
+        return userNeighboringTerritoriesNames;
     }
 
 

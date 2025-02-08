@@ -23,7 +23,7 @@ namespace UniWar {
         }
 
         public async void OnConfirmButtonClicked(object sender, EventArgs args) {
-            _tsc.TrySetResult();
+            _tsc.SetResult();
             await Navigation.PopModalAsync();
         }
     }

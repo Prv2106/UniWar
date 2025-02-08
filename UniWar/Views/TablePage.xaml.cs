@@ -71,7 +71,13 @@ namespace UniWar {
 
 
     public async void HandleTurns() {
-        await Task.Delay(1000);
+        /*
+            Questo è metodo che gestisce i "pop-up" da mostrare
+            sulla base delle fasi dei turni e regola gli elementi
+            grafici di supporto ad ogni fase
+        */
+        await Task.Delay(500);
+
         while(CPU.Turn != null) { // è il turno della CPU
             switch (CPU.Turn.Phase) {
                 case TurnPhases.Reinforcement:
@@ -93,14 +99,14 @@ namespace UniWar {
                     int tanksToAdd = User.Territories.Count / 2;
                     User.Turn!.NumTanksToAddInReinforcementPhase = tanksToAdd;
                     ShowOrHideReinforcementView();
-                    await Navigation.PushModalAsync(new NewUserReinforcementTurn(tanksToAdd));
+                    await Navigation.PushModalAsync(new NewUserReinforcementTurn());
                     break;
                 case TurnPhases.Attack:
                     ShowOrdHideAttackView();
                     await Navigation.PushModalAsync(new NewUserAttackTurn());
                     break;
                 case TurnPhases.StrategicShift:
-                    // TODO:
+                    ShowOrdHideAttackView();
                     break;
             }
         } 
@@ -206,13 +212,28 @@ namespace UniWar {
         }
     }
 
+        private async void ShowNameOfTerritory(string territoryName) {
+            // mostriamo semplicemente il nome del territorio
+            // perchè potrebbe essere nascosto dal carro armato
+            tooltipLabel.Text = territoryName;  
+            tooltipLabel.IsVisible = true;      
+            await Task.Delay(2500);
+            tooltipLabel.IsVisible = false; 
+        }
+
         private async void OnTerritoryClicked(object sender, EventArgs e) {
             // recuperiamo il metadato (nome) associato al territorio cliccato
             var button = sender as Button;
             var territoryNameWithSpaces = button!.ClassId;
             string territoryName = territoryNameWithSpaces!.RemoveSpaces();
+            // come prima cosa ne mostriamo il nome in una label apposita
+            ShowNameOfTerritory(territoryNameWithSpaces);
+            // dopodichè, SOLO se il territorio è dell'utente, facciamo diverse cose....
             if (button.CommandParameter!=null) {
                 // l'utente sta interagendo coi suoi territori
+                Territory from = User!.Territories[territoryName];
+                int numTanksinTerritory = from.Tanks.Count;
+                TaskCompletionSource<string> discoverUserChoose;
                 switch (User.Turn!.Phase) {
                     case TurnPhases.Reinforcement:
                         // se clicchiamo su un territorio in questa fase, vogliamo aggiungere un carro armato!
@@ -234,36 +255,65 @@ namespace UniWar {
                     case TurnPhases.Attack when UserWantsToAttack:
                         PassButton.Text = "FINE";
                         // l'utente ha prima fatto "click" su ATTACCA
-                        // allora l'utente può attaccare da questo territorio
-                        // ci serve l'elenco dei territori attaccabili sulla base dei territori confinanti!
-                        List<string> neighboringTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName);
-                        if (neighboringTerritories.Count > 0) 
-                            // mostriamo la modale dove l'utente clicca il territorio da attaccare
-                            await Navigation.PushModalAsync(new AttackableTerritoriesPage(neighboringTerritories, territoryName));
-                        else // l'utente deve selezionare un altro territorio
-                            ShowInformation("I territori confinanti appartengono tutti a te, scegli un altro territorio..");
-                        break;
-
-                    case TurnPhases.Attack when !UserWantsToAttack:
-                        // l'utente non ha ancora indicato esplicitamente di voler attaccare ...
-                        // mostriamo semplicemente il nome del territorio
-                        // perchè potrebbe essere nascosto dal carro armato
-                        tooltipLabel.Text = territoryName;  
-                        tooltipLabel.IsVisible = true;      
-                        await Task.Delay(2500);
-                        tooltipLabel.IsVisible = false; 
-                        break;
+                        // allora l'utente può attaccare da questo territorio...
+                        // 1. come prima cosa, dobbiamo verificare se il territorio di partenza ha almeno 2 carri armati 
+                        if (numTanksinTerritory > 1) {
+                            // Si può procedere con l'attacco
+                            // ci serve l'elenco dei territori attaccabili sulla base dei territori confinanti!
+                            List<string> attackableTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName);
+                            if (attackableTerritories.Count > 0) {
+                                // mostriamo la modale dove l'utente clicca il territorio da attaccare
+                                discoverUserChoose = new TaskCompletionSource<string>();
+                                await Navigation.PushModalAsync(new SelectableTerritories(attackableTerritories, discoverUserChoose));
+                                string attackedTerritoryChoosen = await discoverUserChoose.Task;
+                                await Task.Delay(400); // aspettiamo che si chiude la modale
+                                // invochiamo la funzione di attacco passando territorio partenza e destinazione
+                                AttackTerritory(territoryName, attackedTerritoryChoosen);
+                            }
+                            else // l'utente deve selezionare un altro territorio
+                                ShowInformation("I territori confinanti appartengono tutti a te, scegli un altro territorio..");
+                        } else 
+                            ShowInformation("Questo territorio ha solo 1 carro armato!");
+                         break;
 
                     case TurnPhases.StrategicShift:
-                        break;
-
-                    default:
+                        UserWantsToAttack = false;
+                        // l'utente vuole spostare i carri armati DA questo territorio cliccato, quindi,
+                        // come primissima cosa, dobbiamo capire se il territorio possiede più di un carro armato
+                        if (numTanksinTerritory > 1) {
+                            //  restituiamo una lista di territori confinanti che lui possiede
+                            List<string> neighboringTerritories = UniWarSystem.Instance.UserNeighboringTerritories(territoryName);
+                            if (neighboringTerritories.Count > 0) {
+                                // mostriamo la modale dove l'utente clicca il territorio verso cui spostare i carri armati
+                                discoverUserChoose = new TaskCompletionSource<string>();
+                                await Navigation.PushModalAsync(new SelectableTerritories(neighboringTerritories, discoverUserChoose));
+                                string selectedTerritory = await discoverUserChoose.Task;
+                                await Task.Delay(400);
+                                // apriamo la modale dove facciamo scegliere all'utente il numero di carri armati da spostare
+                                var discoverTanksNumber = new TaskCompletionSource<int>();
+                                await Navigation.PushModalAsync(new StrategicShiftModal(numTanksinTerritory - 1, discoverTanksNumber));
+                                int tanksToMove = await discoverTanksNumber.Task;
+                                await Task.Delay(400);
+                                // adesso invochiamo la funzione che si occupa di effettuare le modifiche ai territori
+                                MoveTanks(territoryName, selectedTerritory, tanksToMove);
+                                // fine dello spostamento strategico
+                                PassTurnToCpu();
+                            } else // i territori confinanti sono tutti nemici
+                            ShowInformation("I territori confinanti non appartengono a te, scegli un altro territorio..");
+                        }
                         
                         break;
+                        
+
+                        
+
+                    default:
+                        break;
                 }
-            } else {
-                // l'utente ha selezionato un territorio avversario 
-                ShowInformation("Devi selezionare un territorio che appartiene a te!");
+            } else { // l'utente ha selezionato un territorio avversario 
+                TurnPhases phase = User.Turn!.Phase;
+                if (UserWantsToAttack || phase == TurnPhases.Reinforcement || phase == TurnPhases.StrategicShift) 
+                    ShowInformation("Devi selezionare un territorio che appartiene a te!");
             }
         }
         
@@ -293,52 +343,59 @@ namespace UniWar {
             }
         }
 
+    // spostamento di un tot di carri amrati da un territorio all'altro
+    public async void MoveTanks(string territoryFrom, string territoryTo, int numOfTanksToMove) {
+        await Task.Delay(200);
+        Territory from = User!.Territories[territoryFrom];
+        Territory to = User!.Territories[territoryTo];
+        from.RemoveTanks(numOfTanksToMove);
+        to.AddTanks(User.TankColor, numOfTanksToMove);
+        // aggiorniamo la UI (solo la mappa)
+        DeployTanks();
+    }
+
     // Attacco di un territorio da parte dell'utente
     // invocata dalla pagina "AttackableTerritoriesPage"
     public async void AttackTerritory(string attackingTerritory, string attackedTerritory) {
         await Task.Delay(200);
-        // come prima cosa, dobbiamo verificare se il territorio di partenza ha almeno 2 carri armati 
         Territory from = User!.Territories[attackingTerritory];
         int numTanksAttacker = from.Tanks.Count;
-        if (numTanksAttacker > 1) { // possiamo procedere con l'attacco... 
-            Territory to = CPU!.Territories[attackedTerritory];
-            int numTanksDefender = to.Tanks.Count;
-            List<int> userDice;
-            List<int> cpuDice;
-            // lanciamo i dadi
-            RollTheDice(out userDice, out cpuDice, numTanksAttacker, numTanksDefender);
-            string result = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
-            var userClosedTheModal = new TaskCompletionSource();
-            await Navigation.PushModalAsync(new ShowDiceResultPage(userDice, cpuDice, result, userClosedTheModal));
-            // aspettiamo che l'utente chiude la modale
-            await userClosedTheModal.Task; // questo, nella modale, avviene prima della .Pop()
+        Territory to = CPU!.Territories[attackedTerritory];
+        int numTanksDefender = to.Tanks.Count;
+        List<int> userDice;
+        List<int> cpuDice;
+        // lanciamo i dadi
+        RollTheDice(out userDice, out cpuDice, numTanksAttacker, numTanksDefender);
+        string result = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
+        var userClosedTheModal = new TaskCompletionSource();
+        await Navigation.PushModalAsync(new ShowDiceResultPage(userDice, cpuDice, result, userClosedTheModal));
+        // aspettiamo che l'utente chiude la modale
+        await userClosedTheModal.Task; // questo, nella modale, avviene prima della .Pop()
+        await Task.Delay(100); // aspettiamo che si chiude la modale
+        // Aggiorniamo la UI
+        DeployTanks();
+        UpdateUserCounters();
+        // Dopo un attacco, verifichiamo se il territorio avversario è stato conquistato 
+        if (to.Tanks.Count == 0) {
+            // allora l'utente ha conquistato il territorio della cpu
+            CPU!.Territories.Remove(attackedTerritory);
+            User!.Territories.Add(attackedTerritory, to);
+            // adesso l'utente deve spostare i carri armati
+            var tcs = new TaskCompletionSource<int>();
+            await Navigation.PushModalAsync(new ConqueredTerritoryModal(maxValue: from.Tanks.Count - 1, tcs));
+            int numberSelected = await tcs.Task; // Aspetta il risultato
             await Task.Delay(100); // aspettiamo che si chiude la modale
-            // Aggiorniamo la UI
+            from.RemoveTanks(numberSelected);
+            to.AddTanks(User!.TankColor, numberSelected);
+            // Aggiorniamo nuovamente la UI
             DeployTanks();
             UpdateUserCounters();
-            // Dopo un attacco, verifichiamo se il territorio avversario è stato conquistato 
-            if (to.Tanks.Count == 0) {
-                // allora l'utente ha conquistato il territorio della cpu
-                CPU!.Territories.Remove(attackedTerritory);
-                User!.Territories.Add(attackedTerritory, to);
-                // adesso l'utente deve spostare i carri armati
-                var tcs = new TaskCompletionSource<int>();
-                await Navigation.PushModalAsync(new ConqueredTerritoryModal(maxValue: from.Tanks.Count - 1, tcs));
-                int numberSelected = await tcs.Task; // Aspetta il risultato
-                await Task.Delay(100); // aspettiamo che si chiude la modale
-                from.RemoveTanks(numberSelected);
-                to.AddTanks(User!.TankColor, numberSelected);
-                // Aggiorniamo nuovamente la UI
-                DeployTanks();
-                UpdateUserCounters();
-                // verifichiamo se con questo territorio in più l'utente ha vinto:
-                if (IsWin()) {
-                    await Navigation.PushModalAsync(new WinModal());
-                }
+            // verifichiamo se con questo territorio in più l'utente ha vinto:
+            if (IsWin()) {
+                await Navigation.PushModalAsync(new WinModal());
             }
-        } else { // l'utente ha solo un carro armato
-            throw new Exception("Non puoi attaccare un territorio da uno in cui hai un solo carro armato!");
         }
+
     }
 
     
@@ -386,17 +443,28 @@ namespace UniWar {
 
     // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu
     // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
-    private async void OnPassButtonClicked(object sender, EventArgs e) {
-        // Fine del turno dell'utente
-        User.Turn = null;
-        ShowOrdHideAttackView();
+    private async void OnPassButtonClicked(object sender, EventArgs e) {        
         await Task.Delay(500);
-        //  TODO: chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
-        
+        // chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
+        var discoverUserChoose = new TaskCompletionSource<bool>();
+        await Navigation.PushModalAsync(new YesOrNotModal(discoverUserChoose));
+        bool choose = await discoverUserChoose.Task;
+        await Task.Delay(400); // aspettiamo che si chiuda la modale
+        if (choose == true) {
+            // passiamo alla terza ed ultima fase del turno
+            User.Turn!.Phase=TurnPhases.StrategicShift;
+            ShowInformation("Fai click sul territorio DA cui vuoi spostare i carri armati");
+            HandleTurns(); 
+        } else {
+            // passiamo il turno alla CPU
+            PassTurnToCpu();
+        }
+    }
 
+    private void PassTurnToCpu() {
+        User.Turn = null;
         CPU.Turn = new Turn(TurnPhases.Reinforcement);
-
-        HandleTurns(); // Adesso è il turno della CPU
+        HandleTurns();
     }
         
         
@@ -538,7 +606,7 @@ namespace UniWar {
 
                     // CPU passa il turno
                     CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Reinforcement);
+                    User.Turn = new Turn(TurnPhases.Attack);
          }    
 
 
