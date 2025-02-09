@@ -1,7 +1,7 @@
 namespace UniWar {
     public partial class ShowCpuDiceResultPage : ContentPage {
-
-        public ShowCpuDiceResultPage(List<int> userDice, List<int> cpuDice, int CpuLosses, int PlayerLosses) {
+        private TaskCompletionSource _tcs;
+        public ShowCpuDiceResultPage(List<int> userDice, List<int> cpuDice, int CpuLosses, int PlayerLosses, TaskCompletionSource tcs) {
             InitializeComponent();
 
             for (int i = 0; i < userDice.Count; i++) {
@@ -37,16 +37,17 @@ namespace UniWar {
 
 
             }
+
+            _tcs = tcs;
               
 
             }
 
-        protected override async void OnAppearing() {
-            base.OnAppearing();
-            await Task.Delay(4000); 
-            await Navigation.PopModalAsync();   
-         
+         public async void OnConfirmButtonClicked(object sender, EventArgs args) {
+            _tcs.SetResult();
+            await Navigation.PopModalAsync();
         }
+
 
     }
 }

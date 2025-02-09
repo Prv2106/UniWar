@@ -3,6 +3,7 @@
   <PropertyGroup>
     <!-- Supporto solo per Windows -->
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <WindowsPackageType>None</WindowsPackageType>
 
     <OutputType>Exe</OutputType>
     <RootNamespace>UniWar</RootNamespace>
@@ -42,6 +43,21 @@
     <!-- Raw Assets -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
+
+
+
+
+  <ItemGroup>
+    <Content Include="cppLibrary\functions_lib.dll">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+
+
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />

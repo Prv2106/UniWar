@@ -28,6 +28,9 @@ namespace UniWar {
     private Player CPU {get; set;}
     private string IconSrcUser {get;} // percorso icona carro armato col colore 
     private string IconSrcCpu {get;}
+
+    public bool CpuWin {get; set;}
+
     private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
 
     public static TablePage Instance {
@@ -76,7 +79,7 @@ namespace UniWar {
             sulla base delle fasi dei turni e regola gli elementi
             grafici di supporto ad ogni fase
         */
-        await Task.Delay(500);
+        // await Task.Delay(500);
 
         while(CPU.Turn != null) { // è il turno della CPU
             switch (CPU.Turn.Phase) {
@@ -392,7 +395,7 @@ namespace UniWar {
             UpdateUserCounters();
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
-                await Navigation.PushModalAsync(new WinModal());
+                await Navigation.PushModalAsync(new WinOrLoseModal(true));
             }
         }
 
@@ -481,6 +484,7 @@ namespace UniWar {
     public static extern bool winCheck (string jsonData);   
 
         private async Task CpuReinforcement(){
+            TaskCompletionSource tcs;
             Console.WriteLine("TURNO DELLA CPU");
             // Creazione della mappa da passare a C++
             List<MapData> playersMaps = new List<MapData> {
@@ -546,8 +550,11 @@ namespace UniWar {
             }
 
             DeployTanks();
-            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ","Reinforcement",newTanks));
-            await Task.Delay(4000);
+            tcs = new TaskCompletionSource();
+            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ","Reinforcement",tcs,newTanks));
+            await tcs.Task; // aspetta che facciamo setResult()
+            await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+                                
 
             CPU.Turn!.Phase = TurnPhases.Attack;
         }
@@ -555,7 +562,8 @@ namespace UniWar {
 
 
         private async Task CpuAttack(){
-        
+                    TaskCompletionSource tcs;
+
                     List<MapData> playersMaps = new List<MapData>(){
                         new MapData {
                             PlayerId = CPU.Name,
@@ -593,8 +601,10 @@ namespace UniWar {
 
                     if((resultJson == string.Empty) || resultJson == "[]"){
                         Console.WriteLine("La CPU ha deciso di non attaccare");
-                        await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack"));
-                        await Task.Delay(4000);
+                        tcs = new TaskCompletionSource();
+                        await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
+                        await tcs.Task; // aspetta che facciamo setResult()
+                        await Task.Delay(400); // per dare il tempo alla modale di chiudersi
                     }
                     else{
                         List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
@@ -608,7 +618,8 @@ namespace UniWar {
 
                     // CPU passa il turno
                     CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Reinforcement);
+                    if(CpuWin == false)
+                        User.Turn = new Turn(TurnPhases.Reinforcement);
          }    
 
 
@@ -640,6 +651,8 @@ namespace UniWar {
 
 
         private async Task SimulateBattle(List<BattleResult> battleList){
+            TaskCompletionSource tcs;
+            Territory? lostTerritory = null;
             
             foreach( var battle in battleList){
                 /*
@@ -672,6 +685,7 @@ namespace UniWar {
 
                         CPU.AddTerritory(territory);
                         User.RemoveTerritory(territory);
+                        lostTerritory = territory;
                         territoryLoss = true;
 
                     }
@@ -687,30 +701,41 @@ namespace UniWar {
                 }
 
 
-                
-                await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory));
-                await Task.Delay(4000);
+                tcs = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
 
+
+                tcs = new TaskCompletionSource();
                 // Mostriamo il risultato del lancio dei dadi
-                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer));
+                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer, tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+
                 if(territoryLoss){
-                    await Task.Delay(5000);
-                    await Navigation.PushModalAsync(new ShowDefenceResult());
+                    tcs = new TaskCompletionSource();
+                    await Navigation.PushModalAsync(new ShowDefenceResult(tcs, lostTerritory!.Name));
+                    await tcs.Task; // aspetta che facciamo setResult()
+                    await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+
                 }
                     
-                await Task.Delay(3000);
+      
 
                 // Aggiorniamo la mappa
                 DeployTanks();
                 BuildUserInformation();
-                await Task.Delay(2000);
 
+                if(battleList.Last().Win){
+                    await Navigation.PushModalAsync(new WinOrLoseModal(false));
+                    CpuWin = true;
+                    break;
+                }
+            
             }
 
-            if(battleList.Last().Win){
-                // La CPU ha vinto
-                // TODO: 
-            }
+            
 
         }
 

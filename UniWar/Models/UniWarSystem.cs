@@ -83,12 +83,12 @@ public class UniWarSystem { // singleton
            
         // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in User.Territories.Values){
-            territory.AddTanks(colorForUser,2);
+            territory.AddTanks(colorForUser,1);
         }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
         foreach (Territory territory in Cpu.Territories.Values){
-            territory.AddTanks(colorForCpu,3);
+            territory.AddTanks(colorForCpu,20);
         }
             
         // obiettivo ai partecipanti
@@ -100,18 +100,13 @@ public class UniWarSystem { // singleton
         Cpu.TankColor = colorForCpu;
 
 
-        // TODO: implementare la casualità del turno (Lo facciamo solo dopo che si vede che funziona tutto)
-
-        /*
+       
         if (gen.Next(2)==0) 
-            user.Turn = new Turn(TurnPhases.Attack);
+            User.Turn = new Turn(TurnPhases.Reinforcement);
         else 
-            cpu.Turn = new Turn(TurnPhases.Attack);
-        */
+            Cpu.Turn = new Turn(TurnPhases.Reinforcement);
 
-        User.Turn = new Turn(TurnPhases.Reinforcement);
-        CurrentTurn = User.Turn;
-        CurrentTurn.currentPlayer = User;
+     
     }
 
 

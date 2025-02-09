@@ -1,8 +1,8 @@
 namespace UniWar{
     public partial class GenericModal: ContentPage{
+            private TaskCompletionSource _tcs;
 
-
-            public GenericModal(string text, string info ,int numTanks= 1) {
+            public GenericModal(string text, string info ,TaskCompletionSource tcs,int numTanks= 1) {
                 InitializeComponent();
 
                 if(info == "NoAttack"){
@@ -19,19 +19,18 @@ namespace UniWar{
 
                 textInfo.Text = text;
                 
-               
+               _tcs = tcs;
 
 
 
             }
 
             
-        protected override async void OnAppearing() {
-            base.OnAppearing();
-            await Task.Delay(3000); 
-            await Navigation.PopModalAsync();   
-         
+        public async void OnConfirmButtonClicked(object sender, EventArgs args) {
+            _tcs.SetResult();
+            await Navigation.PopModalAsync();
         }
+
 
     }
 

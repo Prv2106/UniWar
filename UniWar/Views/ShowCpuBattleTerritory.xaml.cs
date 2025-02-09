@@ -1,20 +1,19 @@
 namespace UniWar {
     public partial class ShowCpuBattleTerritory: ContentPage{
-        public ShowCpuBattleTerritory(string cpuTerritory, string playerTerritory){
+        private TaskCompletionSource _tcs;
+        public ShowCpuBattleTerritory(string cpuTerritory, string playerTerritory, TaskCompletionSource tcs) {
             InitializeComponent();
 
-            this.cpuTerritory.Text = cpuTerritory;
-            this.playerTerritory.Text = playerTerritory;
+            this.cpuTerritory.Text = cpuTerritory.AddSpaces();
+            this.playerTerritory.Text = playerTerritory.AddSpaces();
 
-
+            _tcs = tcs;
         }
 
 
-        protected override async void OnAppearing() {
-            base.OnAppearing();
-            await Task.Delay(3000); 
-            await Navigation.PopModalAsync();   
-         
+        public async void OnConfirmButtonClicked(object sender, EventArgs args) {
+            _tcs.SetResult();
+            await Navigation.PopModalAsync();
         }
 
     }
