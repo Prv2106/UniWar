@@ -8,7 +8,7 @@ namespace UniWar {
 
         protected override async void OnAppearing() {
             base.OnAppearing();
-            await Task.Delay(2500); 
+            await Task.Delay(2000); 
             await Navigation.PopModalAsync();   
          
         }

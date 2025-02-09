@@ -111,7 +111,7 @@ const map<string, vector<string>> continents = {
     {"AmericaDelSud", {"Venezuela", "Perù", "Brasile", "Argentina"}},
     {"Africa", {"AfricaDelNord", "Egitto", "AfricaOrientale", "Congo", "AfricaDelSud", "Madagascar"}},
     {"Asia", {"Kamchatka", "Jacuzia", "Cita", "Giappone", "Cina", "Siam", "India", "MedioOriente","Afghanistan", "Urali", "Siberia", "Mongolia"}},
-    {"Europa", {"EurpoaOccidentale", "EuropaMeridionale", "GranBretagna", "Islanda", "Ucraina", "EuropaSettentrionale", "Scandinavia"}},
+    {"Europa", {"EuropaOccidentale", "EuropaMeridionale", "GranBretagna", "Islanda", "Ucraina", "EuropaSettentrionale", "Scandinavia"}},
     {"Oceania", {"AustraliaOccidentale", "NuovaGuinea", "Indonesia", "AustraliaOrientale"}}
 
 };
@@ -230,8 +230,9 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
 // - false se il giocatore non ha vinto
 // Affinchè il gioocatore vinca la sua lista di territori deve comprendere ALMENO 3 continenti e deve comprendere ALMENO 28 territori
 bool win(const set<string> & territories){
-    cout << "Inizio Algoritmo per determinare la condizione di vittoria" << endl;
+    cout << "\n\nInizio Algoritmo per determinare la condizione di vittoria" << endl;
     if(territories.size() < 28){
+        cout << "Condizione di vittoria non rispettata: " << territories.size() << " territori conquistati" << endl;
         return false;
 
     }
@@ -239,6 +240,7 @@ bool win(const set<string> & territories){
     set<string> completedContinents;
 
     for(const auto & pair: continents){
+        cout << "Controlliamo il cotinente " << pair.first << endl; 
         // Usiamo i riferimenti per evitare di allocare altra memoria
         const auto& continent = pair.first;
         const auto& continentTerritories = pair.second;
@@ -246,18 +248,24 @@ bool win(const set<string> & territories){
         // cicliamo la lista di territori
         bool completed = true;
         for(const auto & territory: continentTerritories){
+            cout << "Controlliamo il territorio " << territory << endl;
+
             /*
                 La funzione find cerca l'elemento territory tra gli elementi che vanno da territories.begin() fino a territories.end(). 
                 La funzione restituisce un iteratore che punta al primo elemento trovato uguale a territory, oppure a territories.end() se l'elemento non viene trovato.
             */
             if(find(territories.begin(), territories.end(), territory) == territories.end()){
                 completed = false;
+                cout << "Territorio " << territory << " mancante" << endl;
                 break; // è inutile continuare il ciclo perché manca almeno 1 territorio per completare il continente
             }
+            cout << "Il territorio " << territory << " è presente" << endl;
+
         }
 
         // se il giocatore possiede tutti i territori del continente allora aggiungiamo il continente tra quelli completati
         if(completed){
+            cout << "Il continente " << continent << " è completo" << endl;
             completedContinents.insert(continent);
         }
 
@@ -273,6 +281,8 @@ bool win(const set<string> & territories){
         }
     }
     
+
+    cout << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << endl;
     // se il giocatore non ha completato almeno 3 continenti 
     return false;
 

@@ -12,7 +12,7 @@ namespace UniWar {
 
         protected override async void OnAppearing() {
             base.OnAppearing();
-            await Task.Delay(3000); 
+            await Task.Delay(2500); 
             await Navigation.PopModalAsync();   
          
         }

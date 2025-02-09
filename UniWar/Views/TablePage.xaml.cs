@@ -28,6 +28,9 @@ namespace UniWar {
     private Player CPU {get; set;}
     private string IconSrcUser {get;} // percorso icona carro armato col colore 
     private string IconSrcCpu {get;}
+
+    public bool CpuWin {get; set;}
+
     private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
 
     public static TablePage Instance {
@@ -608,7 +611,8 @@ namespace UniWar {
 
                     // CPU passa il turno
                     CPU.Turn = null;
-                    User.Turn = new Turn(TurnPhases.Reinforcement);
+                    if(CpuWin == false)
+                        User.Turn = new Turn(TurnPhases.Reinforcement);
          }    
 
 
@@ -689,25 +693,24 @@ namespace UniWar {
 
                 
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory));
-                await Task.Delay(4000);
+                await Task.Delay(3000);
 
                 // Mostriamo il risultato del lancio dei dadi
                 await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer));
                 if(territoryLoss){
-                    await Task.Delay(5000);
+                    await Task.Delay(3500);
                     await Navigation.PushModalAsync(new ShowDefenceResult());
                 }
                     
-                await Task.Delay(3000);
+                await Task.Delay(3500);
 
                 // Aggiorniamo la mappa
                 DeployTanks();
                 BuildUserInformation();
-                
+
                 if(battleList.Last().Win){
                     await Navigation.PushModalAsync(new WinOrLoseModal(false));
-                    User.Turn = null;
-                    CPU.Turn = null;
+                    CpuWin = true;
                     break;
                 }
                 await Task.Delay(2000);

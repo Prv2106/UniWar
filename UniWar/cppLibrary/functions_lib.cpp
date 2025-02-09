@@ -44,6 +44,7 @@ static string jsonResult; // Variabile statica per evitare memory leak
                 - territorio attaccante
                 - numero della battaglia
                 - nomi dei gioatori coinvolti
+    - possono essere effettuati al massimo 3 attacchi per turno
 */
 
 const char* cpuAttack (const char* jsonData){
@@ -263,7 +264,7 @@ const char* cpuAttack (const char* jsonData){
     In particolare, da precedenza ai territori di frontiera con 1 solo carro armato per poi applicare un round robin a tutti quelli che hanno un numero di carri armati inferiore al numero massimo di carri assegnati ad un territorio
     - per prima cosa si recuperano i territori di frontiera posseduti
     - a questo punto si fa un primo ciclo dove si assegna un carro armato alla volta ai territori di frontiera che ne possiedono solo 1
-    - poi si fa un ulteriore ciclo nel quale si assegna un carroarmato alla volta ai territori di frontiera il cui numero di carri armati è inferiore al numero massimo di carri posseduti da un territorio di frontiera
+    - poi si fa un ulteriore ciclo nel quale si assegna un carro armato alla volta ai territori di frontiera il cui numero di carri armati è inferiore al numero massimo di carri posseduti da un territorio di frontiera
     - infine, si fa un round robin finale in cui viene assegnato un carro armato ciascuno
     Nota: i vari cicli vengono fatti fino a quando i nuovi carri disponibili terminano
 
