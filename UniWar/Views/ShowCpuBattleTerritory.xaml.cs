@@ -3,8 +3,8 @@ namespace UniWar {
         public ShowCpuBattleTerritory(string cpuTerritory, string playerTerritory){
             InitializeComponent();
 
-            this.cpuTerritory.Text = cpuTerritory;
-            this.playerTerritory.Text = playerTerritory;
+            this.cpuTerritory.Text = cpuTerritory.AddSpaces();
+            this.playerTerritory.Text = playerTerritory.AddSpaces();
 
 
         }

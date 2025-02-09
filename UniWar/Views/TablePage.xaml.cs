@@ -392,7 +392,7 @@ namespace UniWar {
             UpdateUserCounters();
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
-                await Navigation.PushModalAsync(new WinModal());
+                await Navigation.PushModalAsync(new WinOrLoseModal(true));
             }
         }
 
@@ -703,14 +703,18 @@ namespace UniWar {
                 // Aggiorniamo la mappa
                 DeployTanks();
                 BuildUserInformation();
+                
+                if(battleList.Last().Win){
+                    await Navigation.PushModalAsync(new WinOrLoseModal(false));
+                    User.Turn = null;
+                    CPU.Turn = null;
+                    break;
+                }
                 await Task.Delay(2000);
 
             }
 
-            if(battleList.Last().Win){
-                // La CPU ha vinto
-                // TODO: 
-            }
+            
 
         }
 

@@ -121,11 +121,11 @@ build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.TablePage.xam
 build_metadata.AdditionalFiles.TargetPath = Views\TablePage.xaml
 build_metadata.AdditionalFiles.RelativePath = Views\TablePage.xaml
 
-[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/WinModal.xaml]
+[C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/WinOrLoseModal.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.WinModal.xaml
-build_metadata.AdditionalFiles.TargetPath = Views\WinModal.xaml
-build_metadata.AdditionalFiles.RelativePath = Views\WinModal.xaml
+build_metadata.AdditionalFiles.ManifestResourceName = UniWar.Views.WinOrLoseModal.xaml
+build_metadata.AdditionalFiles.TargetPath = Views\WinOrLoseModal.xaml
+build_metadata.AdditionalFiles.RelativePath = Views\WinOrLoseModal.xaml
 
 [C:/Users/provi/Documents/GitHub/UniWar/UniWar/Views/YesOrNotModal.xaml]
 build_metadata.AdditionalFiles.GenKind = Xaml

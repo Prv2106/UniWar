@@ -230,6 +230,7 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
 // - false se il giocatore non ha vinto
 // Affinchè il gioocatore vinca la sua lista di territori deve comprendere ALMENO 3 continenti e deve comprendere ALMENO 28 territori
 bool win(const set<string> & territories){
+    cout << "Inizio Algoritmo per determinare la condizione di vittoria" << endl;
     if(territories.size() < 28){
         return false;
 

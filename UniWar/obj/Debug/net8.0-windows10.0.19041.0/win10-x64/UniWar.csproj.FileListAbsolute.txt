@@ -550,9 +550,7 @@ C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\splashSplashScreen.scale-400.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\OpenSans-Regular.ttf
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\OpenSans-Semibold.ttf
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\shield.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\defend1.scale-100.png
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\sad.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\attack3.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\red_tank.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\attack5.scale-100.png
@@ -631,7 +629,6 @@ C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\add.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\shock.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\defend4.scale-100.png
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\award.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\world_war.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\defend3.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\bin\Debug\net8.0-windows10.0.19041.0\win10-x64\attack6.scale-100.png
@@ -971,9 +968,7 @@ C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\mauifont.stamp
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\f\OpenSans-Regular.ttf
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\f\OpenSans-Semibold.ttf
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\shield.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\defend1.scale-100.png
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\sad.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\attack3.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\red_tank.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\attack5.scale-100.png
@@ -1052,7 +1047,6 @@ C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\add.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\shock.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\defend4.scale-100.png
-C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\award.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\world_war.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\defend3.scale-100.png
 C:\Users\provi\Documents\GitHub\UniWar\UniWar\obj\Debug\net8.0-windows10.0.19041.0\win10-x64\resizetizer\r\attack6.scale-100.png
