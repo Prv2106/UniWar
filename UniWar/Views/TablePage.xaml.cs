@@ -94,9 +94,9 @@ namespace UniWar {
         }
 
         
-        Player currentPlayer = Turn.currentPlayer;
+      
 
-        while(currentPlayer == CPU) { // è il turno della CPU
+        while(Turn.currentPlayer == CPU) { // è il turno della CPU
             switch (Turn.Phase) {
                 case TurnPhases.Reinforcement:
                     await CpuReinforcement();   
@@ -107,7 +107,7 @@ namespace UniWar {
             }
         }
 
-        if (currentPlayer == User) {
+        if (Turn.currentPlayer == User) {
             // è il turno dell'utente
             switch (Turn.Phase) {
                 case TurnPhases.Reinforcement:

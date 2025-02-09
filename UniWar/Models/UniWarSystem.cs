@@ -104,12 +104,15 @@ public class UniWarSystem { // singleton
         Cpu.TankColor = colorForCpu;
 
 
-       
+       /*
         if (gen.Next(2)== 0) 
             Turn = new Turn(User);
         else 
             Turn = new Turn(Cpu);
+        */
 
+        Turn = new Turn(User);
+        Turn.currentPlayer = Cpu;
      
     }
 
