@@ -484,6 +484,7 @@ namespace UniWar {
     public static extern bool winCheck (string jsonData);   
 
         private async Task CpuReinforcement(){
+            TaskCompletionSource tcs;
             Console.WriteLine("TURNO DELLA CPU");
             // Creazione della mappa da passare a C++
             List<MapData> playersMaps = new List<MapData> {
@@ -549,8 +550,11 @@ namespace UniWar {
             }
 
             DeployTanks();
-            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ","Reinforcement",newTanks));
-            await Task.Delay(4000);
+            tcs = new TaskCompletionSource();
+            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ","Reinforcement",tcs,newTanks));
+            await tcs.Task; // aspetta che facciamo setResult()
+            await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+                                
 
             CPU.Turn!.Phase = TurnPhases.Attack;
         }
@@ -558,7 +562,8 @@ namespace UniWar {
 
 
         private async Task CpuAttack(){
-        
+                    TaskCompletionSource tcs;
+
                     List<MapData> playersMaps = new List<MapData>(){
                         new MapData {
                             PlayerId = CPU.Name,
@@ -596,8 +601,10 @@ namespace UniWar {
 
                     if((resultJson == string.Empty) || resultJson == "[]"){
                         Console.WriteLine("La CPU ha deciso di non attaccare");
-                        await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack"));
-                        await Task.Delay(4000);
+                        tcs = new TaskCompletionSource();
+                        await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
+                        await tcs.Task; // aspetta che facciamo setResult()
+                        await Task.Delay(400); // per dare il tempo alla modale di chiudersi
                     }
                     else{
                         List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
@@ -644,6 +651,7 @@ namespace UniWar {
 
 
         private async Task SimulateBattle(List<BattleResult> battleList){
+            TaskCompletionSource tcs;
             
             foreach( var battle in battleList){
                 /*
@@ -691,18 +699,27 @@ namespace UniWar {
                 }
 
 
-                
-                await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory));
-                await Task.Delay(3000);
+                tcs = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
 
+
+                tcs = new TaskCompletionSource();
                 // Mostriamo il risultato del lancio dei dadi
-                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer));
+                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer, tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+
                 if(territoryLoss){
-                    await Task.Delay(3500);
-                    await Navigation.PushModalAsync(new ShowDefenceResult());
+                    tcs = new TaskCompletionSource();
+                    await Navigation.PushModalAsync(new ShowDefenceResult(tcs));
+                    await tcs.Task; // aspetta che facciamo setResult()
+                    await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+
                 }
                     
-                await Task.Delay(3500);
+      
 
                 // Aggiorniamo la mappa
                 DeployTanks();
@@ -713,8 +730,7 @@ namespace UniWar {
                     CpuWin = true;
                     break;
                 }
-                await Task.Delay(2000);
-
+            
             }
 
             

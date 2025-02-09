@@ -2,3 +2,4 @@
 *.editorconfig
 obj/
 bin/
+publish/
