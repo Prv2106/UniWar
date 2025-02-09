@@ -162,7 +162,6 @@ namespace UniWar {
     public void UpdateUserCounters() {
         NumTanks.Text = User.GetNumTanks().ToString();
         NumTerritories.Text = User.Territories.Count.ToString();
-        counterTankReinforcement.Text = (User.Territories.Count/2).ToString();
     }
 
     private void UpdateTankCounter(string territoryName) {
@@ -257,11 +256,12 @@ namespace UniWar {
                     User.Territories[territoryName].AddTanks(User.TankColor, 1);
                     // aggiorniamo la mappa 
                     UpdateTankCounter(territoryName);
-                    UpdateUserCounters();
                     // aggiorniamo il contatore sulla destra
                     int oldValue = int.Parse(counterTankReinforcement.Text);
                     int newValue = --oldValue;
                     counterTankReinforcement.Text = newValue.ToString();
+                    // aggiorniamo gli altri contatori
+                    UpdateUserCounters();
                     if (newValue == 0) {
                         // sono finiti i carri armati da posizionare
                         Turn.Phase = TurnPhases.Attack;
