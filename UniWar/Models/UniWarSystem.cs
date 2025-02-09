@@ -10,6 +10,9 @@ public class UniWarSystem { // singleton
     public Player? User {get; set;}
     public Player? Cpu {get; set;}
 
+    public Turn? Turn {get; set;}
+
+
 
     // Proprietà pubblica per accedere all'istanza Singleton
     public static UniWarSystem Instance {
@@ -102,10 +105,10 @@ public class UniWarSystem { // singleton
 
 
        
-        if (gen.Next(2)==0) 
-            User.Turn = new Turn(TurnPhases.Reinforcement);
+        if (gen.Next(2)== 0) 
+            Turn = new Turn(User);
         else 
-            Cpu.Turn = new Turn(TurnPhases.Reinforcement);
+            Turn = new Turn(Cpu);
 
      
     }
