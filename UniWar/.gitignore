@@ -1,2 +1,4 @@
 *.dll
 *.editorconfig
+obj/
+bin/
