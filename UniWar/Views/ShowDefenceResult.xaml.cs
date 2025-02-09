@@ -1,20 +1,17 @@
 namespace UniWar {
     public partial class ShowDefenceResult: ContentPage{
         private TaskCompletionSource _tcs;
-        public ShowDefenceResult(TaskCompletionSource tcs){
+        public ShowDefenceResult(TaskCompletionSource tcs, string territory){
             InitializeComponent();
             _tcs = tcs;
+            Info.Text = territory; 
             
         }
 
 
-        protected override async void OnAppearing() {
-            base.OnAppearing();
-            await Task.Delay(2000);
+        public async void OnConfirmButtonClicked(object sender, EventArgs args) {
             _tcs.SetResult();
-            await Navigation.PopModalAsync();   
-         
+            await Navigation.PopModalAsync();
         }
-
     }
 }

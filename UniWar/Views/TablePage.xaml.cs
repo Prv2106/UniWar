@@ -79,7 +79,7 @@ namespace UniWar {
             sulla base delle fasi dei turni e regola gli elementi
             grafici di supporto ad ogni fase
         */
-        await Task.Delay(500);
+        // await Task.Delay(500);
 
         while(CPU.Turn != null) { // è il turno della CPU
             switch (CPU.Turn.Phase) {
@@ -652,6 +652,7 @@ namespace UniWar {
 
         private async Task SimulateBattle(List<BattleResult> battleList){
             TaskCompletionSource tcs;
+            Territory? lostTerritory = null;
             
             foreach( var battle in battleList){
                 /*
@@ -684,6 +685,7 @@ namespace UniWar {
 
                         CPU.AddTerritory(territory);
                         User.RemoveTerritory(territory);
+                        lostTerritory = territory;
                         territoryLoss = true;
 
                     }
@@ -713,7 +715,7 @@ namespace UniWar {
 
                 if(territoryLoss){
                     tcs = new TaskCompletionSource();
-                    await Navigation.PushModalAsync(new ShowDefenceResult(tcs));
+                    await Navigation.PushModalAsync(new ShowDefenceResult(tcs, lostTerritory!.Name));
                     await tcs.Task; // aspetta che facciamo setResult()
                     await Task.Delay(400); // per dare il tempo alla modale di chiudersi
 

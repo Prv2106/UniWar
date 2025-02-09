@@ -100,18 +100,13 @@ public class UniWarSystem { // singleton
         Cpu.TankColor = colorForCpu;
 
 
-        // TODO: implementare la casualità del turno (Lo facciamo solo dopo che si vede che funziona tutto)
-
-        /*
+       
         if (gen.Next(2)==0) 
-            user.Turn = new Turn(TurnPhases.Attack);
+            User.Turn = new Turn(TurnPhases.Reinforcement);
         else 
-            cpu.Turn = new Turn(TurnPhases.Attack);
-        */
+            Cpu.Turn = new Turn(TurnPhases.Reinforcement);
 
-        User.Turn = new Turn(TurnPhases.Reinforcement);
-        CurrentTurn = User.Turn;
-        CurrentTurn.currentPlayer = User;
+     
     }
 
 

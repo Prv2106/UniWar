@@ -43,13 +43,11 @@ namespace UniWar {
 
             }
 
-        protected override async void OnAppearing() {
-            base.OnAppearing();
-            await Task.Delay(3000); 
+         public async void OnConfirmButtonClicked(object sender, EventArgs args) {
             _tcs.SetResult();
-            await Navigation.PopModalAsync();   
-         
+            await Navigation.PopModalAsync();
         }
+
 
     }
 }
