@@ -18,7 +18,9 @@ namespace UniWar{
 
             }
             public async void OnNewGameClicked(object sender, EventArgs args) {
-                await Navigation.PopModalAsync(); // TODO: creare una nuova partita
+                UniWarSystem.Instance.NewGame();
+                await Navigation.PushAsync(new InitializationSummary());
+                Navigation.RemovePage(this);
             }
     }
 

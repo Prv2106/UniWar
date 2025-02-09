@@ -4,7 +4,6 @@ Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità 
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 
 namespace UniWar {
@@ -39,6 +38,10 @@ namespace UniWar {
                 _instance = new TablePage();
             return _instance;
         }
+    }
+
+    public void Reset() {
+        _instance = null;
     }
 
 
@@ -402,7 +405,7 @@ namespace UniWar {
     }
 
     
-    private void RollTheDice(out List<int> userDice, out List<int> cpuDice, in int numTanksAttacker, in int numTanksDefender) {
+    private static void RollTheDice(out List<int> userDice, out List<int> cpuDice, in int numTanksAttacker, in int numTanksDefender) {
         userDice = [];
         cpuDice = [];
         // simuliamo il lancio dei dadi dell'attaccante: un dado per ogni carro armato - 1
@@ -425,7 +428,7 @@ namespace UniWar {
         cpuDice.Sort((a,b) => b.CompareTo(a));
     }
 
-    private string CompareDiceAndRemoveTanks(in List<int> userDice, in List<int> cpuDice, Territory attacking, Territory defending) {
+    private static string CompareDiceAndRemoveTanks(in List<int> userDice, in List<int> cpuDice, Territory attacking, Territory defending) {
         // confrontiamo le due liste (dadi) per un numero di volte pari alla lunghezza della lista più corta
         int counterForUser = 0;
         int counterForCpu = 0;
@@ -441,7 +444,7 @@ namespace UniWar {
                 counterForCpu++;
             }
         }
-        return $"l'utente ha perso {counterForUser} carri armati, mentre la CPU ne ha persi {counterForCpu}";
+        return $"Hai perso {counterForUser} carri armati, mentre la CPU ne ha persi {counterForCpu}";
     }
 
     // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu

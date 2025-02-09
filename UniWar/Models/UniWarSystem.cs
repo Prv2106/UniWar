@@ -1,12 +1,12 @@
+using UniWar;
 using Windows.System;
 
 public class UniWarSystem { // singleton
     private static UniWarSystem? _instance;
     private readonly Dictionary<string, Continent> _continents; // collezione di tutti i continenti gestiti dal gioco
-    private readonly Dictionary<string, Territory> _territories; // collezione di tutti i continenti gestiti dal gioco
+    private readonly Dictionary<string, Territory> _territories; // collezione di tutti i territori gestiti dal gioco
 
     private readonly List<Goal> _goals; // collezione di tutti gli obiettivi
-    private Turn? CurrentTurn {get; set;}
     public Player? User {get; set;}
     public Player? Cpu {get; set;}
 
@@ -61,6 +61,7 @@ public class UniWarSystem { // singleton
         List<Territory> allTerritories = [];
         foreach (Territory t in _territories.Values) 
                 allTerritories.Add(t);
+
         
         // eseguiamo uno shuffle (metodo implementato nell'extension)
         allTerritories.Shuffle();
@@ -83,12 +84,12 @@ public class UniWarSystem { // singleton
            
         // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in User.Territories.Values){
-            territory.AddTanks(colorForUser,1);
+            territory.AddTanks(colorForUser,20);
         }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
         foreach (Territory territory in Cpu.Territories.Values){
-            territory.AddTanks(colorForCpu,20);
+            territory.AddTanks(colorForCpu,1);
         }
             
         // obiettivo ai partecipanti
@@ -107,6 +108,17 @@ public class UniWarSystem { // singleton
             Cpu.Turn = new Turn(TurnPhases.Reinforcement);
 
      
+    }
+
+    public void NewGame() {
+        /*
+            Questo metodo viene invocato nella modale di GameOver e si occupa 
+            di far sì che le istanze della classi singleton TablePage e UniWar 
+            siano reistanziate
+        */
+
+        _instance = null;
+        TablePage.Instance.Reset();        
     }
 
 
@@ -290,7 +302,6 @@ public class UniWarSystem { // singleton
             _territories["Brasile"],
             _territories["Perù"]
         ]);
-
         // 11. Brasile
         _territories["Brasile"].NeighboringTerritories.AddRange([
             _territories["Venezuela"],
@@ -298,14 +309,12 @@ public class UniWarSystem { // singleton
             _territories["Argentina"],
             _territories["AfricaDelNord"]
         ]);
-
         // 12. Perù
         _territories["Perù"].NeighboringTerritories.AddRange([
             _territories["Venezuela"],
             _territories["Brasile"],
             _territories["Argentina"]
         ]);
-
         // 13. Argentina
         _territories["Argentina"].NeighboringTerritories.AddRange([
             _territories["Perù"],
@@ -319,7 +328,6 @@ public class UniWarSystem { // singleton
             _territories["GranBretagna"],
             _territories["Scandinavia"]
         ]);
-
         // 15. Gran Bretagna
         _territories["GranBretagna"].NeighboringTerritories.AddRange([
             _territories["Islanda"],
@@ -327,7 +335,6 @@ public class UniWarSystem { // singleton
             _territories["EuropaOccidentale"],
             _territories["EuropaSettentrionale"]
         ]);
-
         // 16. Scandinavia
         _territories["Scandinavia"].NeighboringTerritories.AddRange([
             _territories["Islanda"],
@@ -335,7 +342,6 @@ public class UniWarSystem { // singleton
             _territories["EuropaSettentrionale"],
             _territories["Ucraina"]
         ]);
-
         // 17. Europa Occidentale
         _territories["EuropaOccidentale"].NeighboringTerritories.AddRange([
             _territories["GranBretagna"],
@@ -343,7 +349,6 @@ public class UniWarSystem { // singleton
             _territories["EuropaMeridionale"],
             _territories["AfricaDelNord"]
         ]);
-
         // 18. Europa Settentrionale
         _territories["EuropaSettentrionale"].NeighboringTerritories.AddRange([
             _territories["GranBretagna"],
@@ -352,7 +357,6 @@ public class UniWarSystem { // singleton
             _territories["EuropaMeridionale"],
             _territories["EuropaOccidentale"]
         ]);
-
         // 19. Europa Meridionale
         _territories["EuropaMeridionale"].NeighboringTerritories.AddRange([
             _territories["EuropaOccidentale"],
@@ -362,7 +366,6 @@ public class UniWarSystem { // singleton
             _territories["AfricaDelNord"],
             _territories["Egitto"]
         ]);
-
         // 20. Ucraina
         _territories["Ucraina"].NeighboringTerritories.AddRange([
             _territories["Scandinavia"],
@@ -380,9 +383,9 @@ public class UniWarSystem { // singleton
             _territories["EuropaOccidentale"],
             _territories["EuropaMeridionale"],
             _territories["Egitto"],
+            _territories["AfricaOrientale"],
             _territories["Congo"]
         ]);
-
         // 22. Egitto
         _territories["Egitto"].NeighboringTerritories.AddRange([
             _territories["AfricaDelNord"],
@@ -390,30 +393,26 @@ public class UniWarSystem { // singleton
             _territories["MedioOriente"],
             _territories["AfricaOrientale"]
         ]);
-
         // 23. Congo
         _territories["Congo"].NeighboringTerritories.AddRange([
             _territories["AfricaDelNord"],
             _territories["AfricaOrientale"],
             _territories["AfricaDelSud"]
         ]);
-
         // 24. Africa Orientale
         _territories["AfricaOrientale"].NeighboringTerritories.AddRange([
             _territories["Egitto"],
-            _territories["MedioOriente"],
+            _territories["AfricaDelNord"],
             _territories["Congo"],
             _territories["AfricaDelSud"],
             _territories["Madagascar"]
         ]);
-
         // 25. Africa del Sud
         _territories["AfricaDelSud"].NeighboringTerritories.AddRange([
             _territories["Congo"],
             _territories["AfricaOrientale"],
             _territories["Madagascar"]
         ]);
-
         // 26. Madagascar
         _territories["Madagascar"].NeighboringTerritories.AddRange([
             _territories["AfricaOrientale"],
@@ -421,61 +420,55 @@ public class UniWarSystem { // singleton
         ]);
     }
     private void Asia() {
-        // 27. Ural
+        // 27. Urali
         _territories["Urali"].NeighboringTerritories.AddRange([
             _territories["Ucraina"],
             _territories["Afghanistan"],
             _territories["Siberia"],
             _territories["Cina"]
         ]);
-
         // 28. Siberia
         _territories["Siberia"].NeighboringTerritories.AddRange([
             _territories["Urali"],
             _territories["Cina"],
             _territories["Mongolia"],
-            _territories["Jacuzia"]
+            _territories["Jacuzia"],
+            _territories["Cita"]
         ]);
-
         // 29. Jacuzia
         _territories["Jacuzia"].NeighboringTerritories.AddRange([
             _territories["Siberia"],
-            _territories["Mongolia"],
+            _territories["Cita"],
             _territories["Kamchatka"]
         ]);
-
         // 30. Kamchatka
         _territories["Kamchatka"].NeighboringTerritories.AddRange([
             _territories["Jacuzia"],
             _territories["Mongolia"],
             _territories["Giappone"],
-            _territories["Alaska"]
+            _territories["Alaska"],
+            _territories["Cita"]
         ]);
-
         // 31. Mongolia
         _territories["Mongolia"].NeighboringTerritories.AddRange([
             _territories["Siberia"],
-            _territories["Jacuzia"],
+            _territories["Cita"],
             _territories["Kamchatka"],
             _territories["Cina"],
             _territories["Giappone"]
         ]);
-
         // 32. Giappone
         _territories["Giappone"].NeighboringTerritories.AddRange([
             _territories["Mongolia"],
             _territories["Kamchatka"]
         ]);
-
         // 33. Afghanistan
         _territories["Afghanistan"].NeighboringTerritories.AddRange([
             _territories["Ucraina"],
             _territories["Urali"],
             _territories["Cina"],
-            _territories["India"],
             _territories["MedioOriente"]
         ]);
-
         // 34. Cina
         _territories["Cina"].NeighboringTerritories.AddRange([
             _territories["Urali"],
@@ -483,9 +476,9 @@ public class UniWarSystem { // singleton
             _territories["Mongolia"],
             _territories["Afghanistan"],
             _territories["India"],
-            _territories["Siam"]
+            _territories["Siam"],
+            _territories["MedioOriente"]
         ]);
-
         // 35. Medio Oriente
         _territories["MedioOriente"].NeighboringTerritories.AddRange([
             _territories["Egitto"],
@@ -493,17 +486,14 @@ public class UniWarSystem { // singleton
             _territories["Ucraina"],
             _territories["Afghanistan"],
             _territories["India"],
-            _territories["AfricaOrientale"]
+            _territories["Cina"]
         ]);
-
         // 36. India
         _territories["India"].NeighboringTerritories.AddRange([
             _territories["MedioOriente"],
-            _territories["Afghanistan"],
             _territories["Cina"],
             _territories["Siam"]
         ]);
-
         // 37. Siam
         _territories["Siam"].NeighboringTerritories.AddRange([
             _territories["India"],
@@ -518,21 +508,18 @@ public class UniWarSystem { // singleton
             _territories["NuovaGuinea"],
             _territories["AustraliaOccidentale"]
         ]);
-
         // 39. Nuova Guinea
         _territories["NuovaGuinea"].NeighboringTerritories.AddRange([
             _territories["Indonesia"],
             _territories["AustraliaOrientale"],
             _territories["AustraliaOccidentale"]
         ]);
-
         // 40. Australia Occidentale
         _territories["AustraliaOccidentale"].NeighboringTerritories.AddRange([
             _territories["Indonesia"],
             _territories["NuovaGuinea"],
             _territories["AustraliaOrientale"]
         ]);
-
         // 41. Australia Orientale
         _territories["AustraliaOrientale"].NeighboringTerritories.AddRange([
             _territories["AustraliaOccidentale"],

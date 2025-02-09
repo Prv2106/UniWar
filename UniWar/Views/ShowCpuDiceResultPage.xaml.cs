@@ -34,8 +34,6 @@ namespace UniWar {
                     WarningText.Text += " carro armato";
                 else
                     WarningText.Text += " carri armati";
-
-
             }
 
             _tcs = tcs;
