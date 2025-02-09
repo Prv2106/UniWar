@@ -29,7 +29,7 @@
                         FontSize="24"
                         />
                 <Button
-                Text="Capito"
+                Text="ok"
                 WidthRequest="200"
                 Clicked="OnConfirmButtonClicked"
                 Margin="0,10,0,0"
