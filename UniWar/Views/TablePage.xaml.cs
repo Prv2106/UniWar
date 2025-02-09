@@ -474,7 +474,7 @@ namespace UniWar {
             counter++;
         }
         // simuliamo il lancio dei dadi della difesa: un dado per ogni carro armato
-        counter = 0;
+        counter = 1;
         for (int i = 0; i < numTanksDefender; i++) {
             cpuDice.Add(gen.Next(6)+1); 
             if (counter == 3) break; // non si possono lanciare più di 3 dadi
