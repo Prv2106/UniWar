@@ -87,6 +87,18 @@
                     />
               </HorizontalStackLayout>
 
+              
+              <!-- Testo per avvisi (es: eccezioni) -->
+              <Label  
+                x:Name="WarningText"
+                IsVisible="True"
+                TextColor="Black"
+                Padding="10"
+                HorizontalOptions="Center"
+                Margin="0,20,0,35"/>
+
+          
+
 
                 
             </VerticalStackLayout>

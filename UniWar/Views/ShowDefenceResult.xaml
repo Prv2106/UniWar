@@ -11,17 +11,19 @@
                VerticalOptions="Center">
             
             <VerticalStackLayout>
-                <Image x:Name ="ImageInfo"
+                <Image 
+                Source = "white_flag.png"
                 WidthRequest="100"
                 HeightRequest="100" 
                 Margin="5"               
                 />
-                 <Label x:Name ="TextInfo"
+                 <Label 
+                            Text = "Hai perso il territorio"
                             FontSize="30"
                             TextColor="#666"
                             HorizontalOptions="Center"
                             Margin="0,5,0,10"/>
-                <Label  x:Name ="LossesInfo"
+                <Label  
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         FontSize="24"

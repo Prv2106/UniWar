@@ -106,7 +106,7 @@ const char* cpuAttack (const char* jsonData){
                 
 
                 // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non soddisfa la condizione di attacco e dobbiamo passare al vicino successivo
-                while((enemyTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4) && (battleResults.size() < 3 )){ 
+                while((enemyTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ 
                     clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " idoneo per essere attaccato ("<< enemyTanksCount << ") carri armati" << endl; // debug
                     clog << "Ciclo while di battaglia: carri CPU = " << cpuTanksCount << ", Carri giocatore = "<< enemyTanksCount << ", Conquered = " << conquered << endl; // debug
                     
@@ -217,7 +217,7 @@ const char* cpuAttack (const char* jsonData){
                     // Aggiungiamo il json della battaglia nel vettore di json (perché potrebbero essere ingaggiate anche più battaglie)
                     battleResults.push_back(battleJson);
 
-                    if(win || (battleResults.size() > 1)){ 
+                    if(win || (battleResults.size() == 3)){ 
                         jsonResult = json(battleResults).dump();
                         return jsonResult.c_str();
                     }
