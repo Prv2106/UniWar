@@ -60,7 +60,7 @@
                 </HorizontalStackLayout>
                 
               <Button
-                Text="Capito"
+                Text="Ok"
                 WidthRequest="200"
                 Clicked="OnConfirmButtonClicked"
                 Margin="0,10,0,0"
