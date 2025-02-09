@@ -446,7 +446,7 @@
 
             <Button
                 ClassId="Africa Del Nord"
-                Margin="25,10,-18,5"
+                Margin="0,2,-18,8"
                 BackgroundColor="Transparent"
                 CornerRadius="10"
                 Clicked="OnTerritoryClicked"/>
@@ -1281,10 +1281,6 @@
 
 
 
-
-
-
-
     <!-- A partire da qui, mettiamo le informazioni grafiche per l'utente -->
          <Frame
                CornerRadius="12"
@@ -1322,6 +1318,19 @@
                         FontAttributes="Bold"
                         TextColor="#333"
                         HorizontalOptions="Center"/>
+
+                    <!-- Pulsante -->
+                    <Grid
+                        Margin="45,0,0,2">
+                        <Image 
+                            Source="endgame.png"
+                            WidthRequest="50"/>
+                        <Button 
+                            BackgroundColor="Transparent"
+                            Clicked="OnEndGameClicked"/>
+                    </Grid>
+
+                    
                 </HorizontalStackLayout>
                 <!-- Riepilogo obiettivo -->
                 <HorizontalStackLayout

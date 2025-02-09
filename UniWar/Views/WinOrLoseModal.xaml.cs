@@ -17,9 +17,9 @@ namespace UniWar{
 
 
             }
-            public async void OnNewGameClicked(object sender, EventArgs args) {
+            public void OnNewGameClicked(object sender, EventArgs args) {
                 UniWarSystem.Instance.NewGame();
-                await Navigation.PushAsync(new InitializationSummary());
+                Navigation.InsertPageBefore(new InitializationSummary(), this);
                 Navigation.RemovePage(this);
             }
     }
