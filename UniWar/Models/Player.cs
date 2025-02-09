@@ -4,7 +4,6 @@ public class Player {
     public int TankColor {get; set;}
 
     public string Name {get; set;} 
-    public Turn? Turn {get; set;}
     public Goal? Goal {get; set;}
     public Dictionary<string, Territory> Territories {get; set;}
 

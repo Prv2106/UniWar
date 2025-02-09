@@ -4,6 +4,7 @@ Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità 
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Microsoft.Maui.Graphics.Text;
 
 
 namespace UniWar {
@@ -25,12 +26,14 @@ namespace UniWar {
     private static TablePage? _instance;
     private Player User {get; set;}
     private Player CPU {get; set;}
+    private Turn Turn {get; set;}
     private string IconSrcUser {get;} // percorso icona carro armato col colore 
     private string IconSrcCpu {get;}
 
-    public bool CpuWin {get; set;}
-
     private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
+
+    private bool CpuTurnCompleted {get; set;} = false;
+    private bool UserTurnCompleted {get; set;} = false;
 
     public static TablePage Instance {
         get {
@@ -48,6 +51,7 @@ namespace UniWar {
     private TablePage() {
         Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
         InitializeComponent();
+        Turn = UniWarSystem.Instance.Turn!;
         User = UniWarSystem.Instance.User!;
         // recuperiamo il nome del file dell'icona del carro armato utente
         IconSrcUser = User.Territories.Values.First().Tanks[0].GetTankIconByColor();
@@ -82,10 +86,18 @@ namespace UniWar {
             sulla base delle fasi dei turni e regola gli elementi
             grafici di supporto ad ogni fase
         */
-        // await Task.Delay(500);
 
-        while(CPU.Turn != null) { // è il turno della CPU
-            switch (CPU.Turn.Phase) {
+        if(CpuTurnCompleted && UserTurnCompleted){
+            CpuTurnCompleted = false;
+            UserTurnCompleted = false;
+            Turn.IdRound++;
+        }
+
+        
+        Player currentPlayer = Turn.currentPlayer;
+
+        while(currentPlayer == CPU) { // è il turno della CPU
+            switch (Turn.Phase) {
                 case TurnPhases.Reinforcement:
                     await CpuReinforcement();   
                     break;
@@ -95,17 +107,16 @@ namespace UniWar {
             }
         }
 
-        if (User.Turn != null) {
+        if (currentPlayer == User) {
             // è il turno dell'utente
-            switch (User.Turn.Phase) {
+            switch (Turn.Phase) {
                 case TurnPhases.Reinforcement:
                     // a livello di UI aggiungiamo il contatore dei numeri dei carri armati da poter aggiungere rimanenti
                     // l'utente, al click su un territorio suo, può aggiungere un carro armato a quel territorio..
                     // una volta terminati i carri armati da posizionare, però, finisce la fase di rinforzo
-                    int tanksToAdd = User.Territories.Count / 2;
-                    User.Turn!.NumTanksToAddInReinforcementPhase = tanksToAdd;
                     ShowOrHideReinforcementView();
                     await Navigation.PushModalAsync(new NewUserReinforcementTurn());
+                    counterTankReinforcement.Text = (User.Territories.Count/2).ToString();
                     break;
                 case TurnPhases.Attack:
                     ShowOrdHideAttackView();
@@ -123,7 +134,6 @@ namespace UniWar {
         if (!tankReinforcementView.IsVisible) {
             tankReinforcementView.IsVisible=true;
             tankReinforcementIcon.Source=IconSrcUser;
-            counterTankReinforcement.Text=User.Turn!.NumTanksToAddInReinforcementPhase.ToString();
         } else 
             tankReinforcementView.IsVisible=false;
     }
@@ -152,6 +162,7 @@ namespace UniWar {
     public void UpdateUserCounters() {
         NumTanks.Text = User.GetNumTanks().ToString();
         NumTerritories.Text = User.Territories.Count.ToString();
+        counterTankReinforcement.Text = (User.Territories.Count/2).ToString();
     }
 
     private void UpdateTankCounter(string territoryName) {
@@ -240,19 +251,20 @@ namespace UniWar {
             Territory from = User!.Territories[territoryName];
             int numTanksinTerritory = from.Tanks.Count;
             TaskCompletionSource<string> discoverUserChoose;
-            switch (User.Turn!.Phase) {
+            switch (Turn.Phase) {
                 case TurnPhases.Reinforcement:
                     // se clicchiamo su un territorio in questa fase, vogliamo aggiungere un carro armato!
                     User.Territories[territoryName].AddTanks(User.TankColor, 1);
-                    User.Turn!.NumTanksToAddInReinforcementPhase--;
                     // aggiorniamo la mappa 
                     UpdateTankCounter(territoryName);
                     UpdateUserCounters();
                     // aggiorniamo il contatore sulla destra
-                    counterTankReinforcement.Text=User.Turn!.NumTanksToAddInReinforcementPhase.ToString();
-                    if (User.Turn!.NumTanksToAddInReinforcementPhase == 0) {
+                    int oldValue = int.Parse(counterTankReinforcement.Text);
+                    int newValue = --oldValue;
+                    counterTankReinforcement.Text = newValue.ToString();
+                    if (newValue == 0) {
                         // sono finiti i carri armati da posizionare
-                        User.Turn!.Phase = TurnPhases.Attack;
+                        Turn.Phase = TurnPhases.Attack;
                         ShowOrHideReinforcementView();
                         HandleTurns();
                     }
@@ -312,18 +324,53 @@ namespace UniWar {
                     break;
             }
         } else { // l'utente ha selezionato un territorio avversario 
-            TurnPhases phase = User.Turn!.Phase;
+            TurnPhases phase = Turn.Phase;
             if (UserWantsToAttack || phase == TurnPhases.Reinforcement || phase == TurnPhases.StrategicShift) 
                 ShowInformation("Devi selezionare un territorio che appartiene a te!");
         }
     }
 
-    public void OnEndGameClicked(object sender, EventArgs args) {
+    public async void OnEndGameClicked(object sender, EventArgs args) {
+        TaskCompletionSource tcs;
         // verifichiamo che siano passati almeno 2 giri
+        if(Turn.IdRound >= 3){
+            // decretiamo il vincitore
+            int userScore = 0;
+            int cpuScore = 0;
+
+            foreach (var t in User.Territories.Values)
+                userScore += t.Score;
+                
+            foreach (var t in CPU.Territories.Values)
+                cpuScore += t.Score;
+
+            if(userScore > cpuScore){
+                tcs = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new WinOrLoseModal(true, tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+            }
+            else if(userScore < cpuScore){
+                 tcs = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+            }
+            else{
+                tcs = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new WinOrLoseModal(true, tcs, true)); // Pareggio
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+            }
+
+            // rimandiamo alla modale
+        } else {
+            ShowInformation("Devono almeno passare 2 giri!");
+        }
         
-        // decretiamo la vincita
         
-        // rimandiamo alla modale
+        
+        
     }
 
         
@@ -364,6 +411,7 @@ namespace UniWar {
     // Attacco di un territorio da parte dell'utente
     // invocata dalla pagina "AttackableTerritoriesPage"
     public async void AttackTerritory(string attackingTerritory, string attackedTerritory) {
+        
         await Task.Delay(200);
         Territory from = User!.Territories[attackingTerritory];
         int numTanksAttacker = from.Tanks.Count;
@@ -399,7 +447,11 @@ namespace UniWar {
             UpdateUserCounters();
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
-                await Navigation.PushModalAsync(new WinOrLoseModal(true));
+                TaskCompletionSource t;
+                t = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new WinOrLoseModal(true, t));
+                await t.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
             }
         }
 
@@ -459,7 +511,7 @@ namespace UniWar {
         await Task.Delay(400); // aspettiamo che si chiuda la modale
         if (choose == true) {
             // passiamo alla terza ed ultima fase del turno
-            User.Turn!.Phase=TurnPhases.StrategicShift;
+            Turn.Phase=TurnPhases.StrategicShift;
             ShowInformation("Fai click sul territorio DA cui vuoi spostare i carri armati");
             HandleTurns(); 
         } else {
@@ -471,9 +523,16 @@ namespace UniWar {
     }
 
     private void PassTurnToCpu() {
-        User.Turn = null;
-        CPU.Turn = new Turn(TurnPhases.Reinforcement);
+        UserTurnCompleted = true;
+        Turn.currentPlayer = CPU;
+        Turn.Phase = TurnPhases.Reinforcement;
         HandleTurns();
+    }
+
+    private void PassTurnToUser() {
+        CpuTurnCompleted = true;
+        Turn.currentPlayer = User;
+        Turn.Phase = TurnPhases.Reinforcement;
     }
         
         
@@ -560,7 +619,7 @@ namespace UniWar {
             await Task.Delay(400); // per dare il tempo alla modale di chiudersi
                                 
 
-            CPU.Turn!.Phase = TurnPhases.Attack;
+            Turn.Phase = TurnPhases.Attack;
         }
 
 
@@ -620,10 +679,8 @@ namespace UniWar {
                        
                     }
 
-                    // CPU passa il turno
-                    CPU.Turn = null;
-                    if(CpuWin == false)
-                        User.Turn = new Turn(TurnPhases.Reinforcement);
+
+                    PassTurnToUser();
          }    
 
 
@@ -732,8 +789,10 @@ namespace UniWar {
                 BuildUserInformation();
 
                 if(battleList.Last().Win){
-                    await Navigation.PushModalAsync(new WinOrLoseModal(false));
-                    CpuWin = true;
+                    tcs = new TaskCompletionSource();
+                    await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
+                    await tcs.Task; // aspetta che facciamo setResult()
+                    await Task.Delay(400); // per dare il tempo alla modale di chiudersi
                     break;
                 }
             
