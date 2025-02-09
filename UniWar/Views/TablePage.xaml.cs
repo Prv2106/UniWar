@@ -142,6 +142,7 @@ namespace UniWar {
         if (!AttackButton.IsVisible) {
            // mostriamo il pulsante "attacca"
             AttackButton.IsVisible = true;
+            AttackButton.Text = "ATTACCA";
             // mostriamo il pulsante "passa"
             PassButton.IsVisible = true;
             PassButton.Text = "PASSA";
@@ -522,6 +523,7 @@ namespace UniWar {
             // passiamo il turno alla CPU
             AttackButton.IsVisible = false;
             PassButton.IsVisible = false;
+            UserWantsToAttack = false;
             PassTurnToCpu();
         }
     }
