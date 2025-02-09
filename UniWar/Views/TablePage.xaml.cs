@@ -344,6 +344,8 @@ namespace UniWar {
             foreach (var t in CPU.Territories.Values)
                 cpuScore += t.Score;
 
+            Console.WriteLine($"CpuScore = {cpuScore}, UserScore = {userScore}");
+
             if(userScore > cpuScore){
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new WinOrLoseModal(true, tcs));
@@ -362,6 +364,7 @@ namespace UniWar {
                 await tcs.Task; // aspetta che facciamo setResult()
                 await Task.Delay(400); // per dare il tempo alla modale di chiudersi
             }
+            await Navigation.PopToRootAsync();
 
             // rimandiamo alla modale
         } else {
@@ -452,6 +455,7 @@ namespace UniWar {
                 await Navigation.PushModalAsync(new WinOrLoseModal(true, t));
                 await t.Task; // aspetta che facciamo setResult()
                 await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+                await Navigation.PopToRootAsync();
             }
         }
 
@@ -793,6 +797,7 @@ namespace UniWar {
                     await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
                     await tcs.Task; // aspetta che facciamo setResult()
                     await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+                    await Navigation.PopToRootAsync();
                     break;
                 }
             

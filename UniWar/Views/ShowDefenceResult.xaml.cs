@@ -4,7 +4,7 @@ namespace UniWar {
         public ShowDefenceResult(TaskCompletionSource tcs, string territory){
             InitializeComponent();
             _tcs = tcs;
-            Info.Text = territory; 
+            Info.Text = territory.AddSpaces(); 
             
         }
 

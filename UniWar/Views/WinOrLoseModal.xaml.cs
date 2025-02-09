@@ -1,4 +1,6 @@
 
+using System.Threading.Tasks;
+
 namespace UniWar{
     public partial class WinOrLoseModal: ContentPage{
             private TaskCompletionSource _tcs;
@@ -25,11 +27,10 @@ namespace UniWar{
 
 
             }
-            public void OnNewGameClicked(object sender, EventArgs args) {
+            public async void OnNewGameClicked(object sender, EventArgs args) {
                 UniWarSystem.Instance.NewGame();
-                Navigation.InsertPageBefore(new InitializationSummary(), this);
                 _tcs.SetResult();
-                Navigation.RemovePage(this);
+                await Navigation.PopModalAsync();
             }
     }
 

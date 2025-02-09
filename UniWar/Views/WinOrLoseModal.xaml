@@ -33,7 +33,7 @@
 
                
               <Button
-                Text="NUOVA PARTITA"
+                Text="Schermata Iniziale"
                 WidthRequest="200"
                 Clicked="OnNewGameClicked"
                 Margin="0,30,0,0"
