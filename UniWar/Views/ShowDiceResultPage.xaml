@@ -17,12 +17,12 @@
                 HorizontalOptions="Center">
                 <Image
                 Source="dice.png"
-                WidthRequest="120"
+                WidthRequest="90"
                 />
                 <Label
                     VerticalOptions="Center"
                     Text="Risultato dell'attacco"
-                    FontSize="24"
+                    FontSize="22"
                     />
               </HorizontalStackLayout>
 
@@ -40,19 +40,19 @@
                     <Image
                       IsVisible ="False"
                     Source="attack5.png"
-                    WidthRequest="120"
+                    WidthRequest="100"
                     Margin="10"
                     />
                     <Image
                       IsVisible ="False"
                     Source="attack6.png"
-                    WidthRequest="120"
+                    WidthRequest="100"
                     Margin="10"
                     />
                     <Image
                       IsVisible ="False"
                     Source="attack2.png"
-                    WidthRequest="120"
+                    WidthRequest="100"
                     Margin="10"
                     />
               </HorizontalStackLayout>
@@ -70,27 +70,25 @@
                     <Image
                     IsVisible ="False"
                     Source="defend5.png"
-                    WidthRequest="120"
+                    WidthRequest="100"
                     Margin="10"
                     />
                     <Image
                       IsVisible ="False"
                     Source="defend6.png"
-                    WidthRequest="120"
+                    WidthRequest="100"
                     Margin="10"
                     />
                     <Image
                       IsVisible ="False"
                     Source="defend.png"
-                    WidthRequest="120"
+                    WidthRequest="100"
                     Margin="10"
                     />
               </HorizontalStackLayout>
 
 
-                
-
-             
+              
               <!-- Testo per avvisi (es: eccezioni) -->
               <Label  
                 x:Name="WarningText"
@@ -98,13 +96,13 @@
                 TextColor="Black"
                 Padding="10"
                 HorizontalOptions="Center"
-                Margin="0,20,0,35"/>
+                Margin="0,10,0,25"/>
 
               <Button
                 Text="Ok, mostrami la mappa"
                 WidthRequest="200"
                 Clicked="OnConfirmButtonClicked"
-                Margin="0,10,0,0"
+                Margin="0,0,0,0"
                 BackgroundColor="DarkGreen"
                 
                 />
