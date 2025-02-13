@@ -4,7 +4,6 @@ Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità 
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using Microsoft.Maui.Graphics.Text;
 
 
 namespace UniWar {
@@ -671,7 +670,7 @@ namespace UniWar {
                         tcs = new TaskCompletionSource();
                         await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
                         await tcs.Task; // aspetta che facciamo setResult()
-                        await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+                        await Task.Delay(400); // per dare il tempo alla modale di chiudersi 
                     }
                     else{
                         List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
@@ -718,20 +717,18 @@ namespace UniWar {
         private async Task SimulateBattle(List<BattleResult> battleList){
             TaskCompletionSource tcs;
             Territory? lostTerritory = null;
+
+            StatisticsCollection statistics = new StatisticsCollection();
+            statistics.LostTerritories = new List<string>();
+            statistics.AttackedTerritories = new Dictionary<string, int>();            
+            statistics.PlayerId = User.Name;
+            statistics.UserTurn = false;
+            statistics.RoundId = Turn.IdRound;
+                        
             
             foreach( var battle in battleList){
-                /*
-                    Per la UI serve:
-                    - territorio da cui la CPU sta attaccando
-                    - territorio dell'user attaccato
-                    - dado utente
-                    - dado cpu
-                    - num carri armati persi dall'utente
-                    - num carri armati persi dalla cpu 
-                */
                  bool territoryLoss = false;
-            
-
+                
                 foreach(var territory in User.Territories.Values){
                     if(battle.DefendingTanksCountMap.TryGetValue(territory.Name, out int value)) {
                         int difference = value - territory.Tanks.Count;
@@ -752,6 +749,7 @@ namespace UniWar {
                         User.RemoveTerritory(territory);
                         lostTerritory = territory;
                         territoryLoss = true;
+                        statistics.LostTerritories.Add(lostTerritory.Name);
 
                     }
                 }
@@ -765,6 +763,10 @@ namespace UniWar {
                     }
                 }
 
+
+                // Costruiaimo il dizionario dei territori attaccati
+                if(!statistics.LostTerritories.Contains(battle.DefendingTerritory))
+                    statistics.AttackedTerritories.Add(battle.DefendingTerritory, battle.LossesPlayer);
 
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
@@ -786,13 +788,13 @@ namespace UniWar {
 
                 }
                     
-      
 
                 // Aggiorniamo la mappa
                 DeployTanks();
                 BuildUserInformation();
 
-                if(battleList.Last().Win){
+                if(battle.Win){     
+                    CollectsStatistics(statistics);
                     tcs = new TaskCompletionSource();
                     await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
                     await tcs.Task; // aspetta che facciamo setResult()
@@ -803,12 +805,29 @@ namespace UniWar {
             
             }
 
+
+            await CollectsStatistics(statistics);
+           
             
 
         }
 
 
 
+        private async Task CollectsStatistics(StatisticsCollection statistics){
+            try {
+                ClientGrpc.SendStatisticsAsync(statistics);
+            }
+            catch (Grpc.Core.RpcException e) {
+                ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
+                Console.WriteLine($"Errore: {e}");
+                await Task.Delay(1500);
+            }
+            catch (Exception) {
+                ShowInformation("Si è verificato un errore sconosciuto nell'invio delle statistiche.");
+                await Task.Delay(1500);
+            }
+        }
         
 
 

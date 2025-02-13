@@ -10,7 +10,8 @@
             // N.B: await è usato perché PushAsync resituisce un Task, e quindi garantiamo la ripresa del controllo alla UI per 
             //      renderla responsiva.
             
-            await Navigation.PushAsync(new InitializationSummary());           
+           //await Navigation.PushAsync(new InitializationSummary());           
+           await Navigation.PushAsync(new SignInUp()); 
         }
 
     } 
