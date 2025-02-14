@@ -6,7 +6,6 @@ public struct StatisticsCollection{
 
     public bool UserTurn {get; set;} 
 
-    public List<string>? LostTerritories {get; set;}
     public Dictionary<string, int> AttackedTerritories {get; set;} // {"territorio": numero_carri_persi}
 
 

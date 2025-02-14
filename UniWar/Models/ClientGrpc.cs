@@ -18,10 +18,6 @@ namespace UniWar {
                 UserTurn = stats.UserTurn
             };
 
-            // Aggiungiamo LostTerritories alla lista gRPC
-            if (stats.LostTerritories != null)
-                request.LostTerritories.AddRange(stats.LostTerritories);
-            
 
             // Aggiungiamo AttackedTerritories alla mappa gRPC
             if (stats.AttackedTerritories != null) {

@@ -718,12 +718,11 @@ namespace UniWar {
             TaskCompletionSource tcs;
             Territory? lostTerritory = null;
 
-            StatisticsCollection statistics = new StatisticsCollection();
-            statistics.LostTerritories = new List<string>();
-            statistics.AttackedTerritories = new Dictionary<string, int>();            
-            statistics.PlayerId = User.Name;
-            statistics.UserTurn = false;
-            statistics.RoundId = Turn.IdRound;
+            StatisticsCollection stats = new StatisticsCollection();
+            stats.AttackedTerritories = new Dictionary<string, int>();            
+            stats.PlayerId = User.Name;
+            stats.UserTurn = false;
+            stats.RoundId = Turn.IdRound;
                         
             
             foreach( var battle in battleList){
@@ -749,8 +748,6 @@ namespace UniWar {
                         User.RemoveTerritory(territory);
                         lostTerritory = territory;
                         territoryLoss = true;
-                        statistics.LostTerritories.Add(lostTerritory.Name);
-
                     }
                 }
 
@@ -764,9 +761,14 @@ namespace UniWar {
                 }
 
 
-                // Costruiaimo il dizionario dei territori attaccati
-                if(!statistics.LostTerritories.Contains(battle.DefendingTerritory))
-                    statistics.AttackedTerritories.Add(battle.DefendingTerritory, battle.LossesPlayer);
+               
+                if (stats.AttackedTerritories.ContainsKey(battle.DefendingTerritory)) {
+                    stats.AttackedTerritories[battle.DefendingTerritory] += battle.LossesPlayer;
+                }
+                else {
+                    stats.AttackedTerritories.Add(battle.DefendingTerritory, battle.LossesPlayer);
+                }
+
 
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
@@ -794,7 +796,7 @@ namespace UniWar {
                 BuildUserInformation();
 
                 if(battle.Win){     
-                    CollectsStatistics(statistics);
+                    CollectsStatistics(stats);
                     tcs = new TaskCompletionSource();
                     await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
                     await tcs.Task; // aspetta che facciamo setResult()
@@ -806,7 +808,7 @@ namespace UniWar {
             }
 
 
-            await CollectsStatistics(statistics);
+            await CollectsStatistics(stats);
            
             
 

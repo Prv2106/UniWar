@@ -17,8 +17,7 @@ from uniwar import db_config, command_service
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def SendStatistics(self, request, context):
         print(f"Ricevute statistiche per il giocatore: {request.player_id}", flush = True)
-        print(f"Turno: {request.round_id}, Turno utente: {request.user_turn}", flush = True)
-        print(f"Territori persi: {request.lost_territories}", flush = True)
+        print(f"Round: {request.round_id}, Turno utente: {request.user_turn}", flush = True)
         print(f"Territori attaccati: {request.attacked_territories}", flush = True)
         
         return statistics_pb2.Response(message="Statistiche ricevute con successo!", status = True)
