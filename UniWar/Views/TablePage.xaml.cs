@@ -792,7 +792,7 @@ namespace UniWar {
                 DeployTanks();
                 BuildUserInformation();
 
-                if(battleList.Last().Win){
+                if(battle.Win){
                     tcs = new TaskCompletionSource();
                     await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
                     await tcs.Task; // aspetta che facciamo setResult()
