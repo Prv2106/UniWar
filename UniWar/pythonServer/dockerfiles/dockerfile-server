@@ -1,0 +1,22 @@
+FROM python:3.9  
+
+WORKDIR /app
+
+RUN pip install grpcio==1.68.0 grpcio-tools==1.68.0
+
+RUN pip install pymysql
+
+RUN pip install bcrypt pymysql
+
+RUN pip install cryptography
+
+
+COPY ./Protos/statistics_pb2_grpc.py ./Protos/statistics_pb2.py /app/
+COPY ./pythonServer/server.py /app/
+COPY ./pythonServer/uniwar /app/uniwar
+
+
+
+
+
+CMD [ "python", "server.py"]
