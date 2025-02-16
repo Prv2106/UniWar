@@ -1,0 +1,28 @@
+services: 
+     
+  server-grpc:
+    build:
+      context: .
+      dockerfile: ./pythonServer/dockerfiles/dockerfile-server
+    container_name: grpc_server_container
+    depends_on:
+      - db 
+    ports:
+      - "50051:50051"
+    restart: always
+    volumes: 
+      - server_vol:/var/lib/server_data
+
+  db:
+    build:
+      context: .
+      dockerfile: ./pythonServer/dockerfiles/dockerfile-db
+    container_name: mysql_container
+    volumes:
+      - db_vol:/var/lib/mysql
+
+volumes:
+  server_vol: 
+    driver: local
+  db_vol:
+    driver: local
