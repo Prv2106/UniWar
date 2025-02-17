@@ -9,6 +9,8 @@ from uniwar import db_config, command_service
 
 
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
+    
+    # rpc per l'invio dei dati dopo una battaglia  
     def SendStatistics(self, request, context):
         print(f"Ricevute statistiche per il giocatore: {request.player_id}")
         print(f"Round: {request.round_id}, Turno utente: {request.user_turn}")
@@ -22,41 +24,40 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
         
         return statistics_pb2.Response(message="Statistiche ricevute con successo!", status = True)
+    
+    
+    
+    
+    
+    # Gestione dell'utente
 
     def SignIn(self, request, context):
         print(f"Ricevuta una richiesta di login con i seguenti valori -> player_id = {request.player_id}, password = {request.password}")
         pass
     
-    
-    def SignUp(self,request, context):
-        print(f"Ricevuta una richiesta di registrazione con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush = True)
-        
-        conn = None  
+
+    def SignUp(request):
         try:
-            # Apertura della connessione al database
-            conn = pymysql.connect(**db_config.db_config) # Qui facciamo l'unpacking del dizionario db_config
-            service = command_service.CommandService() # Creiamo un'istanza di commandService
-            service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password,conn))
-            
-            # Creazione della risposta di successo
-            return statistics_pb2.Response(message="Utente registrato con successo!", status = True)
+            # Apertura della connessione al database con `with`
+            with pymysql.connect(**db_config) as conn:
+                service = command_service.CommandService()
+                service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password, conn))
+
+                # Creazione della risposta di successo
+                return statistics_pb2.Response(message="Utente registrato con successo!", status=True)
 
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database
-            if err.args[0] == 1062:  # Codice per duplicate entry (email già esistente)
-                print(f"Errore di duplicazione, codice di errore: {err}", flush = True)
-                return statistics_pb2.Response(message="Unavaible player_id", status = False)
+            if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
+                print(f"Errore di duplicazione, codice di errore: {err}", flush=True)
+                return statistics_pb2.Response(message="Unavaible player_id", status=False)
             else:
-                print(f"Errore durante l'inserimento nel database, codice di errore: {err}", flush = True)
-                return statistics_pb2.Response(message=f"Database Error", status = False)
+                print(f"Errore durante l'inserimento nel database, codice di errore: {err}", flush=True)
+                return statistics_pb2.Response(message="Database Error", status=False)
 
         except ValueError as e:
             # Gestione degli errori di validazione
-            return statistics_pb2.Response(message= str(e), status = False)
-        finally:
-            # Chiudiamo la connessione al database
-            if conn:  # Verifichiamo che conn non sia None
-                conn.close()
+            return statistics_pb2.Response(message=str(e), status=False)
 
     
 

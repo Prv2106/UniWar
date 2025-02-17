@@ -11,7 +11,7 @@
             //      renderla responsiva.
             
            // await Navigation.PushAsync(new InitializationSummary());       
-           await Navigation.PushAsync(new SignInUp(true));    
+           await Navigation.PushAsync(new SignInUp(false));    
             
         }
 
