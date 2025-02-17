@@ -16,12 +16,12 @@ CREATE TABLE IF NOT EXISTS Games (
 
 CREATE TABLE IF NOT EXISTS Statistics (
     GameId INT NOT NULL,
-    Username VARCHAR(255) NOT NULL,
+    RoundId INT NOT NULL,
+
     -- Aggiungere le altre statistiche
 
 
-    PRIMARY KEY (GameId, Username),  -- Chiave primaria composta
-    FOREIGN KEY (Username) REFERENCES Users(Username) ON DELETE CASCADE, 
+    PRIMARY KEY (GameId, RoundId),  -- Chiave primaria composta
     FOREIGN KEY (GameId) REFERENCES Games(id) ON DELETE CASCADE
 );
 

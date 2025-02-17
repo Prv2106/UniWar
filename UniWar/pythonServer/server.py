@@ -43,6 +43,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
         return game_list
     
+    def GetStatistics(self,request, context):
+        pass
     
     # Gestione dell'utente
 

@@ -11,7 +11,14 @@ service StatisticsService {
     rpc SignUp (SignUpCredentials) returns (Response);
 
     rpc UsernameCheck(Username) returns (Response);
+
+    rpc GetStatistics(StatisticRequest) returns (StatisticsResponse);
+    
 }
+
+
+
+
 
 
 message Username{
@@ -59,4 +66,35 @@ message GameInfoList {
     string message = 1;
     bool status = 2;
     repeated GameInfo games = 3;
+}
+
+message StatisticsResponse{
+    // Informazioni utili per l'history
+    int32 user_owned_territories = 1;
+    int32 user_owned_tanks = 2;
+    int32 cpu_owned_territories = 3;
+    int32 cpu_owned_tanks = 4;
+    repeated string user_owned_continents = 5;
+    repeated string cpu_owned_continents = 6;
+    bool user_win = 7;
+    
+    // Informazioni utili per le statistiche in-game
+    float user_tanks_lost_per_turn = 8;   // Carri armati persi dall'utente per turno
+    float cpu_tanks_lost_per_turn = 9;    // Carri armati persi dalla CPU per turno
+    float user_tanks_lost_attacking = 10; // Carri armati persi dall'utente in attacco
+    float cpu_tanks_lost_attacking = 11;  // Carri armati persi dalla CPU in attacco
+    float user_tanks_lost_defending = 12; // Carri armati persi dall'utente in difesa
+    float cpu_tanks_lost_defending = 13;  // Carri armati persi dalla CPU in difesa
+
+    int32 user_perfect_defenses = 14;      // Difese perfette dell'utente (nessuna perdita)
+    int32 cpu_perfect_defenses = 15;       // Difese perfette della CPU
+
+    int32 user_territories_lost_per_turn = 16; // Territori persi dall'utente per turno
+    int32 cpu_territories_lost_per_turn = 17;  // Territori persi dalla CPU per turno
+    
+    float user_map_ownership_percentage = 18; // Percentuale di mappa posseduta dall'utente
+    float cpu_map_ownership_percentage = 19;  // Percentuale di mappa posseduta dalla CPU
+
+
+    
 }
