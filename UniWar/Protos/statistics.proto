@@ -9,7 +9,16 @@ service StatisticsService {
     rpc SignIn (SignInCredentials) returns (Response);
 
     rpc SignUp (SignUpCredentials) returns (Response);
+
+    rpc UsernameCheck(Username) returns (Response);
 }
+
+
+message Username{
+    string username = 1;
+}
+
+
 
 message StatisticsCollection {
     string player_id = 1;

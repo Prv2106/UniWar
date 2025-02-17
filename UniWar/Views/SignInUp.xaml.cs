@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Statistics;
 using Windows.Storage.Provider;
 
@@ -5,6 +6,7 @@ namespace UniWar{
     public partial class SignInUp: ContentPage{
 
         private bool isSignIn;
+        public bool isUsernameValid {get; set;}
         public SignInUp() : this(true){}
 
         public SignInUp(bool signIn = true) {
@@ -14,22 +16,38 @@ namespace UniWar{
             
         }
 
-        private void UpdateUI(){
+        private async Task UpdateUI(){
+                 UsernameEntry.TextColor = Colors.White;
                  Button.Clicked -= OnSigniInButtonClicked!;
                  Button.Clicked -= OnSigniUpButtonClicked!;
+                 UsernameEntry.Completed -= OnSigniInButtonClicked!;
+                 PasswordEntry.Completed -= OnSigniInButtonClicked!;
+                 UsernameEntry.Completed -= OnSigniUpButtonClicked!;
+                 PasswordEntry.Completed -= OnSigniUpButtonClicked!;
+
+                UsernameEntry.Unfocused -= OnUsernameUnFocused!;
+                UsernameEntry.Focused -= OnUsernameFocused!;
             
                 if(isSignIn){
                     Header.Text = "Inserisci nome utente e password";
                     ImageInfo.Source = "military_hat.png";
                     Button.Text = "Accedi";
                     Button.Clicked += OnSigniInButtonClicked!;
+                    UsernameEntry.Completed += OnSigniInButtonClicked!;
+                    PasswordEntry.Completed += OnSigniInButtonClicked!;
                     SwitchModeLabel.Text = "Se non hai ancora un account, Registrati";
                 }
                 else{
                     Header.Text = "Crea un nome utente e una password";
-                    ImageInfo.Source = "new_soldier.png";
+                    ImageInfo.Source = "soldier.png";
                     Button.Text = "Registrati";
+                    await Task.Delay(100);
                     Button.Clicked += OnSigniUpButtonClicked!;
+                    UsernameEntry.Completed += OnSigniUpButtonClicked!;
+                    PasswordEntry.Completed += OnSigniUpButtonClicked!;
+
+                    UsernameEntry.Unfocused += OnUsernameUnFocused!;
+                    UsernameEntry.Focused += OnUsernameFocused!;
                     SwitchModeLabel.Text = "Hai già un account? Accedi";
                 }
 
@@ -78,36 +96,20 @@ namespace UniWar{
             
             try{
                 var response =ClientGrpc.SignIn(username, password);
-
-                if(response.Message == "Unavaible player_id"){
-                    ShowWarning("Username già in uso");
-                    return;
-                }
-
-                if(response.Message == "Database Error"){
-                    ShowWarning("Errore nel database");
-                    return;
-                }
-
-                if(response.Message == "Username o Password non corretti"){
-                    ShowWarning("Username o Password non corretti");
-                    return;
-                }
-
                 if(response.Status == false){
-                    ShowWarning("C'è stato un problema");
+                    ShowWarning(response.Message);
                     return;
                 }
+                
 
                 await Navigation.PushAsync(new MainPage());
             }
-             catch (Grpc.Core.RpcException e) {
-                warning.Text = "Non è stato possibile effettuare il login per qualche problema nella rpc";
-                warning.IsVisible = true;
-                Console.WriteLine($"Errore: {e}");
+            catch (Grpc.Core.RpcException) {
+                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
+                
             }
             catch (Exception) {
-                warning.Text =  "Si è verificato un errore sconosciuto durante il login";
+                ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
             }
            
             
@@ -124,39 +126,50 @@ namespace UniWar{
             
             try{
                 var response = ClientGrpc.SignUp(username, password);
-                if(response.Message == "Invalid Username"){
-                    ShowWarning("Username non valido: deve iniziare con una lettera maiuscola e avere almeno un altro carattere");
-                    return;
-                }
-                
-                if(response.Message == "Unavaible player_id"){
-                    ShowWarning("Username già in uso");
-                    return;
-                }
-
-                if(response.Message == "Database Error"){
-                    ShowWarning("Errore nel database");
-                    return;
-                }
-
                 if(response.Status == false){
-                    ShowWarning("C'è stato un problema");
+                    ShowWarning(response.Message);
                     return;
                 }
-
                 Console.WriteLine("SignUp effettuato con successo");
                 await Navigation.PushAsync(new MainPage());
             }
-            catch (Grpc.Core.RpcException e) {
-                warning.Text = "Non è stato possibile effettuare la registrazione per qualche problema nella rpc";
-                warning.IsVisible = true;
-                Console.WriteLine($"Errore: {e}");
+            catch (Grpc.Core.RpcException) {
+                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
+                
             }
             catch (Exception) {
-                warning.Text =  "Si è verificato un errore sconosciuto durante la registrazione";
+                ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
             }
            
 
+        }
+
+        public async void OnUsernameUnFocused(object sender, EventArgs args){
+            
+            if(string.IsNullOrWhiteSpace(UsernameEntry.Text))
+                return;
+
+            try{
+                var response = ClientGrpc.UsernameCheck(UsernameEntry.Text);
+                if(response.Status == false){
+                    ShowWarning(response.Message);
+                    UsernameEntry.TextColor = Colors.Red;
+                    return;
+                }
+                UsernameEntry.TextColor = Colors.LightGreen;
+            }
+            catch (Grpc.Core.RpcException) {
+                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
+                
+            }
+            catch (Exception) {
+                ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
+            }
+
+        }
+
+        public async void OnUsernameFocused(object sender, EventArgs args){
+            UsernameEntry.TextColor = Colors.White;
         }
 
         

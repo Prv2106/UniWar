@@ -48,11 +48,11 @@ namespace UniWar {
             }
             catch (Grpc.Core.RpcException rpcEx) {
                 Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
-                throw; // Rilancia l'eccezione per gestirla a livello superiore
+                throw; 
             }
             catch (Exception ex) { 
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
-                throw; // Rilancia per essere gestito dalla funzione chiamante
+                throw; 
             }
 
         }
@@ -76,11 +76,11 @@ namespace UniWar {
             }
             catch (Grpc.Core.RpcException rpcEx) {
                 Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
-                throw; // Rilancia l'eccezione per gestirla a livello superiore
+                throw; 
             }
             catch (Exception ex) { 
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
-                throw; // Rilancia per essere gestito dalla funzione chiamante
+                throw; 
             }
 
 
@@ -103,11 +103,11 @@ namespace UniWar {
             }
             catch (Grpc.Core.RpcException rpcEx) {
                 Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
-                throw; // Rilancia l'eccezione per gestirla a livello superiore
+                throw; 
             }
             catch (Exception ex) { 
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
-                throw; // Rilancia per essere gestito dalla funzione chiamante
+                throw;
             }
             
             
@@ -115,6 +115,29 @@ namespace UniWar {
         }
 
 
+        public static Response UsernameCheck(string id){
+            using var channel = GrpcChannel.ForAddress("http://localhost:50051");
+            var client = new StatisticsService.StatisticsServiceClient(channel);
+
+            var request = new Username();
+            request.Username_ = id;
+
+            try{
+                var response = client.UsernameCheck(request);
+                Console.WriteLine($"Risposta ricevuta dal server: {response}");
+                return response;
+            }
+            catch (Grpc.Core.RpcException rpcEx) {
+                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
+                throw; 
+            }
+            catch (Exception ex) { 
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
+                throw; 
+            }
+
+
+        }
 
 
 

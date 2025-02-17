@@ -49,6 +49,11 @@ class StatisticsServiceStub(object):
                 request_serializer=statistics__pb2.SignUpCredentials.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
+        self.UsernameCheck = channel.unary_unary(
+                '/statistics.StatisticsService/UsernameCheck',
+                request_serializer=statistics__pb2.Username.SerializeToString,
+                response_deserializer=statistics__pb2.Response.FromString,
+                _registered_method=True)
 
 
 class StatisticsServiceServicer(object):
@@ -73,6 +78,12 @@ class StatisticsServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def UsernameCheck(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_StatisticsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -89,6 +100,11 @@ def add_StatisticsServiceServicer_to_server(servicer, server):
             'SignUp': grpc.unary_unary_rpc_method_handler(
                     servicer.SignUp,
                     request_deserializer=statistics__pb2.SignUpCredentials.FromString,
+                    response_serializer=statistics__pb2.Response.SerializeToString,
+            ),
+            'UsernameCheck': grpc.unary_unary_rpc_method_handler(
+                    servicer.UsernameCheck,
+                    request_deserializer=statistics__pb2.Username.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
     }
@@ -172,6 +188,33 @@ class StatisticsService(object):
             target,
             '/statistics.StatisticsService/SignUp',
             statistics__pb2.SignUpCredentials.SerializeToString,
+            statistics__pb2.Response.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UsernameCheck(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/statistics.StatisticsService/UsernameCheck',
+            statistics__pb2.Username.SerializeToString,
             statistics__pb2.Response.FromString,
             options,
             channel_credentials,

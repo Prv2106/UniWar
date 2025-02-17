@@ -38,7 +38,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service = query_service.QueryService()
                 service.handle_login_user_query(query_service.LogInUserQuery(request.player_id, request.password, conn))
                 print("SignIn eseguito con successo",flush=True)
-                return statistics_pb2.Response(message="Login effettuato con successo", status= True) 
+                return statistics_pb2.Response(message="SignIn effettuato con successo", status= True) 
             
         except ValueError as e:
             print(f"{e}", flush= True)
@@ -55,7 +55,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def SignUp(self, request, context):
         print(f"Ricevuta una richiesta di SignUp con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush= True)
         try:
-            # Apertura della connessione al database con `with`
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
                 service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password, conn))
@@ -75,6 +74,27 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
         except ValueError as e:
             # Gestione degli errori di validazione
+            return statistics_pb2.Response(message=str(e), status=False)
+        
+        
+    def UsernameCheck(self,request,context):
+        print(f"Ricevuta richiesta per il check dello username {request.username}", flush=True)
+        
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = query_service.QueryService()
+                service.handle_username_check_query(query_service.UsernameCheckQuery(conn,request.username))
+                return statistics_pb2.Response(message="Username valido", status = True)
+            
+        except ValueError as e:
+            print(f"{e}", flush= True)
+            return statistics_pb2.Response(message=str(e), status=False)
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return statistics_pb2.Response(message=f"Database Error: {err}", status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
             return statistics_pb2.Response(message=str(e), status=False)
 
     

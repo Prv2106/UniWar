@@ -7,14 +7,11 @@ import re
 class RegisterUserCommand:
     def __init__(self, username, password, conn):
         
-        # verifica che la password non sia vuota
         if not password:
-            print("Password non inserita", flush = True)
             raise ValueError("password non inserita")
         
         if not RegisterUserCommand.validate_username(username):
-           print("Username non valido", flush = True)
-           raise ValueError("Invalid Username")
+           raise ValueError("Username non valido: Deve iniziare con una lettera maiuscola e avere almeno 5 caratteri in totale")
          
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         hashed_password_str = hashed_password.decode('utf-8')  # Convertiamo l'hash in stringa per il database
@@ -30,7 +27,7 @@ class RegisterUserCommand:
 
     @staticmethod
     def validate_username(username):
-        username_regex = r"^[A-Z][a-zA-Z0-9_-]{1,}$" # Username che inizia con una lettera maiuscola e che deve avere almeno 1 altro carattere tra quelli indicati nella classe []
+        username_regex = r"^[A-Z][a-zA-Z0-9_-]{4,}$" # Username che inizia con una lettera maiuscola e che deve avere almeno 1 altro carattere tra quelli indicati nella classe []
         return re.match(username_regex, username) is not None
     
     

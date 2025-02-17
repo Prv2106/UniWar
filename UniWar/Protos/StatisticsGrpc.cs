@@ -53,6 +53,8 @@ namespace Statistics {
     static readonly grpc::Marshaller<global::Statistics.SignInCredentials> __Marshaller_statistics_SignInCredentials = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.SignInCredentials.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Statistics.SignUpCredentials> __Marshaller_statistics_SignUpCredentials = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.SignUpCredentials.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Statistics.Username> __Marshaller_statistics_Username = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.Username.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response> __Method_SendStatistics = new grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response>(
@@ -76,6 +78,14 @@ namespace Statistics {
         __ServiceName,
         "SignUp",
         __Marshaller_statistics_SignUpCredentials,
+        __Marshaller_statistics_Response);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Statistics.Username, global::Statistics.Response> __Method_UsernameCheck = new grpc::Method<global::Statistics.Username, global::Statistics.Response>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "UsernameCheck",
+        __Marshaller_statistics_Username,
         __Marshaller_statistics_Response);
 
     /// <summary>Service descriptor</summary>
@@ -198,6 +208,26 @@ namespace Statistics {
       public virtual grpc::AsyncUnaryCall<global::Statistics.Response> SignUpAsync(global::Statistics.SignUpCredentials request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_SignUp, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Statistics.Response UsernameCheck(global::Statistics.Username request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return UsernameCheck(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Statistics.Response UsernameCheck(global::Statistics.Username request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_UsernameCheck, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> UsernameCheckAsync(global::Statistics.Username request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return UsernameCheckAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> UsernameCheckAsync(global::Statistics.Username request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_UsernameCheck, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
