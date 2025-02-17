@@ -7,25 +7,25 @@ from uniwar import db_config, command_service
 
 
 
-#TODO: 
-# L'idea è quella di memorizzare le statistiche temporaneamente nella cache e solo quando una partita termmina renderle persistenti memorizzandole nel database
-# Come cache utilizziamo un dizionario di dizionario di dizionario (chiave del primo dizionario nome utente, chiave del secondo dizionario numero del round  e chiave del terzo dizionario turno)
-#   {"NomeUtente":{numero round: {TurnoCPU:{}}}}
-# NB: La pulizia della cache avviene non appena la partita finisce e quindi devono essere memorizzati i risultati nel db
-
 
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def SendStatistics(self, request, context):
-        print(f"Ricevute statistiche per il giocatore: {request.player_id}", flush = True)
-        print(f"Round: {request.round_id}, Turno utente: {request.user_turn}", flush = True)
-        print(f"Territori attaccati: {request.attacked_territories}", flush = True)
+        print(f"Ricevute statistiche per il giocatore: {request.player_id}")
+        print(f"Round: {request.round_id}, Turno utente: {request.user_turn}")
+        print(f"Territori difendenti: {request.defending_territories}")
+        print(f"Territori attaccanti: {request.attacking_territories}")
+        print(f"Territori persi: {request.lost_territories}")
+        print(f"Territori posseduti: {request.owned_territories}")
+        if request.user_win is  None:
+            print(f"Nessuno ha vinto")
+        print(f"Numero di carri armati totali: {request.owned_tanks}", flush = True)
+
         
         return statistics_pb2.Response(message="Statistiche ricevute con successo!", status = True)
 
     def SignIn(self, request, context):
         print(f"Ricevuta una richiesta di login con i seguenti valori -> player_id = {request.player_id}, password = {request.password}")
         pass
-    
     
     
     def SignUp(self,request, context):

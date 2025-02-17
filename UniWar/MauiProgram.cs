@@ -25,15 +25,6 @@ namespace UniWar {
                             
                             appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
                             appWindow.Move(new Windows.Graphics.PointInt32(5, 10));
-
-                            // Per monitorare il focus
-                            w.Activated += (sender, args) => {
-                                Console.WriteLine("Focus attivo!");
-                                if (args.WindowActivationState == Microsoft.UI.Xaml.WindowActivationState.Deactivated) {
-                                    Console.WriteLine("Ho perso il focus!");
-                                    w.Activate();
-                                }
-                            };
 						}
 					});
 				});

@@ -24,26 +24,31 @@ namespace Statistics {
     static StatisticsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChdQcm90b3Mvc3RhdGlzdGljcy5wcm90bxIKc3RhdGlzdGljcyL9AQoUU3Rh",
+            "ChdQcm90b3Mvc3RhdGlzdGljcy5wcm90bxIKc3RhdGlzdGljcyLaAwoUU3Rh",
             "dGlzdGljc0NvbGxlY3Rpb24SEQoJcGxheWVyX2lkGAEgASgJEhAKCHJvdW5k",
             "X2lkGAIgASgFEhEKCXVzZXJfdHVybhgDIAEoCBIYChBsb3N0X3RlcnJpdG9y",
-            "aWVzGAQgAygJElcKFGF0dGFja2VkX3RlcnJpdG9yaWVzGAUgAygLMjkuc3Rh",
-            "dGlzdGljcy5TdGF0aXN0aWNzQ29sbGVjdGlvbi5BdHRhY2tlZFRlcnJpdG9y",
-            "aWVzRW50cnkaOgoYQXR0YWNrZWRUZXJyaXRvcmllc0VudHJ5EgsKA2tleRgB",
-            "IAEoCRINCgV2YWx1ZRgCIAEoBToCOAEiOAoRU2lnbkluQ3JlZGVudGlhbHMS",
-            "EQoJcGxheWVyX2lkGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIjgKEVNpZ25V",
-            "cENyZWRlbnRpYWxzEhEKCXBsYXllcl9pZBgBIAEoCRIQCghwYXNzd29yZBgC",
-            "IAEoCSIrCghSZXNwb25zZRIPCgdtZXNzYWdlGAEgASgJEg4KBnN0YXR1cxgC",
-            "IAEoCDLbAQoRU3RhdGlzdGljc1NlcnZpY2USSAoOU2VuZFN0YXRpc3RpY3MS",
-            "IC5zdGF0aXN0aWNzLlN0YXRpc3RpY3NDb2xsZWN0aW9uGhQuc3RhdGlzdGlj",
-            "cy5SZXNwb25zZRI9CgZTaWduSW4SHS5zdGF0aXN0aWNzLlNpZ25JbkNyZWRl",
-            "bnRpYWxzGhQuc3RhdGlzdGljcy5SZXNwb25zZRI9CgZTaWduVXASHS5zdGF0",
-            "aXN0aWNzLlNpZ25VcENyZWRlbnRpYWxzGhQuc3RhdGlzdGljcy5SZXNwb25z",
-            "ZWIGcHJvdG8z"));
+            "aWVzGAQgAygJElkKFWRlZmVuZGluZ190ZXJyaXRvcmllcxgFIAMoCzI6LnN0",
+            "YXRpc3RpY3MuU3RhdGlzdGljc0NvbGxlY3Rpb24uRGVmZW5kaW5nVGVycml0",
+            "b3JpZXNFbnRyeRJZChVhdHRhY2tpbmdfdGVycml0b3JpZXMYBiADKAsyOi5z",
+            "dGF0aXN0aWNzLlN0YXRpc3RpY3NDb2xsZWN0aW9uLkF0dGFja2luZ1RlcnJp",
+            "dG9yaWVzRW50cnkSEwoLb3duZWRfdGFua3MYByABKAUSGQoRb3duZWRfdGVy",
+            "cml0b3JpZXMYCCADKAkSEAoIdXNlcl93aW4YCSABKAgaOwoZRGVmZW5kaW5n",
+            "VGVycml0b3JpZXNFbnRyeRILCgNrZXkYASABKAkSDQoFdmFsdWUYAiABKAU6",
+            "AjgBGjsKGUF0dGFja2luZ1RlcnJpdG9yaWVzRW50cnkSCwoDa2V5GAEgASgJ",
+            "Eg0KBXZhbHVlGAIgASgFOgI4ASI4ChFTaWduSW5DcmVkZW50aWFscxIRCglw",
+            "bGF5ZXJfaWQYASABKAkSEAoIcGFzc3dvcmQYAiABKAkiOAoRU2lnblVwQ3Jl",
+            "ZGVudGlhbHMSEQoJcGxheWVyX2lkGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJ",
+            "IisKCFJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkSDgoGc3RhdHVzGAIgASgI",
+            "MtsBChFTdGF0aXN0aWNzU2VydmljZRJICg5TZW5kU3RhdGlzdGljcxIgLnN0",
+            "YXRpc3RpY3MuU3RhdGlzdGljc0NvbGxlY3Rpb24aFC5zdGF0aXN0aWNzLlJl",
+            "c3BvbnNlEj0KBlNpZ25JbhIdLnN0YXRpc3RpY3MuU2lnbkluQ3JlZGVudGlh",
+            "bHMaFC5zdGF0aXN0aWNzLlJlc3BvbnNlEj0KBlNpZ25VcBIdLnN0YXRpc3Rp",
+            "Y3MuU2lnblVwQ3JlZGVudGlhbHMaFC5zdGF0aXN0aWNzLlJlc3BvbnNlYgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Statistics.StatisticsCollection), global::Statistics.StatisticsCollection.Parser, new[]{ "PlayerId", "RoundId", "UserTurn", "LostTerritories", "AttackedTerritories" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Statistics.StatisticsCollection), global::Statistics.StatisticsCollection.Parser, new[]{ "PlayerId", "RoundId", "UserTurn", "LostTerritories", "DefendingTerritories", "AttackingTerritories", "OwnedTanks", "OwnedTerritories", "UserWin" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Statistics.SignInCredentials), global::Statistics.SignInCredentials.Parser, new[]{ "PlayerId", "Password" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Statistics.SignUpCredentials), global::Statistics.SignUpCredentials.Parser, new[]{ "PlayerId", "Password" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Statistics.Response), global::Statistics.Response.Parser, new[]{ "Message", "Status" }, null, null, null, null)
@@ -92,7 +97,11 @@ namespace Statistics {
       roundId_ = other.roundId_;
       userTurn_ = other.userTurn_;
       lostTerritories_ = other.lostTerritories_.Clone();
-      attackedTerritories_ = other.attackedTerritories_.Clone();
+      defendingTerritories_ = other.defendingTerritories_.Clone();
+      attackingTerritories_ = other.attackingTerritories_.Clone();
+      ownedTanks_ = other.ownedTanks_;
+      ownedTerritories_ = other.ownedTerritories_.Clone();
+      userWin_ = other.userWin_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -149,15 +158,61 @@ namespace Statistics {
       get { return lostTerritories_; }
     }
 
-    /// <summary>Field number for the "attacked_territories" field.</summary>
-    public const int AttackedTerritoriesFieldNumber = 5;
-    private static readonly pbc::MapField<string, int>.Codec _map_attackedTerritories_codec
+    /// <summary>Field number for the "defending_territories" field.</summary>
+    public const int DefendingTerritoriesFieldNumber = 5;
+    private static readonly pbc::MapField<string, int>.Codec _map_defendingTerritories_codec
         = new pbc::MapField<string, int>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForInt32(16, 0), 42);
-    private readonly pbc::MapField<string, int> attackedTerritories_ = new pbc::MapField<string, int>();
+    private readonly pbc::MapField<string, int> defendingTerritories_ = new pbc::MapField<string, int>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::MapField<string, int> AttackedTerritories {
-      get { return attackedTerritories_; }
+    public pbc::MapField<string, int> DefendingTerritories {
+      get { return defendingTerritories_; }
+    }
+
+    /// <summary>Field number for the "attacking_territories" field.</summary>
+    public const int AttackingTerritoriesFieldNumber = 6;
+    private static readonly pbc::MapField<string, int>.Codec _map_attackingTerritories_codec
+        = new pbc::MapField<string, int>.Codec(pb::FieldCodec.ForString(10, ""), pb::FieldCodec.ForInt32(16, 0), 50);
+    private readonly pbc::MapField<string, int> attackingTerritories_ = new pbc::MapField<string, int>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<string, int> AttackingTerritories {
+      get { return attackingTerritories_; }
+    }
+
+    /// <summary>Field number for the "owned_tanks" field.</summary>
+    public const int OwnedTanksFieldNumber = 7;
+    private int ownedTanks_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int OwnedTanks {
+      get { return ownedTanks_; }
+      set {
+        ownedTanks_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "owned_territories" field.</summary>
+    public const int OwnedTerritoriesFieldNumber = 8;
+    private static readonly pb::FieldCodec<string> _repeated_ownedTerritories_codec
+        = pb::FieldCodec.ForString(66);
+    private readonly pbc::RepeatedField<string> ownedTerritories_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<string> OwnedTerritories {
+      get { return ownedTerritories_; }
+    }
+
+    /// <summary>Field number for the "user_win" field.</summary>
+    public const int UserWinFieldNumber = 9;
+    private bool userWin_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool UserWin {
+      get { return userWin_; }
+      set {
+        userWin_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -179,7 +234,11 @@ namespace Statistics {
       if (RoundId != other.RoundId) return false;
       if (UserTurn != other.UserTurn) return false;
       if(!lostTerritories_.Equals(other.lostTerritories_)) return false;
-      if (!AttackedTerritories.Equals(other.AttackedTerritories)) return false;
+      if (!DefendingTerritories.Equals(other.DefendingTerritories)) return false;
+      if (!AttackingTerritories.Equals(other.AttackingTerritories)) return false;
+      if (OwnedTanks != other.OwnedTanks) return false;
+      if(!ownedTerritories_.Equals(other.ownedTerritories_)) return false;
+      if (UserWin != other.UserWin) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -191,7 +250,11 @@ namespace Statistics {
       if (RoundId != 0) hash ^= RoundId.GetHashCode();
       if (UserTurn != false) hash ^= UserTurn.GetHashCode();
       hash ^= lostTerritories_.GetHashCode();
-      hash ^= AttackedTerritories.GetHashCode();
+      hash ^= DefendingTerritories.GetHashCode();
+      hash ^= AttackingTerritories.GetHashCode();
+      if (OwnedTanks != 0) hash ^= OwnedTanks.GetHashCode();
+      hash ^= ownedTerritories_.GetHashCode();
+      if (UserWin != false) hash ^= UserWin.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -223,7 +286,17 @@ namespace Statistics {
         output.WriteBool(UserTurn);
       }
       lostTerritories_.WriteTo(output, _repeated_lostTerritories_codec);
-      attackedTerritories_.WriteTo(output, _map_attackedTerritories_codec);
+      defendingTerritories_.WriteTo(output, _map_defendingTerritories_codec);
+      attackingTerritories_.WriteTo(output, _map_attackingTerritories_codec);
+      if (OwnedTanks != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(OwnedTanks);
+      }
+      ownedTerritories_.WriteTo(output, _repeated_ownedTerritories_codec);
+      if (UserWin != false) {
+        output.WriteRawTag(72);
+        output.WriteBool(UserWin);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -247,7 +320,17 @@ namespace Statistics {
         output.WriteBool(UserTurn);
       }
       lostTerritories_.WriteTo(ref output, _repeated_lostTerritories_codec);
-      attackedTerritories_.WriteTo(ref output, _map_attackedTerritories_codec);
+      defendingTerritories_.WriteTo(ref output, _map_defendingTerritories_codec);
+      attackingTerritories_.WriteTo(ref output, _map_attackingTerritories_codec);
+      if (OwnedTanks != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(OwnedTanks);
+      }
+      ownedTerritories_.WriteTo(ref output, _repeated_ownedTerritories_codec);
+      if (UserWin != false) {
+        output.WriteRawTag(72);
+        output.WriteBool(UserWin);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -268,7 +351,15 @@ namespace Statistics {
         size += 1 + 1;
       }
       size += lostTerritories_.CalculateSize(_repeated_lostTerritories_codec);
-      size += attackedTerritories_.CalculateSize(_map_attackedTerritories_codec);
+      size += defendingTerritories_.CalculateSize(_map_defendingTerritories_codec);
+      size += attackingTerritories_.CalculateSize(_map_attackingTerritories_codec);
+      if (OwnedTanks != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(OwnedTanks);
+      }
+      size += ownedTerritories_.CalculateSize(_repeated_ownedTerritories_codec);
+      if (UserWin != false) {
+        size += 1 + 1;
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -291,7 +382,15 @@ namespace Statistics {
         UserTurn = other.UserTurn;
       }
       lostTerritories_.Add(other.lostTerritories_);
-      attackedTerritories_.MergeFrom(other.attackedTerritories_);
+      defendingTerritories_.MergeFrom(other.defendingTerritories_);
+      attackingTerritories_.MergeFrom(other.attackingTerritories_);
+      if (other.OwnedTanks != 0) {
+        OwnedTanks = other.OwnedTanks;
+      }
+      ownedTerritories_.Add(other.ownedTerritories_);
+      if (other.UserWin != false) {
+        UserWin = other.UserWin;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -328,7 +427,23 @@ namespace Statistics {
             break;
           }
           case 42: {
-            attackedTerritories_.AddEntriesFrom(input, _map_attackedTerritories_codec);
+            defendingTerritories_.AddEntriesFrom(input, _map_defendingTerritories_codec);
+            break;
+          }
+          case 50: {
+            attackingTerritories_.AddEntriesFrom(input, _map_attackingTerritories_codec);
+            break;
+          }
+          case 56: {
+            OwnedTanks = input.ReadInt32();
+            break;
+          }
+          case 66: {
+            ownedTerritories_.AddEntriesFrom(input, _repeated_ownedTerritories_codec);
+            break;
+          }
+          case 72: {
+            UserWin = input.ReadBool();
             break;
           }
         }
@@ -367,7 +482,23 @@ namespace Statistics {
             break;
           }
           case 42: {
-            attackedTerritories_.AddEntriesFrom(ref input, _map_attackedTerritories_codec);
+            defendingTerritories_.AddEntriesFrom(ref input, _map_defendingTerritories_codec);
+            break;
+          }
+          case 50: {
+            attackingTerritories_.AddEntriesFrom(ref input, _map_attackingTerritories_codec);
+            break;
+          }
+          case 56: {
+            OwnedTanks = input.ReadInt32();
+            break;
+          }
+          case 66: {
+            ownedTerritories_.AddEntriesFrom(ref input, _repeated_ownedTerritories_codec);
+            break;
+          }
+          case 72: {
+            UserWin = input.ReadBool();
             break;
           }
         }

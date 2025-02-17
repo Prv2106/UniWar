@@ -24,25 +24,29 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10statistics.proto\x12\nstatistics\"\xfd\x01\n\x14StatisticsCollection\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08round_id\x18\x02 \x01(\x05\x12\x11\n\tuser_turn\x18\x03 \x01(\x08\x12\x18\n\x10lost_territories\x18\x04 \x03(\t\x12W\n\x14\x61ttacked_territories\x18\x05 \x03(\x0b\x32\x39.statistics.StatisticsCollection.AttackedTerritoriesEntry\x1a:\n\x18\x41ttackedTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"8\n\x11SignInCredentials\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"8\n\x11SignUpCredentials\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"+\n\x08Response\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\x08\x32\xdb\x01\n\x11StatisticsService\x12H\n\x0eSendStatistics\x12 .statistics.StatisticsCollection\x1a\x14.statistics.Response\x12=\n\x06SignIn\x12\x1d.statistics.SignInCredentials\x1a\x14.statistics.Response\x12=\n\x06SignUp\x12\x1d.statistics.SignUpCredentials\x1a\x14.statistics.Responseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10statistics.proto\x12\nstatistics\"\xda\x03\n\x14StatisticsCollection\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08round_id\x18\x02 \x01(\x05\x12\x11\n\tuser_turn\x18\x03 \x01(\x08\x12\x18\n\x10lost_territories\x18\x04 \x03(\t\x12Y\n\x15\x64\x65\x66\x65nding_territories\x18\x05 \x03(\x0b\x32:.statistics.StatisticsCollection.DefendingTerritoriesEntry\x12Y\n\x15\x61ttacking_territories\x18\x06 \x03(\x0b\x32:.statistics.StatisticsCollection.AttackingTerritoriesEntry\x12\x13\n\x0bowned_tanks\x18\x07 \x01(\x05\x12\x19\n\x11owned_territories\x18\x08 \x03(\t\x12\x10\n\x08user_win\x18\t \x01(\x08\x1a;\n\x19\x44\x65\x66\x65ndingTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x1a;\n\x19\x41ttackingTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"8\n\x11SignInCredentials\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"8\n\x11SignUpCredentials\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"+\n\x08Response\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\x08\x32\xdb\x01\n\x11StatisticsService\x12H\n\x0eSendStatistics\x12 .statistics.StatisticsCollection\x1a\x14.statistics.Response\x12=\n\x06SignIn\x12\x1d.statistics.SignInCredentials\x1a\x14.statistics.Response\x12=\n\x06SignUp\x12\x1d.statistics.SignUpCredentials\x1a\x14.statistics.Responseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'statistics_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_STATISTICSCOLLECTION_ATTACKEDTERRITORIESENTRY']._loaded_options = None
-  _globals['_STATISTICSCOLLECTION_ATTACKEDTERRITORIESENTRY']._serialized_options = b'8\001'
+  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._loaded_options = None
+  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_options = b'8\001'
+  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._loaded_options = None
+  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_options = b'8\001'
   _globals['_STATISTICSCOLLECTION']._serialized_start=33
-  _globals['_STATISTICSCOLLECTION']._serialized_end=286
-  _globals['_STATISTICSCOLLECTION_ATTACKEDTERRITORIESENTRY']._serialized_start=228
-  _globals['_STATISTICSCOLLECTION_ATTACKEDTERRITORIESENTRY']._serialized_end=286
-  _globals['_SIGNINCREDENTIALS']._serialized_start=288
-  _globals['_SIGNINCREDENTIALS']._serialized_end=344
-  _globals['_SIGNUPCREDENTIALS']._serialized_start=346
-  _globals['_SIGNUPCREDENTIALS']._serialized_end=402
-  _globals['_RESPONSE']._serialized_start=404
-  _globals['_RESPONSE']._serialized_end=447
-  _globals['_STATISTICSSERVICE']._serialized_start=450
-  _globals['_STATISTICSSERVICE']._serialized_end=669
+  _globals['_STATISTICSCOLLECTION']._serialized_end=507
+  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_start=387
+  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_end=446
+  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_start=448
+  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_end=507
+  _globals['_SIGNINCREDENTIALS']._serialized_start=509
+  _globals['_SIGNINCREDENTIALS']._serialized_end=565
+  _globals['_SIGNUPCREDENTIALS']._serialized_start=567
+  _globals['_SIGNUPCREDENTIALS']._serialized_end=623
+  _globals['_RESPONSE']._serialized_start=625
+  _globals['_RESPONSE']._serialized_end=668
+  _globals['_STATISTICSSERVICE']._serialized_start=671
+  _globals['_STATISTICSSERVICE']._serialized_end=890
 # @@protoc_insertion_point(module_scope)

@@ -55,7 +55,8 @@ class StatisticsServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def SendStatistics(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

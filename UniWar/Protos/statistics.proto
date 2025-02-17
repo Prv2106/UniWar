@@ -3,7 +3,8 @@ syntax = "proto3";
 package statistics;
 
 service StatisticsService {
-    rpc SendStatistics (StatisticsCollection) returns (Response);
+    rpc SendStatistics (StatisticsCollection) returns (Response); 
+    // da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
 
     rpc SignIn (SignInCredentials) returns (Response);
 
@@ -15,7 +16,13 @@ message StatisticsCollection {
     int32 round_id = 2;
     bool user_turn = 3;
     repeated string lost_territories = 4;
-    map<string, int32> attacked_territories = 5;
+    map<string, int32> defending_territories = 5;
+    map<string, int32> attacking_territories = 6;
+    int32 owned_tanks = 7;
+    repeated string owned_territories = 8;
+    bool user_win = 9;
+
+
 }
 
 message SignInCredentials {

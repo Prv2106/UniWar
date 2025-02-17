@@ -12,22 +12,36 @@ namespace UniWar {
             var client = new StatisticsService.StatisticsServiceClient(channel);
 
             // Mappiamo la struct C# nel messaggio gRPC
-            var request = new Statistics.StatisticsCollection   {
-                PlayerId = stats.PlayerId,
+            var request = new Statistics.StatisticsCollection {
                 RoundId = stats.RoundId,
-                UserTurn = stats.UserTurn
+                UserTurn = stats.UserTurn,
+                OwnedTanks = stats.OwnedTanks
             };
 
 
             // Aggiungiamo AttackedTerritories alla mappa gRPC
-            if (stats.AttackedTerritories != null) {
-                foreach (var entry in stats.AttackedTerritories)
-                {
-                    request.AttackedTerritories.Add(entry.Key, entry.Value);
+            if (stats.DefendingTerritories != null) {
+                foreach (var entry in stats.DefendingTerritories) {
+                    request.DefendingTerritories.Add(entry.Key, entry.Value);
                 }
             }
 
+            if (stats.AttackingTerritories != null) {
+                foreach (var entry in stats.AttackingTerritories) {
+                    request.AttackingTerritories.Add(entry.Key, entry.Value);
+                }
+            }
 
+            // Aggiungiamo LostTerritories alla lista gRPC
+            if (stats.LostTerritories != null)
+                request.LostTerritories.AddRange(stats.LostTerritories);
+
+            request.OwnedTerritories.AddRange(stats.OwnedTerritories);
+
+            if (stats.UserWin != null)
+                request.UserWin = (bool) stats.UserWin;
+
+            
             try {
                 var response = client.SendStatistics(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
@@ -46,12 +60,12 @@ namespace UniWar {
 
 
 
-        public static Statistics.Response SignIn(string username, string password){
+        public static Response SignIn(string username, string password){
             using var channel = GrpcChannel.ForAddress("http://localhost:50051");
             var client = new StatisticsService.StatisticsServiceClient(channel);
 
 
-            var request = new Statistics.SignInCredentials();
+            var request = new SignInCredentials();
             request.PlayerId = username;
             request.Password = password;
 
@@ -72,12 +86,12 @@ namespace UniWar {
 
         }
 
-        public static Statistics.Response SignUp(string username, string password){
+        public static Response SignUp(string username, string password){
             using var channel = GrpcChannel.ForAddress("http://localhost:50051");
             var client = new StatisticsService.StatisticsServiceClient(channel);
 
 
-            var request = new Statistics.SignUpCredentials();
+            var request = new SignUpCredentials();
             request.PlayerId = username;
             request.Password = password;
 
