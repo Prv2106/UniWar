@@ -55,8 +55,6 @@ namespace Statistics {
     static readonly grpc::Marshaller<global::Statistics.SignUpCredentials> __Marshaller_statistics_SignUpCredentials = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.SignUpCredentials.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Statistics.Username> __Marshaller_statistics_Username = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.Username.Parser));
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::Statistics.GameInfoList> __Marshaller_statistics_GameInfoList = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.GameInfoList.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response> __Method_SendStatistics = new grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response>(
@@ -83,12 +81,12 @@ namespace Statistics {
         __Marshaller_statistics_Response);
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::Statistics.Username, global::Statistics.GameInfoList> __Method_GetGames = new grpc::Method<global::Statistics.Username, global::Statistics.GameInfoList>(
+    static readonly grpc::Method<global::Statistics.Username, global::Statistics.Response> __Method_UsernameCheck = new grpc::Method<global::Statistics.Username, global::Statistics.Response>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "GetGames",
+        "UsernameCheck",
         __Marshaller_statistics_Username,
-        __Marshaller_statistics_GameInfoList);
+        __Marshaller_statistics_Response);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -212,24 +210,24 @@ namespace Statistics {
         return CallInvoker.AsyncUnaryCall(__Method_SignUp, null, options, request);
       }
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Statistics.GameInfoList GetGames(global::Statistics.Username request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Statistics.Response UsernameCheck(global::Statistics.Username request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return GetGames(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return UsernameCheck(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Statistics.GameInfoList GetGames(global::Statistics.Username request, grpc::CallOptions options)
+      public virtual global::Statistics.Response UsernameCheck(global::Statistics.Username request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_GetGames, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_UsernameCheck, null, options, request);
       }
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Statistics.GameInfoList> GetGamesAsync(global::Statistics.Username request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> UsernameCheckAsync(global::Statistics.Username request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return GetGamesAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return UsernameCheckAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Statistics.GameInfoList> GetGamesAsync(global::Statistics.Username request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> UsernameCheckAsync(global::Statistics.Username request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_GetGames, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_UsernameCheck, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]

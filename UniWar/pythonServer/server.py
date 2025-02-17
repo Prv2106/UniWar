@@ -3,7 +3,7 @@ from concurrent import futures
 import pymysql
 import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
 import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
-from uniwar import db_config, command_service
+from uniwar import db_config, command_service, query_service
 
 
 
@@ -26,6 +26,24 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         return msg.Response(message="Statistiche ricevute con successo!", status = True)
     
     
+    
+    def GetGames(self, request, context):
+        # "simuliamo" la query
+
+        game_list = msg.GameInfoList(
+            message="Lista partite recuperata con successo!",
+            status=True
+        )
+
+        game_list.games.extend([
+            msg.GameInfo(id=1, date="10/02/2024", state="vincitore"),
+            msg.GameInfo(id=2, date="13/02/2024", state="perdente"),
+            msg.GameInfo(id=3, date="16/02/2024", state="incompleta")
+        ])
+
+        return game_list
+    
+    
     # Gestione dell'utente
 
     def SignIn(self, request, context):
@@ -35,18 +53,18 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service = query_service.QueryService()
                 service.handle_login_user_query(query_service.LogInUserQuery(request.player_id, request.password, conn))
                 print("SignIn eseguito con successo",flush=True)
-                return statistics_pb2.Response(message="SignIn effettuato con successo", status= True) 
+                return msg.Response(message="SignIn effettuato con successo", status= True) 
             
         except ValueError as e:
             print(f"{e}", flush= True)
-            return statistics_pb2.Response(message=str(e), status=False)
+            return msg.Response(message=str(e), status=False)
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return statistics_pb2.Response(message=f"Database Error: {err}", status=False)
+            return msg.Response(message=f"Database Error: {err}", status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
-            return statistics_pb2.Response(message=str(e), status=False)
+            return msg.Response(message=str(e), status=False)
     
 
     def SignUp(self, request, context):
@@ -71,7 +89,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
         except ValueError as e:
             # Gestione degli errori di validazione
-            return statistics_pb2.Response(message=str(e), status=False)
+            return msg.Response(message=str(e), status=False)
         
         
     def UsernameCheck(self,request,context):
@@ -81,18 +99,18 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 service.handle_username_check_query(query_service.UsernameCheckQuery(conn,request.username))
-                return statistics_pb2.Response(message="Username valido", status = True)
+                return msg.Response(message="Username valido", status = True)
             
         except ValueError as e:
             print(f"{e}", flush= True)
-            return statistics_pb2.Response(message=str(e), status=False)
+            return msg.Response(message=str(e), status=False)
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return statistics_pb2.Response(message=f"Database Error: {err}", status=False)
+            return msg.Response(message=f"Database Error: {err}", status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
-            return statistics_pb2.Response(message=str(e), status=False)
+            return msg.Response(message=str(e), status=False)
 
     
 
