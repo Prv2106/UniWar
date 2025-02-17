@@ -3,6 +3,7 @@ syntax = "proto3";
 package statistics;
 
 service StatisticsService {
+    
     rpc SendStatistics (StatisticsCollection) returns (Response); 
     // da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
 
@@ -13,13 +14,17 @@ service StatisticsService {
     rpc UsernameCheck(Username) returns (Response);
 
     rpc GetStatistics(StatisticRequest) returns (StatisticsResponse);
+
+    rpc GetGames (Username) returns (GameInfoList);
     
 }
 
 
 
 
-
+message StatisticRequest{    
+    int32 game_id = 1;
+}
 
 message Username{
     string username = 1;
