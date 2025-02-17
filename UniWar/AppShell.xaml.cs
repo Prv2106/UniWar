@@ -5,6 +5,8 @@
         public AppShell()
         {
             InitializeComponent();
+            // Eventuale registrazione di rotte aggiuntive
+            Routing.RegisterRoute("signin", typeof(SignInUp));
         }
     }
 }

@@ -1,16 +1,18 @@
+using Statistics;
 using Windows.Storage.Provider;
 
 namespace UniWar{
     public partial class SignInUp: ContentPage{
 
-            private bool isSignIn;
+        private bool isSignIn;
+        public SignInUp() : this(true){}
 
-            public SignInUp(bool signIn = true) {
-                InitializeComponent();
-                isSignIn = signIn;
-                UpdateUI();
-                
-            }
+        public SignInUp(bool signIn = true) {
+            InitializeComponent();
+            isSignIn = signIn;
+            UpdateUI();
+            
+        }
 
         private void UpdateUI(){
                  Button.Clicked -= OnSigniInButtonClicked!;
@@ -75,8 +77,29 @@ namespace UniWar{
             }
             
             try{
-                ClientGrpc.SignIn(username, password);
-                await Navigation.PushAsync(new InitializationSummary());
+                var response =ClientGrpc.SignIn(username, password);
+
+                if(response.Message == "Unavaible player_id"){
+                    ShowWarning("Username già in uso");
+                    return;
+                }
+
+                if(response.Message == "Database Error"){
+                    ShowWarning("Errore nel database");
+                    return;
+                }
+
+                if(response.Message == "Username o Password non corretti"){
+                    ShowWarning("Username o Password non corretti");
+                    return;
+                }
+
+                if(response.Status == false){
+                    ShowWarning("C'è stato un problema");
+                    return;
+                }
+
+                await Navigation.PushAsync(new MainPage());
             }
              catch (Grpc.Core.RpcException e) {
                 warning.Text = "Non è stato possibile effettuare il login per qualche problema nella rpc";
@@ -106,7 +129,7 @@ namespace UniWar{
                     return;
                 }
                 
-                if(response.Message == "Unavaible Username"){
+                if(response.Message == "Unavaible player_id"){
                     ShowWarning("Username già in uso");
                     return;
                 }
@@ -121,9 +144,10 @@ namespace UniWar{
                     return;
                 }
 
-                await Navigation.PushAsync(new InitializationSummary());
+                Console.WriteLine("SignUp effettuato con successo");
+                await Navigation.PushAsync(new MainPage());
             }
-             catch (Grpc.Core.RpcException e) {
+            catch (Grpc.Core.RpcException e) {
                 warning.Text = "Non è stato possibile effettuare la registrazione per qualche problema nella rpc";
                 warning.IsVisible = true;
                 Console.WriteLine($"Errore: {e}");

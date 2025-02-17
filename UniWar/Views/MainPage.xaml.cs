@@ -1,6 +1,7 @@
 ﻿namespace UniWar {
     public partial class MainPage : ContentPage {
         public MainPage() {
+            Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
             // metodo che, durante la compilazione, collega la logica C# agli elementi XAML 
         }
@@ -10,9 +11,7 @@
             // N.B: await è usato perché PushAsync resituisce un Task, e quindi garantiamo la ripresa del controllo alla UI per 
             //      renderla responsiva.
             
-           // await Navigation.PushAsync(new InitializationSummary());       
-           await Navigation.PushAsync(new SignInUp(false));    
-            
+            await Navigation.PushAsync(new InitializationSummary());           
         }
 
     } 

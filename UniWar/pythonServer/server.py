@@ -3,7 +3,7 @@ from concurrent import futures
 import pymysql
 import statistics_pb2
 import statistics_pb2_grpc
-from uniwar import db_config, command_service
+from uniwar import db_config, command_service, query_service
 
 
 
@@ -32,16 +32,34 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     # Gestione dell'utente
 
     def SignIn(self, request, context):
-        print(f"Ricevuta una richiesta di login con i seguenti valori -> player_id = {request.player_id}, password = {request.password}")
-        pass
+        print(f"Ricevuta una richiesta di SignIn con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush=True)
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = query_service.QueryService()
+                service.handle_login_user_query(query_service.LogInUserQuery(request.player_id, request.password, conn))
+                print("SignIn eseguito con successo",flush=True)
+                return statistics_pb2.Response(message="Login effettuato con successo", status= True) 
+            
+        except ValueError as e:
+            print(f"{e}", flush= True)
+            return statistics_pb2.Response(message=str(e), status=False)
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return statistics_pb2.Response(message=f"Database Error: {err}", status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
+            return statistics_pb2.Response(message=str(e), status=False)
     
 
-    def SignUp(request):
+    def SignUp(self, request, context):
+        print(f"Ricevuta una richiesta di SignUp con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush= True)
         try:
             # Apertura della connessione al database con `with`
-            with pymysql.connect(**db_config) as conn:
+            with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
                 service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password, conn))
+                print("SignUp eseguito con successo",flush=True)
 
                 # Creazione della risposta di successo
                 return statistics_pb2.Response(message="Utente registrato con successo!", status=True)

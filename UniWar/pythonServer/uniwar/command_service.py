@@ -7,7 +7,6 @@ import re
 class RegisterUserCommand:
     def __init__(self, username, password, conn):
         
-       
         # verifica che la password non sia vuota
         if not password:
             print("Password non inserita", flush = True)
@@ -35,6 +34,9 @@ class RegisterUserCommand:
         return re.match(username_regex, username) is not None
     
     
+    
+    
+   
     
 
 # Servizio che gestisce i command
