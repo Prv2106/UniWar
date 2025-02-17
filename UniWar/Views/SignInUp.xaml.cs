@@ -31,13 +31,11 @@ namespace UniWar{
                     SwitchModeLabel.Text = "Hai già un account? Accedi";
                 }
 
-
                 // Assicura che il messaggio di errore scompaia quando l'utente scrive
                 UsernameEntry.TextChanged -= OnEntryTextChanged!;
                 PasswordEntry.TextChanged -= OnEntryTextChanged!;
                 UsernameEntry.TextChanged += OnEntryTextChanged!;
                 PasswordEntry.TextChanged += OnEntryTextChanged!;
-
         }
 
 
@@ -74,9 +72,9 @@ namespace UniWar{
                 return;
             }
             
-            try{
+            try {
                 ClientGrpc.SignIn(username, password);
-                await Navigation.PushAsync(new InitializationSummary());
+                await Navigation.PushAsync(new InitializationSummary(username));
             }
              catch (Grpc.Core.RpcException e) {
                 warning.Text = "Non è stato possibile effettuare il login per qualche problema nella rpc";
@@ -121,7 +119,7 @@ namespace UniWar{
                     return;
                 }
 
-                await Navigation.PushAsync(new InitializationSummary());
+                await Navigation.PushAsync(new InitializationSummary(username));
             }
              catch (Grpc.Core.RpcException e) {
                 warning.Text = "Non è stato possibile effettuare la registrazione per qualche problema nella rpc";

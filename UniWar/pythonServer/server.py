@@ -1,8 +1,8 @@
 import grpc
 from concurrent import futures
 import pymysql
-import statistics_pb2
-import statistics_pb2_grpc
+import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
+import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
 from uniwar import db_config, command_service
 
 
@@ -23,10 +23,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print(f"Numero di carri armati totali: {request.owned_tanks}", flush = True)
 
         
-        return statistics_pb2.Response(message="Statistiche ricevute con successo!", status = True)
-    
-    
-    
+        return msg.Response(message="Statistiche ricevute con successo!", status = True)
     
     
     # Gestione dell'utente
@@ -36,7 +33,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         pass
     
 
-    def SignUp(request):
+    def SignUp(self, request, context):
         try:
             # Apertura della connessione al database con `with`
             with pymysql.connect(**db_config) as conn:
@@ -44,20 +41,45 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password, conn))
 
                 # Creazione della risposta di successo
-                return statistics_pb2.Response(message="Utente registrato con successo!", status=True)
+                return msg.Response(message="Utente registrato con successo!", status=True)
 
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database
             if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
                 print(f"Errore di duplicazione, codice di errore: {err}", flush=True)
-                return statistics_pb2.Response(message="Unavaible player_id", status=False)
+                return msg.Response(message="Unavailable player_id", status=False)
             else:
                 print(f"Errore durante l'inserimento nel database, codice di errore: {err}", flush=True)
-                return statistics_pb2.Response(message="Database Error", status=False)
+                return msg.Response(message="Database Error", status=False)
 
         except ValueError as e:
             # Gestione degli errori di validazione
-            return statistics_pb2.Response(message=str(e), status=False)
+            return msg.Response(message=str(e), status=False)
+        
+
+    def GetGames(self, request, context):
+        # "simuliamo" la query
+
+        game_list = msg.GameInfoList(
+            message="Lista partite recuperata con successo!",
+            status=True
+        )
+
+        game_list.games.extend([
+            msg.GameInfo(id=1, date="10/02/2024", state="vincitore"),
+            msg.GameInfo(id=2, date="13/02/2024", state="perdente"),
+            msg.GameInfo(id=3, date="16/02/2024", state="incompleta")
+        ])
+
+        return game_list
+
+
+
+
+
+
+
+
 
     
 

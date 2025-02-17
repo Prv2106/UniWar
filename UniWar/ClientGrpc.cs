@@ -1,15 +1,15 @@
 using Grpc.Net.Client;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Statistics; // Namespace generato da gRPC
 
 namespace UniWar {
-    class ClientGrpc {
+    static class ClientGrpc {
+        private static readonly string _serverAddress = "http://localhost:50051";
+        public static StatisticsService.StatisticsServiceClient GetStub() {
+            return new StatisticsService.StatisticsServiceClient(GrpcChannel.ForAddress(_serverAddress));
+        }
+
         public static void SendStatisticsAsync(StatisticsCollection stats) {
-            
-            using var channel = GrpcChannel.ForAddress("http://localhost:50051");
-            var client = new StatisticsService.StatisticsServiceClient(channel);
+            var stub = GetStub();
 
             // Mappiamo la struct C# nel messaggio gRPC
             var request = new Statistics.StatisticsCollection {
@@ -34,7 +34,7 @@ namespace UniWar {
 
             // Aggiungiamo LostTerritories alla lista gRPC
             if (stats.LostTerritories != null)
-                request.LostTerritories.AddRange(stats.LostTerritories);
+                request.LostTerritories!.AddRange(stats.LostTerritories);
 
             request.OwnedTerritories.AddRange(stats.OwnedTerritories);
 
@@ -43,7 +43,7 @@ namespace UniWar {
 
             
             try {
-                var response = client.SendStatistics(request);
+                var response = stub.SendStatistics(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
             }
             catch (Grpc.Core.RpcException rpcEx) {
@@ -61,16 +61,16 @@ namespace UniWar {
 
 
         public static Response SignIn(string username, string password){
-            using var channel = GrpcChannel.ForAddress("http://localhost:50051");
-            var client = new StatisticsService.StatisticsServiceClient(channel);
+            var stub = GetStub();
 
 
-            var request = new SignInCredentials();
-            request.PlayerId = username;
-            request.Password = password;
+            var request = new SignInCredentials {
+                PlayerId = username,
+                Password = password
+            };
 
-             try {
-                var response = client.SignIn(request);
+            try {
+                var response = stub.SignIn(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;
             }
@@ -86,17 +86,16 @@ namespace UniWar {
 
         }
 
-        public static Response SignUp(string username, string password){
-            using var channel = GrpcChannel.ForAddress("http://localhost:50051");
-            var client = new StatisticsService.StatisticsServiceClient(channel);
+        public static Response SignUp(string username, string password) {
+            var stub = GetStub();
 
-
-            var request = new SignUpCredentials();
-            request.PlayerId = username;
-            request.Password = password;
+            var request = new SignUpCredentials {
+                PlayerId = username,
+                Password = password
+            };
 
             try {
-                var response = client.SignUp(request);
+                var response = stub.SignUp(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;       
 
@@ -109,9 +108,24 @@ namespace UniWar {
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
                 throw; // Rilancia per essere gestito dalla funzione chiamante
             }
-            
-            
+        }
 
+
+        public static GameInfoList GetGames(string username) {
+            var stub = GetStub();
+
+            var request = new Username() {
+               Username_ = username
+            };
+
+            try {
+                var response = stub.GetGames(request);
+                Console.WriteLine($"Risposta dal server: {response.Message}");
+                return response;       
+            } catch (Exception e) {
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {e.Message}");
+                throw; // Rilancia per essere gestito dalla funzione chiamante
+            }
         }
 
 

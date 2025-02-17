@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./Protos",
+        "./Protos/statistics_pb2_"
+    ]
+}

@@ -9,7 +9,12 @@ service StatisticsService {
     rpc SignIn (SignInCredentials) returns (Response);
 
     rpc SignUp (SignUpCredentials) returns (Response);
+
+    rpc GetGames (Username) returns (GameInfoList);
 }
+
+
+// messaggi di richiesta (client -> server)
 
 message StatisticsCollection {
     string player_id = 1;
@@ -21,8 +26,6 @@ message StatisticsCollection {
     int32 owned_tanks = 7;
     repeated string owned_territories = 8;
     bool user_win = 9;
-
-
 }
 
 message SignInCredentials {
@@ -35,8 +38,26 @@ message SignUpCredentials {
     string password = 2;
 }
 
+message Username {
+    string username = 1;
+}
+
+
+// messaggi di risposta (client <- server)
 
 message Response {
     string message = 1;
     bool status = 2;
+}
+
+message GameInfo {
+    int32 id = 1; 
+    string date = 2;
+    string state = 3;
+}
+
+message GameInfoList {
+    string message = 1;
+    bool status = 2;
+    repeated GameInfo games = 3;
 }

@@ -6,6 +6,43 @@
 
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
+        <HorizontalStackLayout HorizontalOptions ="Center">
+            <!-- Container per lo username con bordo e padding -->
+                <Frame 
+                    BackgroundColor="Brown"
+                    CornerRadius="20"
+                    HasShadow="True"
+                    BorderColor="Black">
+                    <HorizontalStackLayout Spacing="5">
+                        <Image 
+                            Source="military_hat.png" 
+                            WidthRequest="45" 
+                            HeightRequest="40"/>
+                        <Label
+                            VerticalOptions="Center"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="Mygiuseppe09"/>
+                    </HorizontalStackLayout>
+                </Frame>
+
+            <BoxView WidthRequest="160" 
+                    BackgroundColor="Transparent"
+                />
+
+            <Grid>
+                <Image
+                Source="logout.png"
+                WidthRequest="100"/>
+                <Button
+                    Clicked ="OnLogoutClicked"
+                    BackgroundColor="Transparent"
+                    />
+            </Grid>
+            
+        </HorizontalStackLayout>
+
         <Image Source="banner.png"
             WidthRequest="800"
             HeightRequest="130"
@@ -15,15 +52,26 @@
             WidthRequest="700"
             HeightRequest="380"
             Aspect="AspectFit"
-            Margin="0,0,0,20"/>
+            Margin="0,0,0,10"/>
 
-        <Button Text="Nuova partita"
+        <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+            <Button Text="Nuova partita"
                 Clicked="OnNuovaPartitaButtonClicked"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 HeightRequest="70"
-                WidthRequest="180"
+                WidthRequest="200"
                 FontSize="20"/>
+            <Button Text="Visualizza storico"
+                Clicked="OnVisualizzaStoricoButtonClicked"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                HeightRequest="70"
+                WidthRequest="200"
+                BackgroundColor="Brown"
+                FontSize="20"/>
+        </HorizontalStackLayout>
+        
     </StackLayout>
 
 </ContentPage>

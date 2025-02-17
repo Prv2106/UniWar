@@ -1,8 +1,9 @@
 ﻿namespace UniWar {
     public partial class MainPage : ContentPage {
+        // private readonly string _playerUsername;
         public MainPage() {
             InitializeComponent();
-            // metodo che, durante la compilazione, collega la logica C# agli elementi XAML 
+            // _playerUsername = playerUsername;
         }
 
         private async void OnNuovaPartitaButtonClicked(object sender, EventArgs e) {
@@ -11,8 +12,15 @@
             //      renderla responsiva.
             
            // await Navigation.PushAsync(new InitializationSummary());       
-           await Navigation.PushAsync(new SignInUp(false));    
-            
+           await Navigation.PushAsync(new InitializationSummary("mygiuseppe09"));    
+        }
+
+        private async void OnVisualizzaStoricoButtonClicked(object sender, EventArgs e) {
+            await Navigation.PushModalAsync(new GamesHistory("mygiuseppe09"));
+        }
+
+        private async void OnLogoutClicked(object sender, EventArgs e) {
+            await Navigation.PopAsync();
         }
 
     } 
