@@ -1,0 +1,101 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="UniWar.GamesHistory"
+             >
+
+   <VerticalStackLayout 
+       VerticalOptions="Center"
+       Padding="10,0,10,20">
+        <!-- Simulazione Material Card -->
+        <Frame CornerRadius="12"
+               HasShadow="True"
+               BackgroundColor="White"> 
+            
+            <VerticalStackLayout>
+              <!-- Titolo -->
+              <Label Text="Le tue ultime 10 partite:"
+                     FontSize="25"
+                     FontAttributes="Bold"
+                     TextColor="#333"
+                     HorizontalOptions="Center"/>
+              
+              <!-- Descrizione -->
+              <Label Text="Sono presenti sia le partite completate che non"
+                     FontSize="16"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     Margin="0,5,0,10"/>
+
+              <!-- Intestazione delle colonne tabella -->
+              <Grid ColumnDefinitions="*,*,*" Padding="10" BackgroundColor="LightGray" WidthRequest="392">
+                     
+                     <!-- Colonna ID -->
+                     <Label Text="ID"
+                            FontAttributes="Bold"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
+                            Grid.Column="0"/>
+
+                     <!-- Colonna Data -->
+                     <Label Text="Data"
+                            FontAttributes="Bold"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
+                            Grid.Column="1"/>
+
+                     <!-- Colonna Stato -->
+                     <Label Text="Stato"
+                            FontAttributes="Bold"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
+                            Grid.Column="2"/>
+                     
+              </Grid>
+
+              <!-- tabella! ... lista delle partite -->
+              <ListView ItemsSource="{Binding Games}" HasUnevenRows="True" ItemTapped="OnGameTapped"
+                     VerticalOptions="Center" WidthRequest="400" MaximumHeightRequest="200">
+              <ListView.ItemTemplate>
+                     <DataTemplate>
+                     <ViewCell>
+                            <Grid Padding="10"
+                      ColumnDefinitions="*,*,*">
+                    
+                    <!-- Colonna per l'ID -->
+                    <Label Text="{Binding Id}"
+                           FontAttributes="Bold"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Grid.Column="0"/>
+
+                    <!-- Colonna per la Data -->
+                    <Label Text="{Binding Date}"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Grid.Column="1"/>
+
+                    <!-- Colonna per lo Stato -->
+                    <Label Text="{Binding State}"
+                           HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center"
+                           Grid.Column="2"/>
+
+                </Grid>
+                     </ViewCell>
+                     </DataTemplate>
+              </ListView.ItemTemplate>
+              </ListView>
+
+              <Button
+                Text="Chiudi"
+                Clicked="OnCloseButtonClicked"
+                Margin="0,20,0,0"
+                WidthRequest="200"
+                />
+                     
+            </VerticalStackLayout>
+            
+        </Frame>
+
+    </VerticalStackLayout>
+</ContentPage>

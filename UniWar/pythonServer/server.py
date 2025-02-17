@@ -1,9 +1,9 @@
 import grpc
 from concurrent import futures
 import pymysql
-import statistics_pb2
-import statistics_pb2_grpc
-from uniwar import db_config, command_service, query_service
+import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
+import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
+from uniwar import db_config, command_service
 
 
 
@@ -23,10 +23,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print(f"Numero di carri armati totali: {request.owned_tanks}", flush = True)
 
         
-        return statistics_pb2.Response(message="Statistiche ricevute con successo!", status = True)
-    
-    
-    
+        return msg.Response(message="Statistiche ricevute con successo!", status = True)
     
     
     # Gestione dell'utente
@@ -61,16 +58,16 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 print("SignUp eseguito con successo",flush=True)
 
                 # Creazione della risposta di successo
-                return statistics_pb2.Response(message="Utente registrato con successo!", status=True)
+                return msg.Response(message="Utente registrato con successo!", status=True)
 
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database
             if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
                 print(f"Errore di duplicazione, codice di errore: {err}", flush=True)
-                return statistics_pb2.Response(message="Unavaible player_id", status=False)
+                return msg.Response(message="Unavailable player_id", status=False)
             else:
                 print(f"Errore durante l'inserimento nel database, codice di errore: {err}", flush=True)
-                return statistics_pb2.Response(message="Database Error", status=False)
+                return msg.Response(message="Database Error", status=False)
 
         except ValueError as e:
             # Gestione degli errori di validazione

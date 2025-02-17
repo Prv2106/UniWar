@@ -49,10 +49,10 @@ class StatisticsServiceStub(object):
                 request_serializer=statistics__pb2.SignUpCredentials.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
-        self.UsernameCheck = channel.unary_unary(
-                '/statistics.StatisticsService/UsernameCheck',
+        self.GetGames = channel.unary_unary(
+                '/statistics.StatisticsService/GetGames',
                 request_serializer=statistics__pb2.Username.SerializeToString,
-                response_deserializer=statistics__pb2.Response.FromString,
+                response_deserializer=statistics__pb2.GameInfoList.FromString,
                 _registered_method=True)
 
 
@@ -78,7 +78,7 @@ class StatisticsServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def UsernameCheck(self, request, context):
+    def GetGames(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -102,10 +102,10 @@ def add_StatisticsServiceServicer_to_server(servicer, server):
                     request_deserializer=statistics__pb2.SignUpCredentials.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
-            'UsernameCheck': grpc.unary_unary_rpc_method_handler(
-                    servicer.UsernameCheck,
+            'GetGames': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetGames,
                     request_deserializer=statistics__pb2.Username.FromString,
-                    response_serializer=statistics__pb2.Response.SerializeToString,
+                    response_serializer=statistics__pb2.GameInfoList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -200,7 +200,7 @@ class StatisticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def UsernameCheck(request,
+    def GetGames(request,
             target,
             options=(),
             channel_credentials=None,
@@ -213,9 +213,9 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/UsernameCheck',
+            '/statistics.StatisticsService/GetGames',
             statistics__pb2.Username.SerializeToString,
-            statistics__pb2.Response.FromString,
+            statistics__pb2.GameInfoList.FromString,
             options,
             channel_credentials,
             insecure,

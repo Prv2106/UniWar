@@ -1,6 +1,3 @@
-
-using System.Text.RegularExpressions;
-
 namespace UniWar {
     public partial class InitializationSummary : ContentPage {
         /*
@@ -15,7 +12,7 @@ namespace UniWar {
         
 
         
-        public InitializationSummary() {
+        public InitializationSummary(string playerUsername) {
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
             UniWarSystem.Instance.InitializeGame(); // caricamento dei dati

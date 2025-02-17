@@ -2,7 +2,6 @@ import bcrypt
 import re
 
 
-
 # Command per la registrazione dell'utente
 class RegisterUserCommand:
     def __init__(self, username, password, conn):
