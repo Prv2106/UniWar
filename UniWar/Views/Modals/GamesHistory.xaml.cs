@@ -24,14 +24,14 @@ namespace UniWar {
         public List<Game> Games { get;} = []; // proprità necessario per il Binding allo xaml
 
         
-        public GamesHistory(string playerUsername) {
+        public GamesHistory() {
             InitializeComponent();
             BindingContext = this;    
     
             // Facciamo la query direttamente nel costruttore della pagina
             // per recuperare l'elenco delle partite per l'utente loggato
             try {
-                GameInfoList response = ClientGrpc.GetGames(playerUsername);
+                GameInfoList response = ClientGrpc.GetGames(UniWarSystem.Instance.LoggedUsername!);
                 Console.WriteLine("Ho ricevuto la risposta");
                 foreach (GameInfo game in response.Games) 
                     Games.Add(new Game(game.Id,game.Date,game.State));

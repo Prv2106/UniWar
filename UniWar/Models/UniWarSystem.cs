@@ -173,6 +173,7 @@ public class UniWarSystem { // singleton
 
     public void SetLogged(string username) {
         LoggedUsername = username;
+        IsOffline = false;
     }
 
 

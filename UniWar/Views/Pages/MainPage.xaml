@@ -6,8 +6,8 @@
 
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
-        <!-- "VIsta" per l'utente loggato -->
-        <HorizontalStackLayout x:Name="LoggedPart" HorizontalOptions ="Center">
+        <!-- "Vista" per l'utente loggato -->
+        <HorizontalStackLayout x:Name="LoggedPart" HorizontalOptions ="Center" Margin="20,0,0,-35">
             <!-- Container per lo username con bordo e padding -->
                 <Frame 
                     BackgroundColor="Brown"
@@ -16,10 +16,12 @@
                     BorderColor="Black">
                     <HorizontalStackLayout Spacing="5">
                         <Image 
+                            Margin="0,0,0,10" 
                             Source="military_hat.png" 
                             WidthRequest="45" 
                             HeightRequest="40"/>
-                        <Label
+                        <Label x:Name="username"
+                            Margin="0,0,0,10" 
                             VerticalOptions="Center"
                             TextColor="White"
                             FontAttributes="Bold"
@@ -28,19 +30,21 @@
                     </HorizontalStackLayout>
                 </Frame>
 
-            <BoxView WidthRequest="160" 
+            <BoxView WidthRequest="100"
+                    Margin="0,0,0,0"
                     BackgroundColor="Transparent"
                 />
 
-            <Grid>
-                <Image
-                Source="logout.png"
-                WidthRequest="100"/>
-                <Button
-                    Clicked ="OnLogoutClicked"
-                    BackgroundColor="Transparent"
-                    />
-            </Grid>
+            <Button
+                HeightRequest="40"
+                ImageSource="logout.png"
+                Clicked ="OnLogoutClicked"
+                Text="Logout"
+                FontSize="17"
+                FontAttributes="Bold"
+                Margin="80,0,0,20" 
+                />
+            
             
         </HorizontalStackLayout>
 

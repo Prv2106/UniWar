@@ -12,7 +12,7 @@ namespace UniWar {
         
 
         
-        public InitializationSummary(string playerUsername) {
+        public InitializationSummary() {
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
             UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
