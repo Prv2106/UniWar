@@ -21,12 +21,12 @@ namespace UniWar {
                 StatisticsList = new List<StatisticEntry> {
                     new("Territori posseduti", response.UserOwnedTerritories, response.CpuOwnedTerritories),
                     new("Carri armati posseduti", response.UserOwnedTanks, response.CpuOwnedTanks),
-                    new("Carri persi per turno", response.UserTanksLostPerTurn, response.CpuTanksLostPerTurn),
+                    new("Carri persi per giro", response.UserTanksLostPerTurn, response.CpuTanksLostPerTurn),
                     new("Carri persi in attacco", response.UserTanksLostAttacking, response.CpuTanksLostAttacking),
                     new("Carri persi in difesa", response.UserTanksLostDefending, response.CpuTanksLostDefending),
                     new("Difese perfette", response.UserPerfectDefenses, response.CpuPerfectDefenses),
                     new("Attacchi falliti", response.CpuPerfectDefenses, response.UserPerfectDefenses),
-                    new("Territori persi per turno", response.UserTerritoriesLostPerTurn, response.CpuTerritoriesLostPerTurn),
+                    new("Territori persi per giro", response.UserTerritoriesLostPerTurn, response.CpuTerritoriesLostPerTurn),
                     new("Percentuale mappa posseduta", $"{response.UserMapOwnershipPercentage:F2}%", $"{response.CpuMapOwnershipPercentage:F2}%")
                 };
 
