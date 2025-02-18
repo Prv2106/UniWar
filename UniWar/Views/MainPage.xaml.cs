@@ -2,6 +2,7 @@
     public partial class MainPage : ContentPage {
         // private readonly string _playerUsername;
         public MainPage() {
+            Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
             // _playerUsername = playerUsername;
         }

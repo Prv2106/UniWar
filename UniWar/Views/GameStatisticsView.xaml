@@ -1,41 +1,45 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="UniWar.GameStatisticsView"
-             >
-
-   <VerticalStackLayout 
-       VerticalOptions="Center"
-       Padding="10,0,10,20">
-        <!-- Simulazione Material Card -->
-        <Frame CornerRadius="12"
-               HasShadow="True"
-               BackgroundColor="White"> 
-            
+             x:Class="UniWar.GameStatisticsView">
+    <VerticalStackLayout VerticalOptions="Center" Padding="10,0,10,20">
+        <Frame CornerRadius="12" HasShadow="True" BackgroundColor="White">
             <VerticalStackLayout>
-              <!-- Titolo -->
-              <Label Text="STATISTICHE GARA:"
-                     FontSize="25"
-                     FontAttributes="Bold"
-                     TextColor="#333"
-                     HorizontalOptions="Center"/>
-              
-              <!-- Descrizione -->
-              <Label Text=""
-                     FontSize="16"
-                     TextColor="#666"
-                     HorizontalOptions="Center"
-                     Margin="0,5,0,10"/>
+                <!-- Titolo -->
+                <Label Text="Resoconto partita:" FontSize="25" FontAttributes="Bold"
+                       TextColor="#333" HorizontalOptions="Center"/>
 
-              <Button
-                Text="Chiudi"
-                Clicked="OnCloseButtonClicked"
-                Margin="0,20,0,0"
-                WidthRequest="200"
-                />
-                     
+                <!-- Tabella -->
+                <Grid ColumnDefinitions="*,*,*" Padding="10" BackgroundColor="LightGray" WidthRequest="392">
+                    <Label Text="" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" Grid.Column="1"/>
+                    <Label Text="Tu" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" Grid.Column="0"/>
+                    <Label Text="CPU" FontAttributes="Bold" HorizontalTextAlignment="Center"
+                           VerticalTextAlignment="Center" Grid.Column="2"/>
+                </Grid>
+
+                <ListView ItemsSource="{Binding StatisticsList}" HasUnevenRows="True"
+                          VerticalOptions="Center" WidthRequest="400" MaximumHeightRequest="300">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid Padding="10" ColumnDefinitions="*,*,*">
+                                    <Label Text="{Binding StatName}" FontAttributes="Bold"
+                                           HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
+                                           Grid.Column="1"/>
+                                    <Label Text="{Binding UserValue}" HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" Grid.Column="0"/>
+                                    <Label Text="{Binding CpuValue}" HorizontalTextAlignment="Center"
+                                           VerticalTextAlignment="Center" Grid.Column="2"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Button Text="Chiudi" Clicked="OnCloseButtonClicked" Margin="0,20,0,0"
+                        WidthRequest="200"/>
             </VerticalStackLayout>
-            
         </Frame>
-
     </VerticalStackLayout>
 </ContentPage>

@@ -44,8 +44,38 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         return game_list
     
     def GetStatistics(self,request, context):
-        pass
-    
+        print(f"Richiesta delle statistiche per partita con id = {request.game_id}", flush=True)
+        
+        return msg.StatisticsResponse(
+            user_owned_territories=21,
+            cpu_owned_territories=18,
+            user_owned_tanks=48,
+            cpu_owned_tanks=32,
+            user_owned_continents=["Europa", "Asia"],
+            cpu_owned_continents=[],
+            user_win= "uncompleted",
+            user_tanks_lost_per_turn=3.5,
+            cpu_tanks_lost_per_turn=4.6,
+            user_tanks_lost_attacking=2.1,
+            cpu_tanks_lost_attacking=3.0,
+            user_tanks_lost_defending=1.4,
+            cpu_tanks_lost_defending=1.6,
+            user_perfect_defenses=5,
+            cpu_perfect_defenses=3,
+            user_territories_lost_per_turn=0.8,
+            cpu_territories_lost_per_turn=1.2,
+            user_map_ownership_percentage=55.0,
+            cpu_map_ownership_percentage=45.0,
+        )
+
+        
+        
+        
+        
+        
+        
+        
+        
     # Gestione dell'utente
 
     def SignIn(self, request, context):

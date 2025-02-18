@@ -16,7 +16,7 @@ namespace UniWar{
             
         }
 
-        private async Task UpdateUI(){
+        private async void UpdateUI(){
                  UsernameEntry.TextColor = Colors.White;
                  Button.Clicked -= OnSigniInButtonClicked!;
                  Button.Clicked -= OnSigniUpButtonClicked!;
@@ -144,7 +144,7 @@ namespace UniWar{
 
         }
 
-        public async void OnUsernameUnFocused(object sender, EventArgs args){
+        public void OnUsernameUnFocused(object sender, EventArgs args){
             
             if(string.IsNullOrWhiteSpace(UsernameEntry.Text))
                 return;
@@ -168,7 +168,7 @@ namespace UniWar{
 
         }
 
-        public async void OnUsernameFocused(object sender, EventArgs args){
+        public void OnUsernameFocused(object sender, EventArgs args){
             UsernameEntry.TextColor = Colors.White;
         }
 
