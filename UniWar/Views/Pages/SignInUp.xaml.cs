@@ -168,7 +168,7 @@ namespace UniWar{
 
         }
 
-        public void OnUsernameFocused(object sender, EventArgs args){
+        private void OnUsernameFocused(object sender, EventArgs args){
             UsernameEntry.TextColor = Colors.White;
         }
 
