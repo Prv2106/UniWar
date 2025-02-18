@@ -749,10 +749,7 @@ namespace UniWar {
         
         }
 
-
-
-
-        private async Task SimulateBattle(List<BattleResult> battleList){
+        private async Task SimulateBattle(List<BattleResult> battleList) {
             TaskCompletionSource tcs;
             Territory? lostTerritory = null;
 
@@ -802,8 +799,6 @@ namespace UniWar {
                     }
                 }
 
-
-               
                 if (stats.DefendingTerritories.ContainsKey(battle.DefendingTerritory)) {
                     stats.DefendingTerritories[battle.DefendingTerritory] += battle.LossesPlayer;
                 }
@@ -818,19 +813,15 @@ namespace UniWar {
                     stats.AttackingTerritories.Add(battle.AttackingTerritory, battle.LossesCPU);
                 }
 
-
                 foreach(var territory in CPU.Territories.Values)
                     stats.OwnedTerritories.Add(territory.Name);
 
                 stats.OwnedTanks = CPU.GetNumTanks();
 
-
-
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
                 await tcs.Task; // aspetta che facciamo setResult()
                 await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-
 
                 tcs = new TaskCompletionSource();
                 // Mostriamo il risultato del lancio dei dadi
@@ -843,10 +834,8 @@ namespace UniWar {
                     await Navigation.PushModalAsync(new ShowDefenceResult(tcs, lostTerritory!.Name));
                     await tcs.Task; // aspetta che facciamo setResult()
                     await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-
                 }
                     
-
                 // Aggiorniamo la mappa
                 DeployTanks();
                 BuildUserInformation();
@@ -861,37 +850,27 @@ namespace UniWar {
                     await Navigation.PopToRootAsync();
                     break;
                 }
-            
             }
-
 
             await CollectsStatistics(stats);
-           
-            
-
         }
 
-
-
-        private async Task CollectsStatistics(StatisticsCollection statistics){
-            try {
+        private async Task CollectsStatistics(StatisticsCollection statistics) {
+            if (!UniWarSystem.Instance.IsOffline) {
+                try {
                 ClientGrpc.SendStatisticsAsync(statistics);
-            }
-            catch (Grpc.Core.RpcException e) {
+                } catch (Grpc.Core.RpcException e) {
                 ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
                 Console.WriteLine($"Errore: {e}");
                 await Task.Delay(1500);
-            }
-            catch (Exception) {
+                } catch (Exception) {
                 ShowInformation("Si è verificato un errore sconosciuto nell'invio delle statistiche.");
                 await Task.Delay(1500);
-            }
+                }
+            }   
         }
-        
-
-
-
     }
+
 }
 
 

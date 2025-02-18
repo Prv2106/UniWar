@@ -1,7 +1,3 @@
-using System.Threading.Tasks;
-using Statistics;
-using Windows.Storage.Provider;
-
 namespace UniWar{
     public partial class SignInUp: ContentPage{
 
@@ -95,13 +91,12 @@ namespace UniWar{
             }
             
             try{
-                var response =ClientGrpc.SignIn(username, password);
+                var response = ClientGrpc.SignIn(username, password);
                 if(response.Status == false){
                     ShowWarning(response.Message);
                     return;
                 }
-                
-
+                UniWarSystem.Instance.SetLogged(username);
                 await Navigation.PushAsync(new MainPage());
             }
             catch (Grpc.Core.RpcException) {
@@ -131,6 +126,7 @@ namespace UniWar{
                     return;
                 }
                 Console.WriteLine("SignUp effettuato con successo");
+                UniWarSystem.Instance.SetLogged(username);
                 await Navigation.PushAsync(new MainPage());
             }
             catch (Grpc.Core.RpcException) {
@@ -168,10 +164,19 @@ namespace UniWar{
 
         }
 
-        public void OnUsernameFocused(object sender, EventArgs args){
+        private void OnUsernameFocused(object sender, EventArgs args){
             UsernameEntry.TextColor = Colors.White;
         }
 
+        private async void OnPlayOfflineClicked(object sender, EventArgs eventArg) {
+            // L'utente vuole giocare offline...
+
+            // prima impostiamo la modalità offline nel gioco
+            UniWarSystem.Instance.OfflineMode();
+
+            // adesso mandiamo l'utente nella pagina di gioco
+            await Navigation.PushAsync(new MainPage());
+        }
         
 
 

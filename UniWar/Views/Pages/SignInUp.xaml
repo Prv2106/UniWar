@@ -11,6 +11,15 @@
                VerticalOptions="Center">
             
             <VerticalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="End">
+                    <Button
+                        Clicked="OnPlayOfflineClicked"
+                        HeightRequest="55"
+                        ImageSource="disconnected.png"
+                        Text="Gioca offline"
+                        Margin="0,0,0,-40"/>
+                </HorizontalStackLayout>
                 
                 <!-- Icona di informazione e testo -->
                 <Image x:Name ="ImageInfo"

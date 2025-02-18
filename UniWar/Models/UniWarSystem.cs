@@ -11,6 +11,9 @@ public class UniWarSystem { // singleton
     public Player? Cpu {get; set;}
 
     public Turn? Turn {get; set;}
+    
+    public bool IsOffline {get; private set;} = false;
+    public string? LoggedUsername {get; private set;}
 
 
 
@@ -87,12 +90,12 @@ public class UniWarSystem { // singleton
            
         // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in User.Territories.Values){
-            territory.AddTanks(colorForUser,1);
+            territory.AddTanks(colorForUser,3);
         }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
         foreach (Territory territory in Cpu.Territories.Values){
-            territory.AddTanks(colorForCpu,20);
+            territory.AddTanks(colorForCpu,3);
         }
             
         // obiettivo ai partecipanti
@@ -161,6 +164,15 @@ public class UniWarSystem { // singleton
             userNeighboringTerritoriesNames.Add(item.Name);
         }
         return userNeighboringTerritoriesNames;
+    }
+
+    public void OfflineMode() {
+        IsOffline = true;
+        LoggedUsername = null;
+    }
+
+    public void SetLogged(string username) {
+        LoggedUsername = username;
     }
 
 
