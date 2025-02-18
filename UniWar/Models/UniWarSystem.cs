@@ -11,6 +11,9 @@ public class UniWarSystem { // singleton
     public Player? Cpu {get; set;}
 
     public Turn? Turn {get; set;}
+    
+    public bool IsOffline {get; private set;} = false;
+    public string? LoggedUsername {get; private set;}
 
 
 
@@ -161,6 +164,15 @@ public class UniWarSystem { // singleton
             userNeighboringTerritoriesNames.Add(item.Name);
         }
         return userNeighboringTerritoriesNames;
+    }
+
+    public void OfflineMode() {
+        IsOffline = true;
+        LoggedUsername = null;
+    }
+
+    public void SetLogged(string username) {
+        LoggedUsername = username;
     }
 
 
