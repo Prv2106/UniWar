@@ -83,7 +83,6 @@ message StatisticsResponse{
     repeated string cpu_owned_continents = 6;
     string user_win = 7;
     
-    // Informazioni utili per le statistiche in-game
     float user_tanks_lost_per_turn = 8;   // Carri armati persi dall'utente per turno
     float cpu_tanks_lost_per_turn = 9;    // Carri armati persi dalla CPU per turno
     float user_tanks_lost_attacking = 10; // Carri armati persi dall'utente in attacco
@@ -99,7 +98,5 @@ message StatisticsResponse{
     
     float user_map_ownership_percentage = 18; // Percentuale di mappa posseduta dall'utente
     float cpu_map_ownership_percentage = 19;  // Percentuale di mappa posseduta dalla CPU
-
-
     
 }

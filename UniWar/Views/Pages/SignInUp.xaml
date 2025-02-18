@@ -6,7 +6,7 @@
         <Frame Padding="25"
                CornerRadius="12"
                HasShadow="True"
-               BackgroundColor="White"
+               BackgroundColor="white"
                Margin="10"
                VerticalOptions="Center">
             
@@ -57,9 +57,11 @@
 
                <Label x:Name ="warning"
                      FontSize="15"
-                     TextColor="#EADE0000"
+                     TextColor="DarkRed"
                      HorizontalOptions="Center"
                      IsVisible = "False"
+                     HorizontalTextAlignment="Center"
+                     WidthRequest="420"
                      Margin="0,5,0,10"/>
               
               <!-- Messaggio di passaggio tra Login e Registrazione -->

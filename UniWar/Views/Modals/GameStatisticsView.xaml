@@ -4,7 +4,10 @@
     <VerticalStackLayout VerticalOptions="Center" Padding="10,0,10,20">
         <Frame CornerRadius="12" HasShadow="True" BackgroundColor="White">
             <VerticalStackLayout>
-              
+              <Image
+                Source="statistics.png"
+                WidthRequest="220"
+                />
                 <!-- Titolo -->                
                 <Label Text="Resoconto partita:" FontSize="25" FontAttributes="Bold"
                        TextColor="#333" HorizontalOptions="Center"

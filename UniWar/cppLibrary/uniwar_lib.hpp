@@ -74,7 +74,6 @@ NODISCARD const set<string> getTerritoriesFromMap(const map<string, T> & map) {
 
 NODISCARD bool win(const set<string> & territories);
 
-
 NODISCARD vector<uniwar::Player> initializePlayers(const char* jsonData);
 
 NODISCARD const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map);

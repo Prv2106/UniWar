@@ -50,7 +50,7 @@ static string jsonResult; // Variabile statica per evitare memory leak
 const char* cpuAttack (const char* jsonData){
     // Preparazione 1: Recuperiamo i giocatori dal json e creiamo il vettore di json per contenere i risultati intermedi delle battaglie
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    if(players.empty()) return "Nessun contesto fornito";
+    if(players.empty()) return "";
 
     uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
 
@@ -87,8 +87,6 @@ const char* cpuAttack (const char* jsonData){
                 // Se il territorio appartiene alla cpu lo saltiamo
                 if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
 
-                
-
                 // Adesso cerchiamo il giocatore a cui appartiene il territorio eventualmente da attaccare 
                 uniwar::Player * owner = nullptr; // in questo caso è necessario definire un puntatore poiché un tipo riferimento deve essere inizializzato subito
                 for(auto& p: players){
@@ -98,8 +96,6 @@ const char* cpuAttack (const char* jsonData){
                 }
 
                 uniwar::Player& enemy = *owner; // assegnamo il giocatore ad un tipo riferimento per semplificarne la gestione
-
-        
 
                 // adesso dobbiamo verificare la condizione di attacco
                 int enemyTanksCount = enemy.getTanksCount(neighborTerritory);
@@ -275,7 +271,7 @@ const char* cpuAttack (const char* jsonData){
 const char* reinforcement (const char* jsonData, int newTanks){
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
     if (players.empty()) 
-        return "Nessun Contesto fornito";
+        return "";
 
     uniwar::Player& cpuPlayer = players[0]; 
     set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
