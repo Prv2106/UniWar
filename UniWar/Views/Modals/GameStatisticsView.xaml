@@ -6,7 +6,7 @@
             <VerticalStackLayout>
               <Image
                 Source="statistics.png"
-                WidthRequest="220"
+                WidthRequest="90"
                 />
                 <!-- Titolo -->                
                 <Label Text="Resoconto partita:" FontSize="25" FontAttributes="Bold"
