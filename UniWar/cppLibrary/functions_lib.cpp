@@ -53,17 +53,18 @@ const char* cpuAttack (const char* jsonData){
     if(players.empty()) return "";
 
     uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
+    uniwar::Player userPlayer = players[1];
 
     vector<json> battleResults;
 
-    bool attackingChecking = true;
+    bool attackChecking = true;
 
     int ciclo = 0; // per il debug 
     
-    while(attackingChecking){
+    while(attackChecking){
         clog << "Ciclo di attacco : " << ciclo++ << endl; // Debug
 
-        attackingChecking = false;
+        attackChecking = false;
         set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
 
         bool conquered = false;
@@ -75,37 +76,25 @@ const char* cpuAttack (const char* jsonData){
                 clog << "Territorio " << cpuTerritory << " non idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri armati" <<endl; // debug
                 continue; // Deve avere almeo 4 territori per attaccare
             }
-
             clog << "Territorio " << cpuTerritory << " idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri" <<endl; // debug
 
             // Se il territorio di frontiera posseduto dalla cpu ha almeno 4 carri armati significa che potenzialmente potrebbe attaccare, 
             // adesso si deve verificare se esiste un territorio vicino per il quale valga la condizone di attacco
-
             // Scorriamo la lista dei vicini del potenziale territorio attaccante
             for(const auto & neighborTerritory: cpuPlayer.getNeighbors(cpuTerritory)){
-
                 // Se il territorio appartiene alla cpu lo saltiamo
                 if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
 
-                // Adesso cerchiamo il giocatore a cui appartiene il territorio eventualmente da attaccare 
-                uniwar::Player * owner = nullptr; // in questo caso è necessario definire un puntatore poiché un tipo riferimento deve essere inizializzato subito
-                for(auto& p: players){
-                    if(p.getTanksMap().count(neighborTerritory)){
-                        owner = &p; // Adesso owner punta al giocatore p (Nota: il player p si trova nello stack)
-                    }
-                }
-
-                uniwar::Player& enemy = *owner; // assegnamo il giocatore ad un tipo riferimento per semplificarne la gestione
 
                 // adesso dobbiamo verificare la condizione di attacco
-                int enemyTanksCount = enemy.getTanksCount(neighborTerritory);
+                int userTanksCount = userPlayer.getTanksCount(neighborTerritory);
                 int cpuTanksCount = cpuPlayer.getTanksCount(cpuTerritory);
                 
 
                 // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non soddisfa la condizione di attacco e dobbiamo passare al vicino successivo
-                while((enemyTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ 
-                    clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " idoneo per essere attaccato ("<< enemyTanksCount << ") carri armati" << endl; // debug
-                    clog << "Ciclo while di battaglia: carri CPU = " << cpuTanksCount << ", Carri giocatore = "<< enemyTanksCount << ", Conquered = " << conquered << endl; // debug
+                while((userTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ 
+                    clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " idoneo per essere attaccato ("<< userTanksCount << ") carri armati" << endl; // debug
+                    clog << "Ciclo while di battaglia: carri CPU = " << cpuTanksCount << ", Carri giocatore = "<< userTanksCount << ", Conquered = " << conquered << endl; // debug
                     
                     /** INIZIO DELLA BATTAGLIA **/
 
@@ -118,13 +107,13 @@ const char* cpuAttack (const char* jsonData){
                     srand(time(NULL));
 
                     int cpuAttackDice[3] = {rand() % 6 + 1, rand() % 6 + 1, rand() % 6 + 1};
-                    int defenceDiceCount = min(3,enemyTanksCount); // il giocatore si può difendere con al massimo 3 dadi (ma dipende dal numero di carri armati che ha su quel territorio)
+                    int defenceDiceCount = min(3,userTanksCount); // il giocatore si può difendere con al massimo 3 dadi (ma dipende dal numero di carri armati che ha su quel territorio)
 
-                    int enemyDefenseDice[3] = {0,0,0};
+                    int userDefenseDice[3] = {0,0,0};
 
                     // Simuliamo il lancio dei dadi per il giocatore
                     for(int i=0; i<defenceDiceCount; i++){
-                        enemyDefenseDice[i] = rand() % 6 + 1;
+                        userDefenseDice[i] = rand() % 6 + 1;
                     }
 
                     // Adesso ordiniamo i dadi della cpu e del giocatore in ordine decrescente
@@ -139,54 +128,54 @@ const char* cpuAttack (const char* jsonData){
                     
                     */
                     sort(cpuAttackDice,cpuAttackDice + 3, greater<int>());
-                    sort(enemyDefenseDice,enemyDefenseDice + defenceDiceCount, greater<int>());
+                    sort(userDefenseDice,userDefenseDice + defenceDiceCount, greater<int>());
 
                     // confrontiamo i dadi 
-                    int cpuLosses = 0, enemyLosses = 0;
+                    int cpuLosses = 0, userLosses = 0;
                     for(int i=0; i < defenceDiceCount; i++){
-                        clog << "Dado " << i << " della CPU = " << cpuAttackDice[i] << " , dado " << i << " del giocatore = " << enemyDefenseDice[i] << endl; // debug
-                        if(cpuAttackDice[i] > enemyDefenseDice[i]){
-                            enemyLosses++;
+                        clog << "Dado " << i << " della CPU = " << cpuAttackDice[i] << " , dado " << i << " del giocatore = " << userDefenseDice[i] << endl; // debug
+                        if(cpuAttackDice[i] > userDefenseDice[i]){
+                            userLosses++;
                         }
                         else {
                             cpuLosses++;
                         }
-                        clog << "Perdite CPU = " << cpuLosses << ", Perdite giocatore = " << enemyLosses << endl; // debug
+                        clog << "Perdite CPU = " << cpuLosses << ", Perdite giocatore = " << userLosses << endl; // debug
                     }
 
 
                     clog << "Numero carri per il territorio attaccante (prima dell'attacco) = " << cpuTanksCount << endl; //debug
-                    clog << "Numero carri per il territorio attaccato (prima dell'attacco) = " << enemyTanksCount << endl; //debug
+                    clog << "Numero carri per il territorio attaccato (prima dell'attacco) = " << userTanksCount << endl; //debug
 
                     // A questo punto bisogna aggiornare il numero di carri armati della cpu e del giocatore dopo l'attacco
                     cpuPlayer.modifyTankCount(cpuTerritory,cpuTanksCount - cpuLosses);
-                    enemy.modifyTankCount(neighborTerritory,enemyTanksCount - enemyLosses);
+                    userPlayer.modifyTankCount(neighborTerritory,userTanksCount - userLosses);
 
                     // Aggiorniamo il numero di carri armati della cpu e quello del giocatore
-                    enemyTanksCount = enemy.getTanksCount(neighborTerritory);
+                    userTanksCount = userPlayer.getTanksCount(neighborTerritory);
                     cpuTanksCount= cpuPlayer.getTanksCount(cpuTerritory);
 
                     clog << "Numero carri per il territorio attaccante (dopo dell'attacco) = " << cpuTanksCount << endl; //debug
-                    clog << "Numero carri per il territorio attaccato (dopo dell'attacco) = " << enemyTanksCount << endl; //debug
+                    clog << "Numero carri per il territorio attaccato (dopo dell'attacco) = " << userTanksCount << endl; //debug
 
                     bool win = false;
 
                     // Verifichiamo se il giocatore ha perso il territorio e in caso affermativo aggiorniamo il contesto di gioco e verifichiamo se la cpu ha vinto
-                    if(enemy.getTanksCount(neighborTerritory) == 0){
+                    if(userPlayer.getTanksCount(neighborTerritory) == 0){
 
-                        clog << enemy.getName() << " ha perso il terriotio " << neighborTerritory << endl; // debug
+                        clog << userPlayer.getName() << " ha perso il terriotio " << neighborTerritory << endl; // debug
 
                         // Assegnamo il territorio conquistato alla cpu ed effettuiamo lo SPOSTAMENTO STRATEGICO
                         // In particolare, al nuovo territorio assegnamo come numero di carri armati il numero di carri armati del territorio attaccante -1 (perché al territorio attaccante deve restare 1 carro armato)
-                        cpuPlayer.addTerritory(neighborTerritory,enemy.getNeighbors(neighborTerritory), cpuPlayer.getTanksCount(cpuTerritory) -1);
+                        cpuPlayer.addTerritory(neighborTerritory,userPlayer.getNeighbors(neighborTerritory), cpuPlayer.getTanksCount(cpuTerritory) -1);
                         // aggiorniamo il numero di carri armati del territorio attaccante
                         cpuPlayer.modifyTankCount(cpuTerritory,1);
 
                         // rimuoviamo il territorio perso dal giocatore
-                        enemy.removeTerritory(neighborTerritory);
+                        userPlayer.removeTerritory(neighborTerritory);
 
                         conquered = true;
-                        attackingChecking = true;
+                        attackChecking = true;
 
                         clog << "Dopo lo spostamento strategico, " << cpuTerritory << " ha " << cpuPlayer.getTanksCount(cpuTerritory) << endl; // debug
 
@@ -202,18 +191,18 @@ const char* cpuAttack (const char* jsonData){
                     json battleJson;
                     battleJson["Battle"] = battleResults.size() + 1;
                     battleJson["AttackingPlayer"] = cpuPlayer.getName();
-                    battleJson["DefendingPlayer"] = enemy.getName();
+                    battleJson["DefendingPlayer"] = userPlayer.getName();
                     battleJson["Win"] = win;
                     battleJson["DiceCPU"] = {cpuAttackDice[0], cpuAttackDice[1], cpuAttackDice[2]};
-                    battleJson["DicePlayer"] = {enemyDefenseDice[0], enemyDefenseDice[1], enemyDefenseDice[2]}; // si assume 0 per dado non lanciato
+                    battleJson["DicePlayer"] = {userDefenseDice[0], userDefenseDice[1], userDefenseDice[2]}; // si assume 0 per dado non lanciato
                     battleJson["AttackingTerritory"] = cpuTerritory;  
                     battleJson["DefendingTerritory"] = neighborTerritory;
                     battleJson["AttackingNeighborsMap"] = cpuPlayer.getNeighborsMap();
-                    battleJson["DefendingNeighborsMap"] = enemy.getNeighborsMap();
+                    battleJson["DefendingNeighborsMap"] = userPlayer.getNeighborsMap();
                     battleJson["AttackingTanksCountMap"] = cpuPlayer.getTanksMap();
-                    battleJson["DefendingTanksCountMap"] = enemy.getTanksMap();
+                    battleJson["DefendingTanksCountMap"] = userPlayer.getTanksMap();
                     battleJson["LossesCPU"] = cpuLosses;
-                    battleJson["LossesPlayer"] = enemyLosses;
+                    battleJson["LossesPlayer"] = userLosses;
                     // Aggiungiamo il json della battaglia nel vettore di json (perché potrebbero essere ingaggiate anche più battaglie)
                     battleResults.push_back(battleJson);
 

@@ -24,7 +24,7 @@ namespace UniWar {
                             int height = (int)(displayInfo.Height * 0.94);  // % dell'altezza dello schermo
                             
                             appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
-                            appWindow.Move(new Windows.Graphics.PointInt32(5, 10));
+                            appWindow.Move(new Windows.Graphics.PointInt32(50, 10));
 						}
 					});
 				});

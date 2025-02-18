@@ -21,6 +21,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         if request.user_win is  None:
             print(f"Nessuno ha vinto")
         print(f"Numero di carri armati totali: {request.owned_tanks}", flush = True)
+        
+        #TODO: Elaborare le statistiche ed inserirle nel db
 
         
         return msg.Response(message="Statistiche ricevute con successo!", status = True)
@@ -68,6 +70,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             cpu_map_ownership_percentage=45.0,
         )
 
+        #TODO: Recuperare le statistiche dal db, definire un metodo per il calcolo dei continenti posseduti dall'utente
+        
         
         
         

@@ -29,11 +29,11 @@
                         <DataTemplate>
                             <ViewCell>
                                 <Grid Padding="10" ColumnDefinitions="*,*,*">
-                                    <Label Text="{Binding StatName}" FontAttributes="Bold"
-                                           HorizontalTextAlignment="Start" VerticalTextAlignment="Center"
-                                           Grid.Column="1"/>
                                     <Label Text="{Binding UserValue}" HorizontalTextAlignment="Center"
                                            VerticalTextAlignment="Center" Grid.Column="0"/>
+                                    <Label Text="{Binding StatName}" FontAttributes="Bold"
+                                           HorizontalTextAlignment="Center" VerticalTextAlignment="Center"
+                                           Grid.Column="1"/>
                                     <Label Text="{Binding CpuValue}" HorizontalTextAlignment="Center"
                                            VerticalTextAlignment="Center" Grid.Column="2"/>
                                 </Grid>
