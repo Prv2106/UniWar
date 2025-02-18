@@ -118,6 +118,9 @@ const char* cpuAttack (const char* jsonData){
                         rand() % 6 restituisce un numero tra 0 e 5 (prendiamo il resto della divisione per 6).
                         + 1 sposta l'intervallo a 1-6, simulando il lancio di un dado. 
                     */
+
+                    srand(time(NULL));
+
                     int cpuAttackDice[3] = {rand() % 6 + 1, rand() % 6 + 1, rand() % 6 + 1};
                     int defenceDiceCount = min(3,enemyTanksCount); // il giocatore si può difendere con al massimo 3 dadi (ma dipende dal numero di carri armati che ha su quel territorio)
 

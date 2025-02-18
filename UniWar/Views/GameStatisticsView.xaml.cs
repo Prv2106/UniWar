@@ -3,11 +3,15 @@ using System.Collections.Generic;
 
 namespace UniWar {
     public partial class GameStatisticsView : ContentPage {
-        public List<StatisticEntry> StatisticsList { get; set; } = new();
+        public List<StatisticEntry> StatisticsList { get; set; } = [];
+        public List<string> UserContinents {get; set;} = [];
 
         public GameStatisticsView(int gameId) {
             InitializeComponent();
-            BindingContext = this;
+           
+            UserContinentsLabel.IsVisible = false;
+            UserContinentsView.IsVisible = false;
+
 
             try {
                 Console.WriteLine("Inviamo la richiesta delle statistiche");
@@ -26,7 +30,18 @@ namespace UniWar {
                     new("Percentuale mappa posseduta", $"{response.UserMapOwnershipPercentage:F2}%", $"{response.CpuMapOwnershipPercentage:F2}%")
                 };
 
-                OnPropertyChanged(nameof(StatisticsList));
+               
+                if(response.UserOwnedContinents != null && response.UserOwnedContinents.Any()){
+                    UserContinentsLabel.IsVisible = true;
+                    UserContinentsView.IsVisible = true;
+                    UserContinents.Clear();
+                    foreach(var continent in response.UserOwnedContinents)
+                        UserContinents.Add(continent);
+
+                }
+
+                BindingContext = this;
+
             } 
             catch (Exception e) {
                 Console.WriteLine(e);

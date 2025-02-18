@@ -10,6 +10,9 @@
 #include<algorithm>
 #include "json.hpp"  // Libreria JSON per C++
 #include "uniwar_lib.hpp"
+#include <cstdlib> // Per rand() e srand()
+#include <ctime>   // Per time()
+
 
 
 using namespace std;

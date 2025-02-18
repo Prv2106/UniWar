@@ -815,7 +815,7 @@ namespace UniWar {
                     stats.AttackingTerritories[battle.AttackingTerritory] += battle.LossesCPU;
                 }
                 else {
-                    stats.AttackingTerritories.Add(battle.DefendingTerritory, battle.LossesCPU);
+                    stats.AttackingTerritories.Add(battle.AttackingTerritory, battle.LossesCPU);
                 }
 
 
