@@ -90,12 +90,12 @@ public class UniWarSystem { // singleton
            
         // per ogni territorio del'utente, associamo 3 carri armati 
         foreach (Territory territory in User.Territories.Values){
-            territory.AddTanks(colorForUser,1);
+            territory.AddTanks(colorForUser,3);
         }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
         foreach (Territory territory in Cpu.Territories.Values){
-            territory.AddTanks(colorForCpu,20);
+            territory.AddTanks(colorForCpu,3);
         }
             
         // obiettivo ai partecipanti
