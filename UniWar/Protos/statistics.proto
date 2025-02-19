@@ -103,6 +103,8 @@ message StatisticsResponse{
     
     float user_map_ownership_percentage = 18; // Percentuale di mappa posseduta dall'utente
     float cpu_map_ownership_percentage = 19;  // Percentuale di mappa posseduta dalla CPU
+    string message = 20;
+    bool status = 21;
     
 }
 

@@ -106,7 +106,24 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     def get_statistics(self,request, context):
         print(f"Richiesta delle statistiche per partita con id = {request.game_id}", flush=True)
-        # TODO:
+        # TODO: 
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = query_service.QueryService()
+                response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
+                
+                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = response)      
+        except ValueError as e:
+            print(f"{e}", flush= True)
+            return msg.GameInfoList(message=str(e), status=False)
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return msg.GameInfoList(message=f"Database Error: {err}", status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
+            return msg.GameInfoList(message=str(e), status=False)
+        
         
         
         return msg.StatisticsResponse(
