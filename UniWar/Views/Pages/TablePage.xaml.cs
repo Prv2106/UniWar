@@ -828,7 +828,7 @@ namespace UniWar {
         private async Task CollectsStatistics(StatisticsCollection statistics) {
             if (!UniWarSystem.Instance.IsOffline) {
                 try {
-                ClientGrpc.SendStatisticsAsync(statistics);
+                await ClientGrpc.SendStatistics(statistics);
                 } catch (Grpc.Core.RpcException e) {
                 ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
                 Console.WriteLine($"Errore: {e}");

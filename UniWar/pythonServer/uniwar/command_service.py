@@ -1,6 +1,6 @@
 import bcrypt
 import re
-import query_service
+from uniwar import query_service
 
 
 # Command per la registrazione dell'utente

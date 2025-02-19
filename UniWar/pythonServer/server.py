@@ -1,12 +1,11 @@
 import grpc
 from concurrent import futures
-import pymysql
+import pymysql 
 import json
 import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
 import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
+import time
 from uniwar import db_config, command_service, query_service, functions
-
-
 
 
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
@@ -84,7 +83,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     
     def get_games(self, request, context):
-        print(f"Ricevuta una richiesta di GetGames per -> username = {request.player_id}", flush=True)
+        print(f"Ricevuta una richiesta di GetGames per -> username = {request.username}", flush=True)
+        time.sleep(1)
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
@@ -165,6 +165,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     # Gestione dell'utente
 
     def sign_in(self, request, context):
+        time.sleep(1)
         print(f"Ricevuta una richiesta di SignIn con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush=True)
         try:
             with pymysql.connect(**db_config.db_config) as conn:
