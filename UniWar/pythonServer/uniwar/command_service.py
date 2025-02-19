@@ -1,6 +1,6 @@
 import bcrypt
 import re
-import query_service
+from uniwar import query_service
 
 
 # Command per la registrazione dell'utente
@@ -112,7 +112,7 @@ class InsertDataCommand:
                 user_owned_territories_list,
                 cpu_owned_territories_list,
                 user_win,
-                game_id  # Il WHERE usa game_id per identificare la riga da aggiornare
+                game_id 
             )
 
 
@@ -189,7 +189,7 @@ class InsertGameCommand:
     def __init__(self,conn,username,date):
         
         self.conn = conn
-        self.username =username
+        self.username = username
         self.date = date
         
         self.insert_game_query = """
@@ -199,7 +199,21 @@ class InsertGameCommand:
 
         
 
-
+class EndGameCommand:
+    def __init__(self, conn, game_id, is_win):
+        self.conn = conn
+        self.game_id = game_id
+        self.is_win = 1 if is_win else 0
+        self.end_game_query = """
+        UPDATE Data
+        SET user_win = %s
+        WHERE game_id = %s
+        """
+                
+        
+        
+            
+                    
     
 
 # Servizio che gestisce i command
@@ -218,11 +232,14 @@ class CommandService:
     
     def handle_insert_game_command(self, command: InsertGameCommand) -> int: # type int, serve semplicemente per migliorare la leggibilità del codice, suggerisce che la funzione dovrebbe restituire un intero
         with command.conn.cursor() as cursor:
-            cursor.execute(command.insert_game_query, (command.username,command.date, command.state))
+            cursor.execute(command.insert_game_query, (command.username,command.username, command.date))
             command.conn.commit()
             game_id = cursor.lastrowid  # Restituisce l'ID dell'ultimo record inserito
             return game_id  # Restituiamo il game_id generato
             
             
-    
+    def handle_end_game_command(self, command: EndGameCommand):
+        with command.conn.cursor() as cursor:
+            cursor.execute(command.end_game_query,command.is_win, command.game_id)
+            command.conn.commit()
         

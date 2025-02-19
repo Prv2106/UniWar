@@ -2,6 +2,7 @@ import grpc
 from concurrent import futures
 import pymysql
 import json
+from datetime import datetime
 import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
 import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
 from uniwar import db_config, command_service, query_service, functions
@@ -24,11 +25,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print(f"Numero di carri armati posseduti dall'utente: {request.user_owned_tanks}", flush = True)
         print(f"Territori posseduti dalla CPU: {request.cpu_owned_territories}")
         print(f"Numero di carri armati posseduti dalla CPU: {request.cpu_owned_tanks}", flush = True)
-        if request.user_win is  None:
-            print(f"Nessuno ha vinto", flush=True)
-        else: 
-            print(f"Vittoria: {request.user_win}", flush=True)
-        
+    
         data = functions.Data(request)       
         
         # destrutturiamo la tupla restituita da process_data 
@@ -61,9 +58,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     cpu_owned_territories=len(request.cpu_owned_territories),
                     cpu_owned_tanks=request.cpu_owned_tanks,
                     user_owned_territories_list= user_owned_territories_json, 
-                    cpu_owned_territories_list= cpu_owned_territories_json, 
-                    user_win=request.user_win
-                    )
+                    cpu_owned_territories_list= cpu_owned_territories_json                    )
                 )
                 
                 return msg.Response(message="Statistiche ricevute con successo!", status = True)
@@ -73,7 +68,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.Response(message=f"Database Error: {err}", status=False)
+            return msg.Response(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.Response(message=str(e), status=False)
@@ -89,15 +84,15 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
+                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = response)  
                 
-                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = response)      
         except ValueError as e:
             print(f"{e}", flush= True)
             return msg.GameInfoList(message=str(e), status=False)
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.GameInfoList(message=f"Database Error: {err}", status=False)
+            return msg.GameInfoList(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.GameInfoList(message=str(e), status=False)
@@ -106,59 +101,119 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     def get_statistics(self,request, context):
         print(f"Richiesta delle statistiche per partita con id = {request.game_id}", flush=True)
-        # TODO: 
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
-                response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
+                response = service.handle_get_data_query(query_service.GetDataQuery(conn, request.game_id))
                 
-                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = response)      
+                # Estraiamo i valori dalla riga restituita dalla query
+                # descriptor è una lista di tuple dove ogni tupla rappresenta una colonna e in cui il primo elemento è il nome della colonna  
+                columns = [desc[0] for desc in conn.cursor().descriptor] # lista con i nomi delle colonne
+                rows = dict(zip(columns,response)) # dizionario in modo da poter accedere ai campi utilizzando il nome
+                
+                # Convertiamo i json in liste di stringhe
+                user_territories = json.loads(rows["user_owned_territories_list"])
+                cpu_territories = json.loads(rows["cpu_owned_territories_list"])
+                
+                # Elaboriamo le statistiche
+                
+                # Ricaviamo i continenti posseduti dall'utente e quelli posseduti dalla cpu
+                user_owned_continents = functions.get_owned_continents(user_territories)
+                cpu_owned_continents = functions.get_owned_continents(cpu_territories)
+                
+                # determiniamo il numero di giri effettivamente completati
+                
+                completed_rounds = rows['round_id'] if rows['turn_completed'] == 2 else rows['round_id']-1
+                             
+                user_tanks_lost_per_round = rows['user_tanks_lost'] / completed_rounds
+                cpu_tanks_lost_per_round = rows['cpu_tanks_lost'] / completed_rounds
+                
+                user_tanks_lost_attacking_per_round = rows['user_tanks_lost_attacking'] / completed_rounds
+                cpu_tanks_lost_attacking_per_round = rows['cpu_tanks_lost_attacking'] / completed_rounds
+                
+                user_tanks_lost_defending_per_round = rows['user_tanks_lost_defending'] / completed_rounds
+                cpu_tanks_lost_defending_per_round = rows['cpu_tanks_lost_defending'] / completed_rounds
+                
+                user_territories_lost_per_round = rows['user_territories_lost'] / completed_rounds
+                cpu_territories_lost_per_round = rows['cpu_territories_lost'] / completed_rounds
+                
+                user_map_ownership_percentage = (rows['user_owned_territories'] / 42 ) * 100
+                cpu_map_ownership_percentage = (rows['cpu_owned_territories'] / 42 ) * 100
+                
+                
+                return msg.StatisticsResponse(
+                    message="Storico recuperato con successo", 
+                    status= True,
+                    user_tanks_lost_per_round = user_tanks_lost_per_round,
+                    cpu_tanks_lost_per_round = cpu_tanks_lost_per_round,
+                    user_tanks_lost_attacking_per_round = user_tanks_lost_attacking_per_round,
+                    cpu_tanks_lost_attacking_per_round = cpu_tanks_lost_attacking_per_round,
+                    user_tanks_lost_defending_per_round = user_tanks_lost_defending_per_round,
+                    cpu_tanks_lost_defending_per_round = cpu_tanks_lost_defending_per_round,                    
+                    user_territories_lost_per_round = user_territories_lost_per_round,                    
+                    cpu_territories_lost_per_round = cpu_territories_lost_per_round,                    
+                    user_map_ownership_percentage = user_map_ownership_percentage,                    
+                    cpu_map_ownership_percentage = cpu_map_ownership_percentage,
+                    user_owned_territories = rows['user_owned_territories'],                    
+                    user_owned_tanks = rows['user_owned_tanks'],                    
+                    cpu_owned_territories = rows['cpu_owned_territories'],                    
+                    cpu_owned_tanks = rows['cpu_owned_tanks'],                    
+                    user_owned_continents = user_owned_continents,                    
+                    cpu_owned_continents = cpu_owned_continents,                    
+                    user_win = rows['user_win'],                    
+                    user_perfect_defenses = rows['user_perfect_defenses'],                    
+                    cpu_perfect_defenses = rows['cpu_perfect_defenses']
+                    )
+                
         except ValueError as e:
             print(f"{e}", flush= True)
-            return msg.GameInfoList(message=str(e), status=False)
+            return msg.StatisticsResponse(message=str(e), status=False)
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.GameInfoList(message=f"Database Error: {err}", status=False)
+            return msg.StatisticsResponse(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
-            return msg.GameInfoList(message=str(e), status=False)
+            return msg.StatisticsResponse(message=str(e), status=False)
         
         
-        
-        return msg.StatisticsResponse(
-            user_owned_territories=21,
-            cpu_owned_territories=18,
-            user_owned_tanks=48,
-            cpu_owned_tanks=32,
-            user_owned_continents=["Europa", "Asia"],
-            cpu_owned_continents=[],
-            user_win= "uncompleted",
-            user_tanks_lost_per_turn=3.5,
-            cpu_tanks_lost_per_turn=4.6,
-            user_tanks_lost_attacking=2.1,
-            cpu_tanks_lost_attacking=3.0,
-            user_tanks_lost_defending=1.4,
-            cpu_tanks_lost_defending=1.6,
-            user_perfect_defenses=5,
-            cpu_perfect_defenses=3,
-            user_territories_lost_per_turn=0.8,
-            cpu_territories_lost_per_turn=1.2,
-            user_map_ownership_percentage=55.0,
-            cpu_map_ownership_percentage=45.0,
-        )
-
-        #TODO: Recuperare le statistiche dal db, definire un metodo per il calcolo dei continenti posseduti dall'utente
         
         
     # rpc da richiamare quando si vuole iniziare una nuova partita
     def new_game(self,request,context):
-        pass
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = command_service.CommandService()
+                date = datetime.now().strftime("%d/%m/%y") 
+                game_id = service.handle_insert_game_command(command_service.InsertGameCommand(conn, request.username, date))
+                return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")
+    
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return msg.NewGameResponse(message=str(err), status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
+            return msg.NewGameResponse(message=str(e), status=False)
+        
+        
         
     
     # rpc da richiamare quando si termina una partita
-    def end_game(self,reqquest, context):
-        pass
+    def end_game(self,request, context):
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = command_service.CommandService()
+                service.handle_end_game_command(command_service.EndGameCommand(conn,request.game_id,request.is_win))
+                return msg.Response(message="Operazione completata con successo", status=True)               
+    
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return msg.Response(message=str(err), status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
+            return msg.Response(message=str(e), status=False)
         
         
         
@@ -179,7 +234,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.Response(message=f"Database Error: {err}", status=False)
+            return msg.Response(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.Response(message=str(e), status=False)
@@ -225,7 +280,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.Response(message=f"Database Error: {err}", status=False)
+            return msg.Response(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.Response(message=str(e), status=False)

@@ -69,6 +69,11 @@ class StatisticsServiceStub(object):
                 request_serializer=statistics__pb2.Username.SerializeToString,
                 response_deserializer=statistics__pb2.NewGameResponse.FromString,
                 _registered_method=True)
+        self.end_game = channel.unary_unary(
+                '/statistics.StatisticsService/end_game',
+                request_serializer=statistics__pb2.EndGameRequest.SerializeToString,
+                response_deserializer=statistics__pb2.Response.FromString,
+                _registered_method=True)
 
 
 class StatisticsServiceServicer(object):
@@ -117,6 +122,12 @@ class StatisticsServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def end_game(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_StatisticsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -154,6 +165,11 @@ def add_StatisticsServiceServicer_to_server(servicer, server):
                     servicer.new_game,
                     request_deserializer=statistics__pb2.Username.FromString,
                     response_serializer=statistics__pb2.NewGameResponse.SerializeToString,
+            ),
+            'end_game': grpc.unary_unary_rpc_method_handler(
+                    servicer.end_game,
+                    request_deserializer=statistics__pb2.EndGameRequest.FromString,
+                    response_serializer=statistics__pb2.Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -345,6 +361,33 @@ class StatisticsService(object):
             '/statistics.StatisticsService/new_game',
             statistics__pb2.Username.SerializeToString,
             statistics__pb2.NewGameResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def end_game(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/statistics.StatisticsService/end_game',
+            statistics__pb2.EndGameRequest.SerializeToString,
+            statistics__pb2.Response.FromString,
             options,
             channel_credentials,
             insecure,

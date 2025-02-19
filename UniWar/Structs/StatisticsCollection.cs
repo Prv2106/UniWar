@@ -5,7 +5,6 @@ public struct StatisticsCollection {
     public int GameId {get; set;}
 
     public bool UserTurn {get; set;} 
-    public bool? UserWin {get; set;} 
 
     public int UserOwnedTanks {get; set;}
     public int CpuOwnedTanks {get; set;}

@@ -39,10 +39,6 @@ namespace UniWar {
 
             request.UserOwnedTerritories.AddRange(stats.UserOwnedTerritories);
             request.CpuOwnedTerritories.AddRange(stats.CpuOwnedTerritories);
-
-            if (stats.UserWin != null)
-                request.UserWin = (bool) stats.UserWin;
-
             
             try {
                 var response = stub.send_statistics(request);

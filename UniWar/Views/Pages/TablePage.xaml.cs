@@ -458,7 +458,6 @@ namespace UniWar {
             
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
-                stats.UserWin = true;
                 await CollectsStatistics(stats);
                 await Navigation.PushModalAsync(new WinOrLoseModal(true));
             }
@@ -814,7 +813,6 @@ namespace UniWar {
                 BuildUserInformation();
 
                 if (battle.Win) {     
-                    stats.UserWin = false;
                     await CollectsStatistics(stats);
                     await Navigation.PushModalAsync(new WinOrLoseModal(false));
                     break;

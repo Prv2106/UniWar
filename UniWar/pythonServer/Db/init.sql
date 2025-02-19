@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS Data (
     user_owned_tanks INT NOT NULL DEFAULT 0,
     cpu_owned_territories INT NOT NULL DEFAULT 0,
     cpu_owned_tanks INT NOT NULL DEFAULT 0,
-    user_owned_territories_list TEXT NOT NULL, -- Lista di territori posseduti dall'utente (serializzata, es. JSON)
-    cpu_owned_territories_list TEXT NOT NULL,  -- Lista di territori posseduti dalla CPU (serializzata, es. JSON)
+    user_owned_territories_list TEXT NOT NULL, -- Lista di territori posseduti dall'utente (serializzata in JSON)
+    cpu_owned_territories_list TEXT NOT NULL,  -- Lista di territori posseduti dalla CPU (serializzata in JSON)
     user_win INT NOT NULL DEFAULT -1, -- -1, 0 o 1
     
     user_tanks_lost INT NOT NULL DEFAULT 0,

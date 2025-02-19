@@ -63,6 +63,8 @@ namespace Statistics {
     static readonly grpc::Marshaller<global::Statistics.GameInfoList> __Marshaller_statistics_GameInfoList = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.GameInfoList.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Statistics.NewGameResponse> __Marshaller_statistics_NewGameResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.NewGameResponse.Parser));
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Marshaller<global::Statistics.EndGameRequest> __Marshaller_statistics_EndGameRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.EndGameRequest.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response> __Method_send_statistics = new grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response>(
@@ -119,6 +121,14 @@ namespace Statistics {
         "new_game",
         __Marshaller_statistics_Username,
         __Marshaller_statistics_NewGameResponse);
+
+    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+    static readonly grpc::Method<global::Statistics.EndGameRequest, global::Statistics.Response> __Method_end_game = new grpc::Method<global::Statistics.EndGameRequest, global::Statistics.Response>(
+        grpc::MethodType.Unary,
+        __ServiceName,
+        "end_game",
+        __Marshaller_statistics_EndGameRequest,
+        __Marshaller_statistics_Response);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -320,6 +330,26 @@ namespace Statistics {
       public virtual grpc::AsyncUnaryCall<global::Statistics.NewGameResponse> new_gameAsync(global::Statistics.Username request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_new_game, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Statistics.Response end_game(global::Statistics.EndGameRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return end_game(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual global::Statistics.Response end_game(global::Statistics.EndGameRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.BlockingUnaryCall(__Method_end_game, null, options, request);
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> end_gameAsync(global::Statistics.EndGameRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      {
+        return end_gameAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+      }
+      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> end_gameAsync(global::Statistics.EndGameRequest request, grpc::CallOptions options)
+      {
+        return CallInvoker.AsyncUnaryCall(__Method_end_game, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]

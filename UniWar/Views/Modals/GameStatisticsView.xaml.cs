@@ -21,12 +21,12 @@ namespace UniWar {
                 StatisticsList = new List<StatisticEntry> {
                     new("Territori posseduti", response.UserOwnedTerritories, response.CpuOwnedTerritories),
                     new("Carri armati posseduti", response.UserOwnedTanks, response.CpuOwnedTanks),
-                    new("Carri persi per giro", response.UserTanksLostPerTurn, response.CpuTanksLostPerTurn),
-                    new("Carri persi in attacco", response.UserTanksLostAttacking, response.CpuTanksLostAttacking),
-                    new("Carri persi in difesa", response.UserTanksLostDefending, response.CpuTanksLostDefending),
+                    new("Carri persi per giro", response.UserTanksLostPerRound, response.CpuTanksLostPerRound),
+                    new("Carri persi in attacco", response.UserTanksLostAttackingPerRound, response.CpuTanksLostAttackingPerRound),
+                    new("Carri persi in difesa", response.UserTanksLostDefendingPerRound, response.CpuTanksLostDefendingPerRound),
                     new("Difese perfette", response.UserPerfectDefenses, response.CpuPerfectDefenses),
                     new("Attacchi falliti", response.CpuPerfectDefenses, response.UserPerfectDefenses),
-                    new("Territori persi per giro", response.UserTerritoriesLostPerTurn, response.CpuTerritoriesLostPerTurn),
+                    new("Territori persi per giro", response.UserTerritoriesLostPerRound, response.CpuTerritoriesLostPerRound),
                     new("Percentuale mappa posseduta", $"{response.UserMapOwnershipPercentage:F2}%", $"{response.CpuMapOwnershipPercentage:F2}%")
                 };
 
@@ -59,8 +59,8 @@ namespace UniWar {
 
             public StatisticEntry(string statName, object userValue, object cpuValue) {
                 StatName = statName;
-                UserValue = userValue.ToString();
-                CpuValue = cpuValue.ToString();
+                UserValue = userValue.ToString()!;
+                CpuValue = cpuValue.ToString()!;
             }
         }
     }
