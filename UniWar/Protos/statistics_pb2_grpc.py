@@ -34,73 +34,84 @@ class StatisticsServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.SendStatistics = channel.unary_unary(
-                '/statistics.StatisticsService/SendStatistics',
+        self.send_statistics = channel.unary_unary(
+                '/statistics.StatisticsService/send_statistics',
                 request_serializer=statistics__pb2.StatisticsCollection.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
-        self.SignIn = channel.unary_unary(
-                '/statistics.StatisticsService/SignIn',
+        self.sign_in = channel.unary_unary(
+                '/statistics.StatisticsService/sign_in',
                 request_serializer=statistics__pb2.SignInCredentials.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
-        self.SignUp = channel.unary_unary(
-                '/statistics.StatisticsService/SignUp',
+        self.sign_up = channel.unary_unary(
+                '/statistics.StatisticsService/sign_up',
                 request_serializer=statistics__pb2.SignUpCredentials.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
-        self.UsernameCheck = channel.unary_unary(
-                '/statistics.StatisticsService/UsernameCheck',
+        self.username_check = channel.unary_unary(
+                '/statistics.StatisticsService/username_check',
                 request_serializer=statistics__pb2.Username.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
-        self.GetStatistics = channel.unary_unary(
-                '/statistics.StatisticsService/GetStatistics',
+        self.get_statistics = channel.unary_unary(
+                '/statistics.StatisticsService/get_statistics',
                 request_serializer=statistics__pb2.StatisticRequest.SerializeToString,
                 response_deserializer=statistics__pb2.StatisticsResponse.FromString,
                 _registered_method=True)
-        self.GetGames = channel.unary_unary(
-                '/statistics.StatisticsService/GetGames',
+        self.get_games = channel.unary_unary(
+                '/statistics.StatisticsService/get_games',
                 request_serializer=statistics__pb2.Username.SerializeToString,
                 response_deserializer=statistics__pb2.GameInfoList.FromString,
+                _registered_method=True)
+        self.new_game = channel.unary_unary(
+                '/statistics.StatisticsService/new_game',
+                request_serializer=statistics__pb2.Username.SerializeToString,
+                response_deserializer=statistics__pb2.NewGameResponse.FromString,
                 _registered_method=True)
 
 
 class StatisticsServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def SendStatistics(self, request, context):
+    def send_statistics(self, request, context):
         """da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SignIn(self, request, context):
+    def sign_in(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def SignUp(self, request, context):
+    def sign_up(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def UsernameCheck(self, request, context):
+    def username_check(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetStatistics(self, request, context):
+    def get_statistics(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def GetGames(self, request, context):
+    def get_games(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def new_game(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -109,35 +120,40 @@ class StatisticsServiceServicer(object):
 
 def add_StatisticsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'SendStatistics': grpc.unary_unary_rpc_method_handler(
-                    servicer.SendStatistics,
+            'send_statistics': grpc.unary_unary_rpc_method_handler(
+                    servicer.send_statistics,
                     request_deserializer=statistics__pb2.StatisticsCollection.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
-            'SignIn': grpc.unary_unary_rpc_method_handler(
-                    servicer.SignIn,
+            'sign_in': grpc.unary_unary_rpc_method_handler(
+                    servicer.sign_in,
                     request_deserializer=statistics__pb2.SignInCredentials.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
-            'SignUp': grpc.unary_unary_rpc_method_handler(
-                    servicer.SignUp,
+            'sign_up': grpc.unary_unary_rpc_method_handler(
+                    servicer.sign_up,
                     request_deserializer=statistics__pb2.SignUpCredentials.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
-            'UsernameCheck': grpc.unary_unary_rpc_method_handler(
-                    servicer.UsernameCheck,
+            'username_check': grpc.unary_unary_rpc_method_handler(
+                    servicer.username_check,
                     request_deserializer=statistics__pb2.Username.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
-            'GetStatistics': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetStatistics,
+            'get_statistics': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_statistics,
                     request_deserializer=statistics__pb2.StatisticRequest.FromString,
                     response_serializer=statistics__pb2.StatisticsResponse.SerializeToString,
             ),
-            'GetGames': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetGames,
+            'get_games': grpc.unary_unary_rpc_method_handler(
+                    servicer.get_games,
                     request_deserializer=statistics__pb2.Username.FromString,
                     response_serializer=statistics__pb2.GameInfoList.SerializeToString,
+            ),
+            'new_game': grpc.unary_unary_rpc_method_handler(
+                    servicer.new_game,
+                    request_deserializer=statistics__pb2.Username.FromString,
+                    response_serializer=statistics__pb2.NewGameResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -151,7 +167,7 @@ class StatisticsService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def SendStatistics(request,
+    def send_statistics(request,
             target,
             options=(),
             channel_credentials=None,
@@ -164,7 +180,7 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/SendStatistics',
+            '/statistics.StatisticsService/send_statistics',
             statistics__pb2.StatisticsCollection.SerializeToString,
             statistics__pb2.Response.FromString,
             options,
@@ -178,7 +194,7 @@ class StatisticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def SignIn(request,
+    def sign_in(request,
             target,
             options=(),
             channel_credentials=None,
@@ -191,7 +207,7 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/SignIn',
+            '/statistics.StatisticsService/sign_in',
             statistics__pb2.SignInCredentials.SerializeToString,
             statistics__pb2.Response.FromString,
             options,
@@ -205,7 +221,7 @@ class StatisticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def SignUp(request,
+    def sign_up(request,
             target,
             options=(),
             channel_credentials=None,
@@ -218,7 +234,7 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/SignUp',
+            '/statistics.StatisticsService/sign_up',
             statistics__pb2.SignUpCredentials.SerializeToString,
             statistics__pb2.Response.FromString,
             options,
@@ -232,7 +248,7 @@ class StatisticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def UsernameCheck(request,
+    def username_check(request,
             target,
             options=(),
             channel_credentials=None,
@@ -245,7 +261,7 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/UsernameCheck',
+            '/statistics.StatisticsService/username_check',
             statistics__pb2.Username.SerializeToString,
             statistics__pb2.Response.FromString,
             options,
@@ -259,7 +275,7 @@ class StatisticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def GetStatistics(request,
+    def get_statistics(request,
             target,
             options=(),
             channel_credentials=None,
@@ -272,7 +288,7 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/GetStatistics',
+            '/statistics.StatisticsService/get_statistics',
             statistics__pb2.StatisticRequest.SerializeToString,
             statistics__pb2.StatisticsResponse.FromString,
             options,
@@ -286,7 +302,7 @@ class StatisticsService(object):
             _registered_method=True)
 
     @staticmethod
-    def GetGames(request,
+    def get_games(request,
             target,
             options=(),
             channel_credentials=None,
@@ -299,9 +315,36 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/GetGames',
+            '/statistics.StatisticsService/get_games',
             statistics__pb2.Username.SerializeToString,
             statistics__pb2.GameInfoList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def new_game(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/statistics.StatisticsService/new_game',
+            statistics__pb2.Username.SerializeToString,
+            statistics__pb2.NewGameResponse.FromString,
             options,
             channel_credentials,
             insecure,

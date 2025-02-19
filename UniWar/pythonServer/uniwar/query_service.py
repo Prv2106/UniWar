@@ -28,7 +28,10 @@ class LogInUserQuery:
         self.username = username
         self.password = password
         self.conn = conn
-    
+
+
+
+
     
 
 class UsernameCheckQuery:
@@ -51,10 +54,35 @@ class UsernameCheckQuery:
     
 
 
+class GetDataQuery:
+    
+    def __init__(self, conn, game_id):
+        
+        self.get_data_query = """
+        SELECT *
+        FROM Data
+        WHERE GameId = %s        
+        """
+        self.conn = conn
+        self.game_id = game_id
 
 
 
 
+
+
+class GetGamesQuery:
+    def __init__(self,conn, username):
+        
+        self.conn = conn
+        self.username = username
+        self.get_games_query = """
+        SELECT *
+        FROM Games
+        WHERE username = %s        
+        """
+        
+        
 
 
 # Servizio che esegue le query
@@ -83,3 +111,17 @@ class QueryService:
             
             if not query.validate_username(query.username):
                 raise ValueError("Username non valido: Deve iniziare con una lettera maiuscola e avere almeno 5 caratteri in totale")
+            
+            
+    def handle_get_data_query(self, query: GetDataQuery):
+            with query.conn.cursor() as cursor:
+                cursor.execute(query.get_data_query,(query.game_id,))
+                return cursor.fetchone()
+
+    def handle_get_game_query(self, query: GetGamesQuery):
+        with query.conn.cursor() as cursor:
+            cursor.execute(query.get_games_query, (query.username,))
+            result = cursor.fetchall()
+            if result is None:
+                raise ValueError("Non ci sono partite a te associate")
+            return result

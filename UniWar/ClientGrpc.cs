@@ -15,7 +15,8 @@ namespace UniWar {
             var request = new Statistics.StatisticsCollection {
                 RoundId = stats.RoundId,
                 UserTurn = stats.UserTurn,
-                OwnedTanks = stats.OwnedTanks
+                UserOwnedTanks = stats.UserOwnedTanks,
+                CpuOwnedTanks = stats.CpuOwnedTanks
             };
 
 
@@ -36,14 +37,15 @@ namespace UniWar {
             if (stats.LostTerritories != null)
                 request.LostTerritories!.AddRange(stats.LostTerritories);
 
-            request.OwnedTerritories.AddRange(stats.OwnedTerritories);
+            request.UserOwnedTerritories.AddRange(stats.UserOwnedTerritories);
+            request.CpuOwnedTerritories.AddRange(stats.CpuOwnedTerritories);
 
             if (stats.UserWin != null)
                 request.UserWin = (bool) stats.UserWin;
 
             
             try {
-                var response = stub.SendStatistics(request);
+                var response = stub.send_statistics(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
             }
             catch (Grpc.Core.RpcException rpcEx) {
@@ -70,7 +72,7 @@ namespace UniWar {
             };
 
             try {
-                var response = stub.SignIn(request);
+                var response = stub.sign_in(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;
             }
@@ -95,7 +97,7 @@ namespace UniWar {
             };
 
             try {
-                var response = stub.SignUp(request);
+                var response = stub.sign_up(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;       
 
@@ -119,7 +121,7 @@ namespace UniWar {
             };
 
             try {
-                var response = stub.GetGames(request);
+                var response = stub.get_games(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;       
             } catch (Exception e) {
@@ -136,7 +138,7 @@ namespace UniWar {
             request.Username_ = id;
 
             try{
-                var response = stub.UsernameCheck(request);
+                var response = stub.username_check(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
             }
@@ -159,7 +161,7 @@ namespace UniWar {
             var request = new StatisticRequest();
             request.GameId = GameId;
             try{
-                var response = stub.GetStatistics(request);
+                var response = stub.get_statistics(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
             }

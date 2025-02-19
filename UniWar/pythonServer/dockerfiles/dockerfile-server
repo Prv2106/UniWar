@@ -11,6 +11,8 @@ RUN pip install bcrypt pymysql
 RUN pip install cryptography
 
 
+
+
 COPY ./Protos/statistics_pb2_grpc.py ./Protos/statistics_pb2.py /app/
 COPY ./pythonServer/server.py /app/
 COPY ./pythonServer/uniwar /app/uniwar

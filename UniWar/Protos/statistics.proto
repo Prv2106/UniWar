@@ -4,21 +4,22 @@ package statistics;
 
 service StatisticsService {
     
-    rpc SendStatistics (StatisticsCollection) returns (Response); 
+    rpc send_statistics (StatisticsCollection) returns (Response); 
     // da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
 
-    rpc SignIn (SignInCredentials) returns (Response);
+    rpc sign_in (SignInCredentials) returns (Response);
 
-    rpc SignUp (SignUpCredentials) returns (Response);
+    rpc sign_up (SignUpCredentials) returns (Response);
 
-    rpc UsernameCheck(Username) returns (Response);
+    rpc username_check(Username) returns (Response);
 
-    rpc GetStatistics(StatisticRequest) returns (StatisticsResponse);
+    rpc get_statistics(StatisticRequest) returns (StatisticsResponse);
 
-    rpc GetGames (Username) returns (GameInfoList);
+    rpc get_games (Username) returns (GameInfoList);
+
+    rpc new_game (Username) returns (NewGameResponse);
     
 }
-
 
 
 
@@ -37,9 +38,13 @@ message StatisticsCollection {
     repeated string lost_territories = 4;
     map<string, int32> defending_territories = 5;
     map<string, int32> attacking_territories = 6;
-    int32 owned_tanks = 7;
-    repeated string owned_territories = 8;
+    int32 user_owned_tanks = 7;
+    repeated string user_owned_territories = 8;
     bool user_win = 9;
+    int32 game_id = 10;
+    repeated string cpu_owned_territories = 11;
+    int32 cpu_owned_tanks = 12;
+
 }
 
 message SignInCredentials {
@@ -99,4 +104,9 @@ message StatisticsResponse{
     float user_map_ownership_percentage = 18; // Percentuale di mappa posseduta dall'utente
     float cpu_map_ownership_percentage = 19;  // Percentuale di mappa posseduta dalla CPU
     
+}
+
+
+message NewGameResponse{
+    int32 game_id = 1;
 }

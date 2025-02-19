@@ -419,9 +419,9 @@ namespace UniWar {
         stats.DefendingTerritories = new Dictionary<string, int>();  
         stats.AttackingTerritories = new Dictionary<string, int>();
         stats.LostTerritories = new List<string>();          
-        stats.OwnedTerritories = new List<string>();          
+        stats.UserOwnedTerritories = new List<string>();          
+        stats.CpuOwnedTerritories = new List<string>();          
         stats.UserTurn = true;
-        stats.OwnedTanks = 0;
         stats.RoundId = Turn!.IdRound;
 
 
@@ -470,9 +470,13 @@ namespace UniWar {
 
             // aggiorniamo le statistiche
             foreach (var territory in User.Territories.Values) 
-                stats.OwnedTerritories.Add(territory.Name);
+                stats.UserOwnedTerritories.Add(territory.Name);
+
+            foreach (var territory in CPU.Territories.Values) 
+                stats.CpuOwnedTerritories.Add(territory.Name);
                 
-            stats.OwnedTanks = User.GetNumTanks();
+            stats.UserOwnedTanks = User.GetNumTanks();
+            stats.CpuOwnedTanks = CPU.GetNumTanks();
             
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
@@ -488,9 +492,13 @@ namespace UniWar {
             
         } else { // aggiorniamo le statistiche
             foreach (var territory in User.Territories.Values) 
-                stats.OwnedTerritories.Add(territory.Name);
+                stats.UserOwnedTerritories.Add(territory.Name);
+
+            foreach (var territory in CPU.Territories.Values) 
+                stats.CpuOwnedTerritories.Add(territory.Name);
                 
-            stats.OwnedTanks = User.GetNumTanks();
+            stats.UserOwnedTanks = User.GetNumTanks();
+            stats.CpuOwnedTanks = CPU.GetNumTanks();
         }
 
 
@@ -758,10 +766,12 @@ namespace UniWar {
             stats.DefendingTerritories = new Dictionary<string, int>();  
             stats.AttackingTerritories = new Dictionary<string, int>();
             stats.LostTerritories = new List<string>();          
-            stats.OwnedTerritories = new List<string>();          
+            stats.UserOwnedTerritories = new List<string>();          
+            stats.CpuOwnedTerritories = new List<string>();          
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
-
+            // TODO: stats.GameId = 
+            
                         
             foreach(var battle in battleList){
                  bool territoryLoss = false;
@@ -814,9 +824,13 @@ namespace UniWar {
                 }
 
                 foreach(var territory in CPU.Territories.Values)
-                    stats.OwnedTerritories.Add(territory.Name);
+                    stats.CpuOwnedTerritories.Add(territory.Name);
 
-                stats.OwnedTanks = CPU.GetNumTanks();
+                foreach(var territory in User.Territories.Values)
+                    stats.UserOwnedTerritories.Add(territory.Name);
+
+                stats.CpuOwnedTanks = CPU.GetNumTanks();
+                stats.UserOwnedTanks = User.GetNumTanks();
 
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
