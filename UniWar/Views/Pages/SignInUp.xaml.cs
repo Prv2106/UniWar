@@ -7,53 +7,56 @@ namespace UniWar{
 
         public SignInUp(bool signIn = true) {
             InitializeComponent();
+
+            // come prima cosa, controlliamo se è già presente una "sessione" di login
+            if (UniWarSystem.Instance.IsGameInitialized) {
+                // allora dovremmo essere nella main page
+                Navigation.PushAsync(new MainPage());
+            }
+
             isSignIn = signIn;
             UpdateUI();
-            
         }
 
         private async void UpdateUI(){
-                 UsernameEntry.TextColor = Colors.White;
-                 Button.Clicked -= OnSigniInButtonClicked!;
-                 Button.Clicked -= OnSigniUpButtonClicked!;
-                 UsernameEntry.Completed -= OnSigniInButtonClicked!;
-                 PasswordEntry.Completed -= OnSigniInButtonClicked!;
-                 UsernameEntry.Completed -= OnSigniUpButtonClicked!;
-                 PasswordEntry.Completed -= OnSigniUpButtonClicked!;
+            UsernameEntry.TextColor = Colors.White;
+            Button.Clicked -= OnSigniInButtonClicked!;
+            Button.Clicked -= OnSigniUpButtonClicked!;
+            UsernameEntry.Completed -= OnSigniInButtonClicked!;
+            PasswordEntry.Completed -= OnSigniInButtonClicked!;
+            UsernameEntry.Completed -= OnSigniUpButtonClicked!;
+            PasswordEntry.Completed -= OnSigniUpButtonClicked!;
 
-                UsernameEntry.Unfocused -= OnUsernameUnFocused!;
-                UsernameEntry.Focused -= OnUsernameFocused!;
-            
-                if(isSignIn){
-                    Header.Text = "Inserisci nome utente e password";
-                    ImageInfo.Source = "military_hat.png";
-                    Button.Text = "Accedi";
-                    Button.Clicked += OnSigniInButtonClicked!;
-                    UsernameEntry.Completed += OnSigniInButtonClicked!;
-                    PasswordEntry.Completed += OnSigniInButtonClicked!;
-                    SwitchModeLabel.Text = "Se non hai ancora un account, Registrati";
-                }
-                else{
-                    Header.Text = "Crea un nome utente e una password";
-                    ImageInfo.Source = "soldier.png";
-                    Button.Text = "Registrati";
-                    await Task.Delay(100);
-                    Button.Clicked += OnSigniUpButtonClicked!;
-                    UsernameEntry.Completed += OnSigniUpButtonClicked!;
-                    PasswordEntry.Completed += OnSigniUpButtonClicked!;
+            UsernameEntry.Unfocused -= OnUsernameUnFocused!;
+            UsernameEntry.Focused -= OnUsernameFocused!;
+    
+            if (isSignIn) {
+                Header.Text = "Inserisci nome utente e password";
+                ImageInfo.Source = "military_hat.png";
+                Button.Text = "Accedi";
+                Button.Clicked += OnSigniInButtonClicked!;
+                UsernameEntry.Completed += OnSigniInButtonClicked!;
+                PasswordEntry.Completed += OnSigniInButtonClicked!;
+                SwitchModeLabel.Text = "Se non hai ancora un account, Registrati";
+            } else {
+                Header.Text = "Crea un nome utente e una password";
+                ImageInfo.Source = "soldier.png";
+                Button.Text = "Registrati";
+                await Task.Delay(100);
+                Button.Clicked += OnSigniUpButtonClicked!;
+                UsernameEntry.Completed += OnSigniUpButtonClicked!;
+                PasswordEntry.Completed += OnSigniUpButtonClicked!;
 
-                    UsernameEntry.Unfocused += OnUsernameUnFocused!;
-                    UsernameEntry.Focused += OnUsernameFocused!;
-                    SwitchModeLabel.Text = "Hai già un account? Accedi";
-                }
+                UsernameEntry.Unfocused += OnUsernameUnFocused!;
+                UsernameEntry.Focused += OnUsernameFocused!;
+                SwitchModeLabel.Text = "Hai già un account? Accedi";
+            }
 
-
-                // Assicura che il messaggio di errore scompaia quando l'utente scrive
-                UsernameEntry.TextChanged -= OnEntryTextChanged!;
-                PasswordEntry.TextChanged -= OnEntryTextChanged!;
-                UsernameEntry.TextChanged += OnEntryTextChanged!;
-                PasswordEntry.TextChanged += OnEntryTextChanged!;
-
+            // Assicura che il messaggio di errore scompaia quando l'utente scrive
+            UsernameEntry.TextChanged -= OnEntryTextChanged!;
+            PasswordEntry.TextChanged -= OnEntryTextChanged!;
+            UsernameEntry.TextChanged += OnEntryTextChanged!;
+            PasswordEntry.TextChanged += OnEntryTextChanged!;
         }
 
 

@@ -35,7 +35,7 @@
               <Button
                 Text="Schermata Iniziale"
                 WidthRequest="200"
-                Clicked="OnNewGameClicked"
+                Clicked="OnGoToMainPageButtonClicked"
                 Margin="0,30,0,0"
                 
                 />

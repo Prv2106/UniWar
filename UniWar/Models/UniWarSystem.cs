@@ -12,8 +12,10 @@ public class UniWarSystem { // singleton
 
     public Turn? Turn {get; set;}
     
-    public bool IsOffline {get; private set;} = false;
-    public string? LoggedUsername {get; private set;}
+    public bool IsOffline {get; set;} = false;
+    public string? LoggedUsername {get; set;}
+
+    public bool IsGameInitialized {get; private set;}
 
 
 
@@ -49,6 +51,7 @@ public class UniWarSystem { // singleton
     
     // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
     public void InitializeGame() {
+        IsGameInitialized = true;
         /* 
             è, sostanzialmente, il metodo che inizializza la partita...
             - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
@@ -116,7 +119,7 @@ public class UniWarSystem { // singleton
      
     }
 
-    public void NewGame() {
+    public static void ResetAll() {
         /*
             Questo metodo viene invocato nella modale di GameOver e si occupa 
             di far sì che le istanze della classi singleton TablePage e UniWar 

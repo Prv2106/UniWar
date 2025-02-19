@@ -331,9 +331,8 @@ namespace UniWar {
     }
 
     public async void OnEndGameClicked(object sender, EventArgs args) {
-        TaskCompletionSource tcs;
         // verifichiamo che siano passati almeno 2 giri
-        if(Turn!.IdRound >= 3){
+        if (Turn!.IdRound >= 3) {
             // decretiamo il vincitore
             int userScore = 0;
             int cpuScore = 0;
@@ -346,37 +345,17 @@ namespace UniWar {
 
             Console.WriteLine($"CpuScore = {cpuScore}, UserScore = {userScore}");
 
-            if(userScore > cpuScore){
-                tcs = new TaskCompletionSource();
-                await Navigation.PushModalAsync(new WinOrLoseModal(true, tcs));
-                await tcs.Task; // aspetta che facciamo setResult()
-                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+            if (userScore > cpuScore) {
+                await Navigation.PushModalAsync(new WinOrLoseModal(true));
+            } else if (userScore < cpuScore) {
+                await Navigation.PushModalAsync(new WinOrLoseModal(false));
+            } else { // Pareggio
+                await Navigation.PushModalAsync(new WinOrLoseModal(true, true)); 
             }
-            else if(userScore < cpuScore){
-                 tcs = new TaskCompletionSource();
-                await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
-                await tcs.Task; // aspetta che facciamo setResult()
-                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-            }
-            else{
-                tcs = new TaskCompletionSource();
-                await Navigation.PushModalAsync(new WinOrLoseModal(true, tcs, true)); // Pareggio
-                await tcs.Task; // aspetta che facciamo setResult()
-                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-            }
-            await Navigation.PopToRootAsync();
-
-            // rimandiamo alla modale
         } else {
             ShowInformation("Devono almeno passare 2 giri!");
         }
-        
-        
-        
-        
     }
-
-        
 
     private async void ShowInformation(string text) {
         attackBanner.IsVisible = true;
@@ -384,7 +363,6 @@ namespace UniWar {
         await Task.Delay(4000);
         attackBanner.IsVisible = false;
     }
-
 
     private void OnAttackButtonClicked(object sender, EventArgs e) {
         if (!UserWantsToAttack) {
@@ -414,17 +392,16 @@ namespace UniWar {
     // Attacco di un territorio da parte dell'utente
     public async void AttackTerritory(string attackingTerritory, string attackedTerritory) {
         // prepariamo le statistiche
-        StatisticsCollection stats = new StatisticsCollection();
-        stats.PlayerId = User!.Name;
-        stats.DefendingTerritories = new Dictionary<string, int>();  
-        stats.AttackingTerritories = new Dictionary<string, int>();
-        stats.LostTerritories = new List<string>();          
-        stats.OwnedTerritories = new List<string>();          
-        stats.UserTurn = true;
-        stats.OwnedTanks = 0;
-        stats.RoundId = Turn!.IdRound;
-
-
+        StatisticsCollection stats = new() {
+            PlayerId = User!.Name,
+            DefendingTerritories = new Dictionary<string, int>(),
+            AttackingTerritories = new Dictionary<string, int>(),
+            LostTerritories = new List<string>(),
+            OwnedTerritories = new List<string>(),
+            UserTurn = true,
+            OwnedTanks = 0,
+            RoundId = Turn!.IdRound
+        };
 
         Territory from = User!.Territories[attackingTerritory];
         int numTanksAttacker = from.Tanks.Count;
@@ -478,12 +455,7 @@ namespace UniWar {
             if (IsWin()) {
                 stats.UserWin = true;
                 await CollectsStatistics(stats);
-                TaskCompletionSource t;
-                t = new TaskCompletionSource();
-                await Navigation.PushModalAsync(new WinOrLoseModal(true, t));
-                await t.Task; // aspetta che facciamo setResult()
-                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-                await Navigation.PopToRootAsync();
+                await Navigation.PushModalAsync(new WinOrLoseModal(true));
             }
             
         } else { // aggiorniamo le statistiche
@@ -493,9 +465,7 @@ namespace UniWar {
             stats.OwnedTanks = User.GetNumTanks();
         }
 
-
         await CollectsStatistics(stats);
-
     }
 
     
@@ -659,94 +629,82 @@ namespace UniWar {
             await tcs.Task; // aspetta che facciamo setResult()
             await Task.Delay(400); // per dare il tempo alla modale di chiudersi
                                 
-
             Turn!.Phase = TurnPhases.Attack;
         }
 
 
 
         private async Task CpuAttack(){
-                    TaskCompletionSource tcs;
+            TaskCompletionSource tcs;
+            List<MapData> playersMaps = new List<MapData>() {
+                new MapData {
+                    PlayerId = CPU!.Name,
+                    Neighbors = CPU.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                    ),
+                    Tanks= CPU.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.Tanks.Count
+                    )
+                },
 
-                    List<MapData> playersMaps = new List<MapData>(){
-                        new MapData {
-                            PlayerId = CPU!.Name,
-                            Neighbors = CPU.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
-                            ),
-                            Tanks= CPU.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.Tanks.Count
-                            )
+                new MapData{
+                    PlayerId = User!.Name,
+                    Neighbors = User.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                    ),
+                    Tanks= User.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.Tanks.Count
+                    )
+                }            
+            };
 
-                        },
+            string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
+            // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
+            IntPtr resultPtr = cpuAttack(jsonData);
+            string? resultJson = Marshal.PtrToStringUTF8(resultPtr);
 
-                        new MapData{
-                            PlayerId = User!.Name,
-                            Neighbors = User.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
-                            ),
-                            Tanks= User.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.Tanks.Count
-                            )
+            if ((resultJson == string.Empty) || resultJson == "[]") {
+                Console.WriteLine("La CPU ha deciso di non attaccare");
+                tcs = new TaskCompletionSource();
+                await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
+                await tcs.Task; // aspetta che facciamo setResult()
+                await Task.Delay(400); // per dare il tempo alla modale di chiudersi 
+            } else {
+                List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
+                // Per il debug
+                // Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
+                if (battleResults is not null) {
+                    await SimulateBattle(battleResults); 
+                }
+            }
 
-                        }            
-
-                    };
-
-
-                    string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
-                    // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
-                    IntPtr resultPtr = cpuAttack(jsonData);
-                    string? resultJson = Marshal.PtrToStringUTF8(resultPtr);
-
-                    if((resultJson == string.Empty) || resultJson == "[]"){
-                        Console.WriteLine("La CPU ha deciso di non attaccare");
-                        tcs = new TaskCompletionSource();
-                        await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
-                        await tcs.Task; // aspetta che facciamo setResult()
-                        await Task.Delay(400); // per dare il tempo alla modale di chiudersi 
-                    }
-                    else{
-                        List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
-                        // Per il debug
-                        // Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
-                        if(battleResults is not null){
-                            await SimulateBattle(battleResults); 
-                        }
-                       
-                    }
-
-
-                    PassTurnToUser();
+            PassTurnToUser();
          }    
 
 
 
 
         bool IsWin(){
-            List<MapData> playersMaps = new List<MapData>(){
-                        new MapData {
-                            PlayerId = User!.Name,
-                            Neighbors = User.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
-                            ),
-                            Tanks= User.Territories.ToDictionary(
-                                t => t.Key,
-                                t => t.Value.Tanks.Count
-                            )
-                        }
+            List<MapData> playersMaps = new List<MapData>() {
+                new MapData {
+                    PlayerId = User!.Name,
+                    Neighbors = User.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
+                    ),
+                    Tanks= User.Territories.ToDictionary(
+                        t => t.Key,
+                        t => t.Value.Tanks.Count
+                    )
+                }
             };
         
-
             string jsonData = JsonSerializer.Serialize(playersMaps, new JsonSerializerOptions{WriteIndented = true});
-
             return winCheck(jsonData);
-        
         }
 
         private async Task SimulateBattle(List<BattleResult> battleList) {
@@ -840,20 +798,17 @@ namespace UniWar {
                 DeployTanks();
                 BuildUserInformation();
 
-                if(battle.Win){     
+                if (battle.Win) {     
                     stats.UserWin = false;
                     await CollectsStatistics(stats);
-                    tcs = new TaskCompletionSource();
-                    await Navigation.PushModalAsync(new WinOrLoseModal(false, tcs));
-                    await tcs.Task; // aspetta che facciamo setResult()
-                    await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-                    await Navigation.PopToRootAsync();
+                    await Navigation.PushModalAsync(new WinOrLoseModal(false));
                     break;
                 }
             }
 
             await CollectsStatistics(stats);
         }
+
 
         private async Task CollectsStatistics(StatisticsCollection statistics) {
             if (!UniWarSystem.Instance.IsOffline) {
