@@ -106,6 +106,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     def get_statistics(self,request, context):
         print(f"Richiesta delle statistiche per partita con id = {request.game_id}", flush=True)
+        # TODO:
+        
         
         return msg.StatisticsResponse(
             user_owned_territories=21,
@@ -132,11 +134,12 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         #TODO: Recuperare le statistiche dal db, definire un metodo per il calcolo dei continenti posseduti dall'utente
         
         
-        
+    # rpc da richiamare quando si vuole iniziare una nuova partita
     def new_game(self,request,context):
         pass
         
     
+    # rpc da richiamare quando si termina una partita
     def end_game(self,reqquest, context):
         pass
         
