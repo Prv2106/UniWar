@@ -1,5 +1,3 @@
-using System.Xml.XPath;
-
 namespace UniWar {
     public partial class NewUserAttackTurn : ContentPage {
         public NewUserAttackTurn() {

@@ -1,9 +1,8 @@
 namespace UniWar{
     public partial class SignInUp: ContentPage{
 
-        private bool isSignIn;
-        public bool isUsernameValid {get; set;}
-        public SignInUp() : this(true){}
+        private bool _isSignIn;
+        public SignInUp() : this(true) {}
 
         public SignInUp(bool signIn = true) {
             InitializeComponent();
@@ -14,38 +13,38 @@ namespace UniWar{
                 Navigation.PushAsync(new MainPage());
             }
 
-            isSignIn = signIn;
+            _isSignIn = signIn;
             UpdateUI();
         }
 
-        private async void UpdateUI(){
+        private async void UpdateUI() {
             UsernameEntry.TextColor = Colors.White;
-            Button.Clicked -= OnSigniInButtonClicked!;
-            Button.Clicked -= OnSigniUpButtonClicked!;
-            UsernameEntry.Completed -= OnSigniInButtonClicked!;
-            PasswordEntry.Completed -= OnSigniInButtonClicked!;
-            UsernameEntry.Completed -= OnSigniUpButtonClicked!;
-            PasswordEntry.Completed -= OnSigniUpButtonClicked!;
+            Button.Clicked -= OnSignInButtonClicked!;
+            Button.Clicked -= OnSignUpButtonClicked!;
+            UsernameEntry.Completed -= OnSignInButtonClicked!;
+            PasswordEntry.Completed -= OnSignInButtonClicked!;
+            UsernameEntry.Completed -= OnSignUpButtonClicked!;
+            PasswordEntry.Completed -= OnSignUpButtonClicked!;
 
             UsernameEntry.Unfocused -= OnUsernameUnFocused!;
             UsernameEntry.Focused -= OnUsernameFocused!;
     
-            if (isSignIn) {
+            if (_isSignIn) {
                 Header.Text = "Inserisci nome utente e password";
                 ImageInfo.Source = "military_hat.png";
                 Button.Text = "Accedi";
-                Button.Clicked += OnSigniInButtonClicked!;
-                UsernameEntry.Completed += OnSigniInButtonClicked!;
-                PasswordEntry.Completed += OnSigniInButtonClicked!;
+                Button.Clicked += OnSignInButtonClicked!;
+                UsernameEntry.Completed += OnSignInButtonClicked!;
+                PasswordEntry.Completed += OnSignInButtonClicked!;
                 SwitchModeLabel.Text = "Se non hai ancora un account, Registrati";
             } else {
                 Header.Text = "Crea un nome utente e una password";
                 ImageInfo.Source = "soldier.png";
                 Button.Text = "Registrati";
                 await Task.Delay(100);
-                Button.Clicked += OnSigniUpButtonClicked!;
-                UsernameEntry.Completed += OnSigniUpButtonClicked!;
-                PasswordEntry.Completed += OnSigniUpButtonClicked!;
+                Button.Clicked += OnSignUpButtonClicked!;
+                UsernameEntry.Completed += OnSignUpButtonClicked!;
+                PasswordEntry.Completed += OnSignUpButtonClicked!;
 
                 UsernameEntry.Unfocused += OnUsernameUnFocused!;
                 UsernameEntry.Focused += OnUsernameFocused!;
@@ -59,9 +58,8 @@ namespace UniWar{
             PasswordEntry.TextChanged += OnEntryTextChanged!;
         }
 
-
         private void OnSwitchModeTapped(object sender, EventArgs e) {
-            isSignIn = !isSignIn;
+            _isSignIn = !_isSignIn;
             warning.IsVisible = false;
             UsernameEntry.Text = string.Empty;
             PasswordEntry.Text = string.Empty;
@@ -69,11 +67,9 @@ namespace UniWar{
         }
 
 
-        
         private void OnEntryTextChanged(object sender, TextChangedEventArgs e) {
             warning.IsVisible = false;
         }
-
 
 
          private void ShowWarning(string message) {
@@ -81,39 +77,44 @@ namespace UniWar{
             warning.IsVisible = true;
         }
 
+        private void ShowOrHideLoading() {
+            if (!loading.IsVisible) {
+                loading.IsVisible = true;
+                warning.IsVisible = false;
+            } else {
+                warning.IsVisible = true;
+                loading.IsVisible = false;
+            }   
+        }
 
-
-
-        public async void OnSigniInButtonClicked(object sender, EventArgs args) {
+        public async void OnSignInButtonClicked(object sender, EventArgs args) {
             var username = UsernameEntry.Text;
             var password = PasswordEntry.Text;
 
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)){
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password)) {
                 ShowWarning("Devi inserire entrambi i campi");
                 return;
             }
             
-            try{
-                var response = ClientGrpc.SignIn(username, password);
-                if(response.Status == false){
+            ShowOrHideLoading();
+            try { 
+                var response = await ClientGrpc.SignIn(username, password);
+                if (response.Status == false) {
                     ShowWarning(response.Message);
                     return;
                 }
                 UniWarSystem.Instance.SetLogged(username);
                 await Navigation.PushAsync(new MainPage());
+            } catch (Grpc.Core.RpcException) {
+                ShowWarning("Non è stato possibile effettuare l'accesso per qualche problema nella remote procedure call");
+            } catch (Exception) {
+                ShowWarning("Si è verificato un errore sconosciuto durante l'accesso");
+            } finally {
+                ShowOrHideLoading();
             }
-            catch (Grpc.Core.RpcException) {
-                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
-                
-            }
-            catch (Exception) {
-                ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
-            }
-           
-            
         }
 
-        public async void OnSigniUpButtonClicked(object sender, EventArgs args) {
+        public async void OnSignUpButtonClicked(object sender, EventArgs args) {
             var username = UsernameEntry.Text;
             var password = PasswordEntry.Text;
 
@@ -122,8 +123,9 @@ namespace UniWar{
                 return;
             }
             
-            try{
-                var response = ClientGrpc.SignUp(username, password);
+            ShowOrHideLoading();
+            try {
+                var response = await ClientGrpc.SignUp(username, password);
                 if(response.Status == false){
                     ShowWarning(response.Message);
                     return;
@@ -131,26 +133,25 @@ namespace UniWar{
                 Console.WriteLine("SignUp effettuato con successo");
                 UniWarSystem.Instance.SetLogged(username);
                 await Navigation.PushAsync(new MainPage());
-            }
-            catch (Grpc.Core.RpcException) {
-                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
-                
-            }
-            catch (Exception) {
+            } catch (Grpc.Core.RpcException) {
+                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella remote procedure call");
+            } catch (Exception) {
                 ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
+            } finally {
+                ShowOrHideLoading();
             }
            
 
         }
 
-        public void OnUsernameUnFocused(object sender, EventArgs args){
+        public async void OnUsernameUnFocused(object sender, EventArgs args) {
             
             if(string.IsNullOrWhiteSpace(UsernameEntry.Text))
                 return;
 
-            try{
-                var response = ClientGrpc.UsernameCheck(UsernameEntry.Text);
-                if(response.Status == false){
+            try {
+                var response = await ClientGrpc.UsernameCheck(UsernameEntry.Text);
+                if (response.Status == false) {
                     ShowWarning(response.Message);
                     UsernameEntry.TextColor = Colors.Red;
                     return;
@@ -159,7 +160,6 @@ namespace UniWar{
             }
             catch (Grpc.Core.RpcException) {
                 ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
-                
             }
             catch (Exception) {
                 ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
@@ -180,11 +180,6 @@ namespace UniWar{
             // adesso mandiamo l'utente nella pagina di gioco
             await Navigation.PushAsync(new MainPage());
         }
-        
-
-
-
-
     }
 
 }

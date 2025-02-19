@@ -27,19 +27,46 @@ namespace UniWar {
         public GamesHistory() {
             InitializeComponent();
             BindingContext = this;    
-    
-            // Facciamo la query direttamente nel costruttore della pagina
+        }
+
+        private void ShowLoadingAnimation() {
+            loading.IsVisible = true;
+            page.IsVisible = false;
+            warning.IsVisible = false; 
+        }
+
+        private void HideLoadingAnimation(Exception? e = null) {
+            // da invocare alla fine del blocco try o del catch
+            if (e is not null) {
+                // ci sono problemi
+                page.IsVisible = false;
+                loading.IsVisible = false;
+                warning.Text = e.Message;
+                warning.IsVisible = true; 
+            } else {
+                // tutto ok
+                loading.IsVisible = false;
+                page.IsVisible = true;
+                warning.IsVisible = false; 
+            }
+        }
+
+        protected async override void OnAppearing() {
+            base.OnAppearing();
+            
+            // Interfacciamoci col client grpc
             // per recuperare l'elenco delle partite per l'utente loggato
+            ShowLoadingAnimation();
             try {
-                GameInfoList response = ClientGrpc.GetGames(UniWarSystem.Instance.LoggedUsername!);
+                GameInfoList response = await ClientGrpc.GetGames(UniWarSystem.Instance.LoggedUsername!);
                 Console.WriteLine("Ho ricevuto la risposta");
                 foreach (GameInfo game in response.Games) 
                     Games.Add(new Game(game.Id,game.Date,game.State));
-                } catch (Exception e) {
-               Console.WriteLine(e);
-            }
-
-                  
+                HideLoadingAnimation();
+            } catch (Exception e) {
+                Console.WriteLine(e);
+                HideLoadingAnimation(e);
+            } 
         }
 
 

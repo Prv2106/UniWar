@@ -9,7 +9,7 @@ namespace UniWar {
             return new StatisticsService.StatisticsServiceClient(GrpcChannel.ForAddress(_serverAddress));
         }
 
-        public static void SendStatistics(StatisticsCollection stats) {
+        public async static Task SendStatistics(StatisticsCollection stats) {
             var stub = GetStub();
 
             // Mappiamo la struct C# nel messaggio gRPC
@@ -42,7 +42,7 @@ namespace UniWar {
             request.CpuOwnedTerritories.AddRange(stats.CpuOwnedTerritories);
             
             try {
-                var response = stub.send_statistics(request);
+                var response = await stub.send_statisticsAsync(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
             }
             catch (Grpc.Core.RpcException rpcEx) {
@@ -56,12 +56,8 @@ namespace UniWar {
 
         }
 
-
-
-
-        public static Response SignIn(string username, string password){
+        public async static Task<Response> SignIn(string username, string password) {
             var stub = GetStub();
-
 
             var request = new SignInCredentials {
                 PlayerId = username,
@@ -69,7 +65,7 @@ namespace UniWar {
             };
 
             try {
-                var response = stub.sign_in(request);
+                var response = await stub.sign_inAsync(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;
             }
@@ -81,11 +77,9 @@ namespace UniWar {
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
                 throw; 
             }
-
-
         }
 
-        public static Response SignUp(string username, string password) {
+        public async static Task<Response> SignUp(string username, string password) {
             var stub = GetStub();
 
             var request = new SignUpCredentials {
@@ -94,10 +88,9 @@ namespace UniWar {
             };
 
             try {
-                var response = stub.sign_up(request);
+                var response = await stub.sign_upAsync(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;       
-
             }
             catch (Grpc.Core.RpcException rpcEx) {
                 Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
@@ -110,7 +103,7 @@ namespace UniWar {
         }
 
 
-        public static GameInfoList GetGames(string username) {
+        public async static Task<GameInfoList> GetGames(string username) {
             var stub = GetStub();
 
             var request = new Username() {
@@ -118,7 +111,7 @@ namespace UniWar {
             };
 
             try {
-                var response = stub.get_games(request);
+                var response = await stub.get_gamesAsync(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
                 return response;       
             } catch (Exception e) {
@@ -128,14 +121,14 @@ namespace UniWar {
         }
 
 
-        public static Response UsernameCheck(string id){
+        public async static Task<Response> UsernameCheck(string id) {
             var stub = GetStub();
 
             var request = new Username();
             request.Username_ = id;
 
             try{
-                var response = stub.username_check(request);
+                var response = await stub.username_checkAsync(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
             }
@@ -147,18 +140,16 @@ namespace UniWar {
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
                 throw; 
             }
-
-
         }
 
 
-        public static StatisticsResponse GetStatistics(int GameId){
+        public async static Task<StatisticsResponse> GetStatistics(int GameId) {
             var stub = GetStub();
 
             var request = new StatisticRequest();
             request.GameId = GameId;
             try{
-                var response = stub.get_statistics(request);
+                var response = await stub.get_statisticsAsync(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
             }
@@ -170,13 +161,7 @@ namespace UniWar {
                 Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
                 throw; 
             }
-
-
         }
-
-
-
-
 
 
 
