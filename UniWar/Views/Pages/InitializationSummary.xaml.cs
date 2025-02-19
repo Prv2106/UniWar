@@ -34,6 +34,7 @@ namespace UniWar {
         }
 
 
+
         // Per estrarre le informazioni da visualizzare nella card
         private void BuildThePage() {
             // nomi dei territori per le carte

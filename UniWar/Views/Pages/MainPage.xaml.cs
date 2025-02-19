@@ -1,4 +1,6 @@
-﻿namespace UniWar {
+﻿using Statistics;
+
+namespace UniWar {
     public partial class MainPage : ContentPage {
         public MainPage() {
             if (!UniWarSystem.Instance.IsOffline) 
@@ -17,8 +19,27 @@
 
         private async void OnNuovaPartitaButtonClicked(object sender, EventArgs e) {
            
+            if (!UniWarSystem.Instance.IsOffline) {
+                try{
+                    var response = await ClientGrpc.NewGame(UniWarSystem.Instance.LoggedUsername!);
+                    // TODO: GESTIRE CASO IN CUI STATUS è FALSE  
+                    UniWarSystem.Instance.GameId = response.GameId;
+                    
+                }
+                catch (Grpc.Core.RpcException ex) {
+                    Console.WriteLine($"Errore: {ex}");
+                    return;
+                    
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"Errore: {ex}");
+                    return;
+                }
+            }
+
+            await Navigation.PushAsync(new InitializationSummary()); 
              
-           await Navigation.PushAsync(new InitializationSummary());    
+           
         }
 
         private async void OnVisualizzaStoricoButtonClicked(object sender, EventArgs e) {

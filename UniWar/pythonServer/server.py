@@ -79,7 +79,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     
     def get_games(self, request, context):
-        print(f"Ricevuta una richiesta di GetGames per -> username = {request.player_id}", flush=True)
+        print(f"Ricevuta una richiesta di GetGames per -> username = {request.username}", flush=True)
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
@@ -181,6 +181,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         
     # rpc da richiamare quando si vuole iniziare una nuova partita
     def new_game(self,request,context):
+        print(f"Ricevuta richiesta per new_game -> {request.username}", flush= True)
+        
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
@@ -201,6 +203,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     # rpc da richiamare quando si termina una partita
     def end_game(self,request, context):
+        print(f"Ricevuta richiesta per end_game -> {request.game_id},{request.is_win}", flush= True)
+
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()

@@ -14,6 +14,7 @@ public class UniWarSystem { // singleton
     
     public bool IsOffline {get; set;} = false;
     public string? LoggedUsername {get; set;}
+    public int? GameId {get; set;}
 
     public bool IsGameInitialized {get; private set;}
 

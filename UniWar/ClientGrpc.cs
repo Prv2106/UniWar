@@ -1,4 +1,5 @@
 using Grpc.Net.Client;
+using Microsoft.Windows.Management.Deployment;
 using Statistics; // Namespace generato da gRPC
 
 namespace UniWar {
@@ -8,7 +9,7 @@ namespace UniWar {
             return new StatisticsService.StatisticsServiceClient(GrpcChannel.ForAddress(_serverAddress));
         }
 
-        public static void SendStatisticsAsync(StatisticsCollection stats) {
+        public static void SendStatistics(StatisticsCollection stats) {
             var stub = GetStub();
 
             // Mappiamo la struct C# nel messaggio gRPC
@@ -172,6 +173,58 @@ namespace UniWar {
 
 
         }
+
+
+
+
+
+
+
+
+        public async static Task<NewGameResponse> NewGame(string Username){
+            var stub = GetStub();
+            var request = new Username();
+            request.Username_ = Username;
+            try{
+                var response = await stub.new_gameAsync(request);
+                Console.WriteLine($"Risposta ricevuta dal server: {response}");
+                return response;
+            }
+            catch (Grpc.Core.RpcException rpcEx) {
+                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
+                throw; 
+            }
+            catch (Exception ex) { 
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
+                throw; 
+            }
+        }
+
+
+        public async static Task<Response> EndGame(int GameId, bool IsWin){
+            var stub = GetStub();
+            var request = new EndGameRequest();
+            request.GameId = GameId;
+            request.IsWin = IsWin;
+
+            try{
+                var response = await stub.end_gameAsync(request);
+                Console.WriteLine($"Risposta ricevuta dal server: {response}");
+                return response;
+            }
+            catch (Grpc.Core.RpcException rpcEx) {
+                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
+                throw; 
+            }
+            catch (Exception ex) { 
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
+                throw; 
+            }
+
+        }
+
+
+    
 
 
         

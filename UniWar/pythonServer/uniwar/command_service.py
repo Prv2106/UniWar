@@ -232,7 +232,7 @@ class CommandService:
     
     def handle_insert_game_command(self, command: InsertGameCommand) -> int: # type int, serve semplicemente per migliorare la leggibilità del codice, suggerisce che la funzione dovrebbe restituire un intero
         with command.conn.cursor() as cursor:
-            cursor.execute(command.insert_game_query, (command.username,command.username, command.date))
+            cursor.execute(command.insert_game_query, (command.username, command.date))
             command.conn.commit()
             game_id = cursor.lastrowid  # Restituisce l'ID dell'ultimo record inserito
             return game_id  # Restituiamo il game_id generato

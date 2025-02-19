@@ -10,8 +10,7 @@ services:
     ports:
       - "50051:50051"
     restart: always
-    volumes: 
-      - server_vol:/var/lib/server_data
+ 
 
   db:
     build:
@@ -22,7 +21,6 @@ services:
       - db_vol:/var/lib/mysql
 
 volumes:
-  server_vol: 
-    driver: local
+  
   db_vol:
     driver: local

@@ -4,6 +4,7 @@ Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità 
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
+using Statistics;
 
 namespace UniWar {
     public partial class TablePage : ContentPage {
@@ -401,6 +402,8 @@ namespace UniWar {
         stats.CpuOwnedTerritories = new List<string>();          
         stats.UserTurn = true;
         stats.RoundId = Turn!.IdRound;
+        if(!UniWarSystem.Instance.IsOffline)
+                stats.GameId = (int) UniWarSystem.Instance.GameId!;
 
 
 
@@ -459,6 +462,7 @@ namespace UniWar {
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
                 await CollectsStatistics(stats);
+                await UpdateGameResult(IsWin());
                 await Navigation.PushModalAsync(new WinOrLoseModal(true));
             }
             
@@ -728,7 +732,8 @@ namespace UniWar {
             stats.CpuOwnedTerritories = new List<string>();          
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
-            // TODO: stats.GameId = 
+            if(!UniWarSystem.Instance.IsOffline)
+                stats.GameId = (int) UniWarSystem.Instance.GameId!;
             
                         
             foreach(var battle in battleList){
@@ -814,6 +819,7 @@ namespace UniWar {
 
                 if (battle.Win) {     
                     await CollectsStatistics(stats);
+                    await UpdateGameResult(battle.Win);
                     await Navigation.PushModalAsync(new WinOrLoseModal(false));
                     break;
                 }
@@ -823,16 +829,35 @@ namespace UniWar {
         }
 
 
+
+        private async Task UpdateGameResult(bool IsWin){
+            if (!UniWarSystem.Instance.IsOffline) {
+                try {
+                    var response = await ClientGrpc.EndGame((int)UniWarSystem.Instance.GameId!,IsWin);
+                    if (response.Status == false)
+                        ShowInformation(response.Message);
+
+                } catch (Grpc.Core.RpcException e) {
+                    ShowInformation($"{e}");
+                    Console.WriteLine($"Errore: {e}");
+                    await Task.Delay(1500);
+                } catch (Exception e) {
+                    ShowInformation($"{e}");
+                    await Task.Delay(1500);
+                }
+            }   
+        }
+
         private async Task CollectsStatistics(StatisticsCollection statistics) {
             if (!UniWarSystem.Instance.IsOffline) {
                 try {
-                ClientGrpc.SendStatisticsAsync(statistics);
+                    ClientGrpc.SendStatistics(statistics);
                 } catch (Grpc.Core.RpcException e) {
-                ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
-                Console.WriteLine($"Errore: {e}");
+                    ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
+                    Console.WriteLine($"Errore: {e}");
                 await Task.Delay(1500);
                 } catch (Exception) {
-                ShowInformation("Si è verificato un errore sconosciuto nell'invio delle statistiche.");
+                    ShowInformation("Si è verificato un errore sconosciuto nell'invio delle statistiche.");
                 await Task.Delay(1500);
                 }
             }   
