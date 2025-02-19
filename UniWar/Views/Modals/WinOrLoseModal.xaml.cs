@@ -3,34 +3,27 @@ using System.Threading.Tasks;
 
 namespace UniWar{
     public partial class WinOrLoseModal: ContentPage{
-            private TaskCompletionSource _tcs;
-            public WinOrLoseModal(bool PlayerWin,TaskCompletionSource tcs, bool draw = false) {
+            public WinOrLoseModal(bool PlayerWin, bool draw = false) {
                 InitializeComponent();
 
-                if(draw){
+                if (draw) {
                     ImageInfo.Source = "agreement.png";
                     Header.Text = ""; 
                     Info.Text="Tu e la Cpu avete pareggiato!";
-                }
-                else if(PlayerWin){
+                } else if (PlayerWin) {
                     ImageInfo.Source = "win.png";
                     Header.Text = "Congratulazioni!"; 
                     Info.Text="Hai raggiunto l'obiettivo ed hai vinto!";
-                }
-                else{
+                } else {
                     ImageInfo.Source = "game_over.png";
                     Header.Text = "Peccato!"; 
                     Info.Text="La Cpu ha raggiunto l'obiettivo prima di te e ha vinto!";
                 }
-
-                _tcs = tcs;
-
-
             }
-            public async void OnNewGameClicked(object sender, EventArgs args) {
-                UniWarSystem.Instance.NewGame();
-                _tcs.SetResult();
-                await Navigation.PopModalAsync();
+
+            public void OnGoToMainPageButtonClicked(object sender, EventArgs args) {
+                // Navighiamo fino alla pagina di login / registrazione
+                Application.Current!.MainPage = new AppShell();
             }
     }
 

@@ -7,7 +7,7 @@
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
         <!-- "Vista" per l'utente loggato -->
-        <HorizontalStackLayout x:Name="LoggedPart" HorizontalOptions ="Center" Margin="20,0,0,-35">
+        <HorizontalStackLayout x:Name="LoggedPart" HorizontalOptions ="Center" Margin="5,0,0,-35">
             <!-- Container per lo username con bordo e padding -->
                 <Frame 
                     BackgroundColor="Brown"
@@ -30,7 +30,7 @@
                     </HorizontalStackLayout>
                 </Frame>
 
-            <BoxView WidthRequest="100"
+            <BoxView WidthRequest="35"
                     Margin="0,0,0,0"
                     BackgroundColor="Transparent"
                 />

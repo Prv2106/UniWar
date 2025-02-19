@@ -15,7 +15,20 @@ namespace UniWar {
         public InitializationSummary() {
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
-            UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
+
+            if (UniWarSystem.Instance.IsGameInitialized) {
+                // stiamo iniziando una nuova partita ma ne è già stata fatta una
+                bool isOffline = UniWarSystem.Instance.IsOffline;
+                string? loggedUsername = UniWarSystem.Instance.LoggedUsername;
+                UniWarSystem.ResetAll();
+                UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
+                UniWarSystem.Instance.IsOffline = isOffline;
+                UniWarSystem.Instance.LoggedUsername = loggedUsername;
+            } else {
+                // prima partita da quando l'utente ha avviato l'applicazione
+                UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
+            }
+            
             User = UniWarSystem.Instance.User!;
             BuildThePage();           
         }
