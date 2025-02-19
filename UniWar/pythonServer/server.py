@@ -31,8 +31,9 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         (user_tanks_lost,user_territories_lost,user_perfect_defenses,cpu_tanks_lost,cpu_perfect_defenses,cpu_territories_lost,
          user_tanks_lost_attacking,cpu_tanks_lost_attacking,user_tanks_lost_defending, cpu_tanks_lost_defending)= functions.process_data(data)
         
-        user_owned_territories_json = json.dumps(request.user_owned_territories)
-        cpu_owned_territories_json = json.dumps(request.cpu_owned_territories)
+        user_owned_territories_json = json.dumps(list(request.user_owned_territories))
+        cpu_owned_territories_json = json.dumps(list(request.cpu_owned_territories))
+        
         
         try:
             with pymysql.connect(**db_config.db_config) as conn:
@@ -57,7 +58,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     cpu_owned_territories=len(request.cpu_owned_territories),
                     cpu_owned_tanks=request.cpu_owned_tanks,
                     user_owned_territories_list= user_owned_territories_json, 
-                    cpu_owned_territories_list= cpu_owned_territories_json                    )
+                    cpu_owned_territories_list= cpu_owned_territories_json,
+                    )
                 )
                 
                 return msg.Response(message="Statistiche ricevute con successo!", status = True)

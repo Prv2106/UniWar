@@ -33,6 +33,9 @@ class RegisterUserCommand:
     
     
 class InsertDataCommand:
+    #TODO: individuare l'errore: Errore generico, codice di errore: turn_completed
+    
+    
     def __init__(self, conn, **kwargs):
         
         self.conn = conn

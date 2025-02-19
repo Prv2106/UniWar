@@ -346,9 +346,13 @@ namespace UniWar {
 
             Console.WriteLine($"CpuScore = {cpuScore}, UserScore = {userScore}");
 
+             
+
             if (userScore > cpuScore) {
+                await UpdateGameResult(true);
                 await Navigation.PushModalAsync(new WinOrLoseModal(true));
             } else if (userScore < cpuScore) {
+                await UpdateGameResult(false);
                 await Navigation.PushModalAsync(new WinOrLoseModal(false));
             } else { // Pareggio
                 await Navigation.PushModalAsync(new WinOrLoseModal(true, true)); 

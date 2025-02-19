@@ -16,31 +16,35 @@ class Data:
 
     def __init__(self,request):
         self.is_user_turn = request.user_turn
-        self.round_id = request.round_id
-        self.defending_territories = request.defending_territories
-        self.attacking_territories = request.attacking_territories
-        self.owned_territories = request.owned_territories
-        self.owned_tanks = request.owned_tanks
+        self.defending_territories =dict(request.defending_territories) 
+        self.attacking_territories = dict(request.attacking_territories)
         self.lost_territories = request.lost_territories
-        if request.user_win is None:
-            self.win = -1
-        else:
-            self.win = 1 if request.user_win else 0
 
 
 def process_data(data: Data):
 
     if data.is_user_turn is True: # Turno utente
-        user_tanks_lost = user_tanks_lost_attacking = reduce(lambda x,y: x+y, data.attacking_territories.Values()) 
-        cpu_tanks_lost = cpu_tanks_lost_defending= reduce(lambda x,y: x+y, data.defending_territories.Values()) 
+        user_tanks_lost = user_tanks_lost_attacking = reduce(lambda x,y: x+y, data.attacking_territories.values()) 
+        cpu_tanks_lost = cpu_tanks_lost_defending= reduce(lambda x,y: x+y, data.defending_territories.values()) 
         cpu_territories_lost = len(data.lost_territories)
-        cpu_perfect_defenses = len(list(filter(lambda x: x == 0, data.defending_territories.Values())))
+        cpu_perfect_defenses = len(list(filter(lambda x: x == 0, data.defending_territories.values())))
+        user_perfect_defenses = 0
+        user_tanks_lost_defending = 0
+        cpu_tanks_lost_attacking = 0
+        user_territories_lost = 0
+        
+        
             
     else: # Turno della CPU
-        user_tanks_lost = user_tanks_lost_defending = reduce(lambda x,y: x+y, data.defending_territories.Values()) 
-        cpu_tanks_lost = cpu_tanks_lost_attacking = reduce(lambda x,y: x+y, data.attacking_territories.Values()) 
+        user_tanks_lost = user_tanks_lost_defending = reduce(lambda x,y: x+y, data.defending_territories.values()) 
+        cpu_tanks_lost = cpu_tanks_lost_attacking = reduce(lambda x,y: x+y, data.attacking_territories.values()) 
         user_territories_lost = len(data.lost_territories)
-        user_perfect_defenses = len(list(filter(lambda x: x == 0, data.defending_territories.Values())))
+        user_perfect_defenses = len(list(filter(lambda x: x == 0, data.defending_territories.values())))
+        cpu_perfect_defenses = 0
+        cpu_tanks_lost_defending = 0
+        user_tanks_lost_attacking = 0
+        cpu_territories_lost = 0
+        
     
     return user_tanks_lost,user_territories_lost,user_perfect_defenses,cpu_tanks_lost,cpu_perfect_defenses,cpu_territories_lost,user_tanks_lost_attacking,cpu_tanks_lost_attacking,user_tanks_lost_defending, cpu_tanks_lost_defending
 
