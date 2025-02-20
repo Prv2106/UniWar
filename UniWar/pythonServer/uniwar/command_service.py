@@ -33,11 +33,9 @@ class RegisterUserCommand:
     
     
 class InsertDataCommand:
-    #TODO: individuare l'errore: Errore generico, codice di errore: turn_completed
-    
-    
+   
     def __init__(self, conn, **kwargs):
-        
+        print("Costruttore di InsertDataCommand",flush=True)
         self.conn = conn
         game_id =kwargs['game_id']
         round_id = kwargs['round_id']
@@ -47,17 +45,19 @@ class InsertDataCommand:
         cpu_owned_tanks = kwargs['cpu_owned_tanks']        
         user_owned_territories_list = kwargs['user_owned_territories_list']        
         cpu_owned_territories_list = kwargs['cpu_owned_territories_list']        
-        user_win = kwargs['user_win'] 
-           
+
         service = query_service.QueryService()
         result =  service.handle_get_data_query(query_service.GetDataQuery(conn,kwargs['game_id']))
-        
+
         if result is not None:
-            (_,_,turn_completed,_,_,_,_,_,_,_,user_tanks_lost,cpu_tanks_lost,user_tanks_lost_attacking,cpu_tanks_lost_attacking,
+            (_,round_id,turn_completed,_,_,_,_,_,_,_,user_tanks_lost,cpu_tanks_lost,user_tanks_lost_attacking,cpu_tanks_lost_attacking,
             user_tanks_lost_defending,cpu_tanks_lost_defending,user_perfect_defenses,cpu_perfect_defenses,
             user_territories_lost,cpu_territories_lost) = result
             
-            turn_completed = 1 if turn_completed == 0 else 2
+            if round_id == kwargs['round_id']:
+                turn_completed = 1 if turn_completed == 0 else 2
+            else:
+                turn_completed = 0
             
             user_tanks_lost += kwargs['user_tanks_lost']
             user_tanks_lost_attacking += kwargs['user_tanks_lost_attacking']
@@ -90,8 +90,7 @@ class InsertDataCommand:
                     cpu_owned_territories = %s, 
                     cpu_owned_tanks = %s, 
                     user_owned_territories_list = %s, 
-                    cpu_owned_territories_list = %s, 
-                    user_win = %s
+                    cpu_owned_territories_list = %s
                 WHERE game_id = %s;
             """
             
@@ -114,7 +113,6 @@ class InsertDataCommand:
                 cpu_owned_tanks,
                 user_owned_territories_list,
                 cpu_owned_territories_list,
-                user_win,
                 game_id 
             )
 
@@ -124,6 +122,8 @@ class InsertDataCommand:
              
         
         else:
+            print(f"Result è None", flush=True)
+
             user_tanks_lost = kwargs['user_tanks_lost']
             user_tanks_lost_attacking = kwargs['user_tanks_lost_attacking']
             user_tanks_lost_defending = kwargs['user_tanks_lost_defending']
@@ -156,11 +156,10 @@ class InsertDataCommand:
                     cpu_owned_territories, 
                     cpu_owned_tanks, 
                     user_owned_territories_list, 
-                    cpu_owned_territories_list, 
-                    user_win
+                    cpu_owned_territories_list
                 ) 
                 VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                 );
             """
             self.values_tuple = (
@@ -183,7 +182,6 @@ class InsertDataCommand:
                 cpu_owned_tanks,
                 user_owned_territories_list,
                 cpu_owned_territories_list,
-                user_win
             )
 
 
@@ -208,9 +206,9 @@ class EndGameCommand:
         self.game_id = game_id
         self.is_win = 1 if is_win else 0
         self.end_game_query = """
-        UPDATE Data
+        UPDATE Games
         SET user_win = %s
-        WHERE game_id = %s
+        WHERE id = %s
         """
                 
         
@@ -243,6 +241,6 @@ class CommandService:
             
     def handle_end_game_command(self, command: EndGameCommand):
         with command.conn.cursor() as cursor:
-            cursor.execute(command.end_game_query,command.is_win, command.game_id)
+            cursor.execute(command.end_game_query, (command.is_win, command.game_id))
             command.conn.commit()
         

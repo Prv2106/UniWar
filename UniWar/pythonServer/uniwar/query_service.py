@@ -61,7 +61,7 @@ class GetDataQuery:
         self.get_data_query = """
         SELECT *
         FROM Data
-        WHERE GameId = %s        
+        WHERE game_id = %s        
         """
         self.conn = conn
         self.game_id = game_id

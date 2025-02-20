@@ -333,7 +333,7 @@ namespace UniWar {
 
     public async void OnEndGameClicked(object sender, EventArgs args) {
         // verifichiamo che siano passati almeno 2 giri
-        if (Turn!.IdRound >= 3) {
+        if (Turn!.IdRound >= 0) {
             // decretiamo il vincitore
             int userScore = 0;
             int cpuScore = 0;
@@ -736,6 +736,7 @@ namespace UniWar {
             stats.CpuOwnedTerritories = new List<string>();          
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
+            Console.WriteLine($"GameId = {(int) UniWarSystem.Instance.GameId!}");
             if(!UniWarSystem.Instance.IsOffline)
                 stats.GameId = (int) UniWarSystem.Instance.GameId!;
             
@@ -840,7 +841,6 @@ namespace UniWar {
                     var response = await ClientGrpc.EndGame((int)UniWarSystem.Instance.GameId!,IsWin);
                     if (response.Status == false)
                         ShowInformation(response.Message);
-
                 } catch (Grpc.Core.RpcException e) {
                     ShowInformation($"{e}");
                     Console.WriteLine($"Errore: {e}");
@@ -855,14 +855,14 @@ namespace UniWar {
         private async Task CollectsStatistics(StatisticsCollection statistics) {
             if (!UniWarSystem.Instance.IsOffline) {
                 try {
-                await ClientGrpc.SendStatistics(statistics);
+                    await ClientGrpc.SendStatistics(statistics);
                 } catch (Grpc.Core.RpcException e) {
                     ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
                     Console.WriteLine($"Errore: {e}");
-                await Task.Delay(1500);
+                    await Task.Delay(1500);
                 } catch (Exception) {
                     ShowInformation("Si è verificato un errore sconosciuto nell'invio delle statistiche.");
-                await Task.Delay(1500);
+                    await Task.Delay(1500);
                 }
             }   
         }
