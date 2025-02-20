@@ -103,11 +103,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 cursor,response = service.handle_get_data_query(query_service.GetDataQuery(conn, request.game_id))
-                if response is None:
-                    print("Response è none", flush=True)
                 # Estraiamo i valori dalla riga restituita dalla query
                 # description è una lista di tuple dove ogni tupla rappresenta una colonna e in cui il primo elemento è il nome della colonna  
-                print("Response non è None", flush=True)
                 columns = [desc[0] for desc in cursor.description] # lista con i nomi delle colonne
                 print(f"{columns}", flush=True)
                 rows = dict(zip(columns,response)) # dizionario in modo da poter accedere ai campi utilizzando il nome
@@ -125,19 +122,21 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 # determiniamo il numero di giri effettivamente completati
                 print(f"{rows}", flush=True)
                 completed_rounds = rows['round_id'] if rows['turn_completed'] == 2 else rows['round_id']-1
-                print(f"Completed rounds = {completed_rounds}")
-                             
-                user_tanks_lost_per_round = rows['user_tanks_lost'] / completed_rounds
-                cpu_tanks_lost_per_round = rows['cpu_tanks_lost'] / completed_rounds
-                
-                user_tanks_lost_attacking_per_round = rows['user_tanks_lost_attacking'] / completed_rounds
-                cpu_tanks_lost_attacking_per_round = rows['cpu_tanks_lost_attacking'] / completed_rounds
-                
-                user_tanks_lost_defending_per_round = rows['user_tanks_lost_defending'] / completed_rounds
-                cpu_tanks_lost_defending_per_round = rows['cpu_tanks_lost_defending'] / completed_rounds
-                
-                user_territories_lost_per_round = rows['user_territories_lost'] / completed_rounds
-                cpu_territories_lost_per_round = rows['cpu_territories_lost'] / completed_rounds
+                if completed_rounds == 0:
+                    completed_rounds = 1
+                                             
+                user_tanks_lost_per_round = round(rows['user_tanks_lost'] / completed_rounds, 2)
+                cpu_tanks_lost_per_round = round(rows['cpu_tanks_lost'] / completed_rounds, 2)
+
+                user_tanks_lost_attacking_per_round = round(rows['user_tanks_lost_attacking'] / completed_rounds, 2)
+                cpu_tanks_lost_attacking_per_round = round(rows['cpu_tanks_lost_attacking'] / completed_rounds, 2)
+
+                user_tanks_lost_defending_per_round = round(rows['user_tanks_lost_defending'] / completed_rounds, 2)
+                cpu_tanks_lost_defending_per_round = round(rows['cpu_tanks_lost_defending'] / completed_rounds, 2)
+
+                user_territories_lost_per_round = round(rows['user_territories_lost'] / completed_rounds, 2)
+                cpu_territories_lost_per_round = round(rows['cpu_territories_lost'] / completed_rounds, 2)
+
                 
                 user_map_ownership_percentage = (rows['user_owned_territories'] / 42 ) * 100
                 cpu_map_ownership_percentage = (rows['cpu_owned_territories'] / 42 ) * 100
