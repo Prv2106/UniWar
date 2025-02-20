@@ -355,7 +355,7 @@ namespace UniWar {
                 await UpdateGameResult(false);
                 await Navigation.PushModalAsync(new WinOrLoseModal(false));
             } else { // Pareggio
-                await Navigation.PushModalAsync(new WinOrLoseModal(true, true)); 
+                await Navigation.PushModalAsync(new WinOrLoseModal(false, true)); 
             }
         } else {
             ShowInformation("Devono almeno passare 2 giri!");
@@ -650,7 +650,7 @@ namespace UniWar {
 
 
 
-        private async Task CpuAttack(){
+        private async Task CpuAttack() {
             TaskCompletionSource tcs;
             List<MapData> playersMaps = new List<MapData>() {
                 new MapData {
@@ -737,6 +737,7 @@ namespace UniWar {
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
             Console.WriteLine($"GameId = {(int) UniWarSystem.Instance.GameId!}");
+            
             if(!UniWarSystem.Instance.IsOffline)
                 stats.GameId = (int) UniWarSystem.Instance.GameId!;
             

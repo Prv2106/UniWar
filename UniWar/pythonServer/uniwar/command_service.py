@@ -207,7 +207,7 @@ class EndGameCommand:
         self.is_win = 1 if is_win else 0
         self.end_game_query = """
         UPDATE Games
-        SET user_win = %s
+        SET state = %s
         WHERE id = %s
         """
                 

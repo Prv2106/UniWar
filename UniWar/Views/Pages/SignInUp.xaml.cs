@@ -77,6 +77,11 @@ namespace UniWar{
             warning.IsVisible = true;
         }
 
+        private void HideWarning() {
+            warning.Text = "";
+            warning.IsVisible = false;
+        }
+
         private void ShowOrHideLoading() {
             if (!loading.IsVisible) {
                 loading.IsVisible = true;
@@ -104,6 +109,7 @@ namespace UniWar{
                     return;
                 }
                 UniWarSystem.Instance.SetLogged(username);
+                HideWarning();
                 await Navigation.PushAsync(new MainPage());
             } catch (Grpc.Core.RpcException) {
                 ShowWarning("Non è stato possibile effettuare l'accesso per qualche problema nella remote procedure call");
@@ -131,6 +137,7 @@ namespace UniWar{
                     return;
                 }
                 Console.WriteLine("SignUp effettuato con successo");
+                HideWarning();
                 UniWarSystem.Instance.SetLogged(username);
                 await Navigation.PushAsync(new MainPage());
             } catch (Grpc.Core.RpcException) {

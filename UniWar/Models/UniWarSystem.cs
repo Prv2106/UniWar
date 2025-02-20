@@ -1,5 +1,4 @@
 using UniWar;
-using Windows.System;
 
 public class UniWarSystem { // singleton
     private static UniWarSystem? _instance;
@@ -51,8 +50,8 @@ public class UniWarSystem { // singleton
 
     
     // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
-    public void InitializeGame() {
-        IsGameInitialized = true;
+    public async Task InitializeGame() {
+        IsGameInitialized = true; // booleano che se vero ci dice che sono già state fatte partite nella sessione corrente
         /* 
             è, sostanzialmente, il metodo che inizializza la partita...
             - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
@@ -61,6 +60,10 @@ public class UniWarSystem { // singleton
             - sceglie chi inizia il turno tra cpu e utente
 
         */
+
+        // come PRIMISSIMA cosa, dobbiamo creare un GameId e creare una nuova entry nel database!
+        await CreateGameInDatabase();
+
         Random gen = new Random();
 
         // qui il sistema deve distribuire equamente i territori ai due giocatori
@@ -120,14 +123,30 @@ public class UniWarSystem { // singleton
      
     }
 
-    public static void ResetAll() {
+    private async Task CreateGameInDatabase() {
+        // Ovviamente, il GameId nel db va creato solo se l'utente sta giocando online
+        if (IsOffline) return;
+        var response = await ClientGrpc.NewGame(LoggedUsername!);
+        GameId = response.GameId;
+        Console.WriteLine("GameId: " + GameId);
+    }
+
+    public void ResetAll() {
         /*
             Questo metodo viene invocato nella modale di GameOver e si occupa 
             di far sì che le istanze della classi singleton TablePage e UniWar 
             siano reistanziate
         */
 
+        // per quanto riguarda, però, l'istanza di questa classe, dobbiamo 
+        // preservare l'utente loggato
+        string loggedUsername = LoggedUsername!;
+        bool isOffline = IsOffline;
         _instance = null;
+        Instance.LoggedUsername = loggedUsername;
+        Instance.IsOffline = isOffline;
+
+        
         TablePage.Instance.Reset();        
     }
 
