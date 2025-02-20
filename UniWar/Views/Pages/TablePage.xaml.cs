@@ -86,13 +86,15 @@ namespace UniWar {
         */
 
         try {
+
             if (CpuTurnCompleted && UserTurnCompleted) {
                 CpuTurnCompleted = false;
                 UserTurnCompleted = false;
                 Turn!.IdRound++;
             }
 
-            while (Turn!.currentPlayer == CPU) { // è il turno della CPU
+            while (Turn!.currentPlayer == CPU) {
+                endGameButton.IsVisible = false; // è il turno della CPU
                 switch (Turn.Phase) {
                     case TurnPhases.Reinforcement:
                         await CpuReinforcement();   
@@ -105,6 +107,7 @@ namespace UniWar {
 
             if (Turn.currentPlayer == User) {
                 // è il turno dell'utente
+                endGameButton.IsVisible = true;
                 switch (Turn.Phase) {
                     case TurnPhases.Reinforcement:
                         // a livello di UI aggiungiamo il contatore dei numeri dei carri armati da poter aggiungere rimanenti

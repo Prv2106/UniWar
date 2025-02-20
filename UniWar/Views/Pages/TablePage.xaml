@@ -1321,6 +1321,8 @@
 
                     <!-- Pulsante -->
                     <Grid
+                        x:Name="endGameButton"
+                        IsVisible="True"
                         Margin="45,0,0,2">
                         <Image 
                             Source="endgame.png"
