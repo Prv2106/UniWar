@@ -18,7 +18,8 @@ namespace UniWar {
                 UserTurn = stats.UserTurn,
                 UserOwnedTanks = stats.UserOwnedTanks,
                 CpuOwnedTanks = stats.CpuOwnedTanks,
-                GameId = stats.GameId
+                GameId = stats.GameId,
+                PlayerId = stats.PlayerId
             };
 
 

@@ -63,7 +63,7 @@ namespace UniWar {
                 Console.WriteLine("Ho ricevuto la risposta");
                 foreach (GameInfo game in response.Games){
                     if (game.State == 1)
-                        state = "vincitore";
+                        state = "Vincitore";
                     else if (game.State == 0)
                         state = "Perdente";
                     else

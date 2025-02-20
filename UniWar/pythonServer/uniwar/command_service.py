@@ -46,7 +46,7 @@ class InsertDataCommand:
         cpu_owned_territories_list = kwargs['cpu_owned_territories_list']        
 
         service = query_service.QueryService()
-        result =  service.handle_get_data_query(query_service.GetDataQuery(conn,kwargs['game_id']))
+        _,result =  service.handle_get_data_query(query_service.GetDataQuery(conn,kwargs['game_id']))
 
         if result is not None:
             (_,round_id,turn_completed,_,_,_,_,_,_,_,user_tanks_lost,cpu_tanks_lost,user_tanks_lost_attacking,cpu_tanks_lost_attacking,
