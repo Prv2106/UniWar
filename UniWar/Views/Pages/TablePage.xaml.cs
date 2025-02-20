@@ -737,7 +737,6 @@ namespace UniWar {
             stats.CpuOwnedTerritories = new List<string>();          
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
-            Console.WriteLine($"GameId = {(int) UniWarSystem.Instance.GameId!}");
             bool cpuWin = false;
             
             if(!UniWarSystem.Instance.IsOffline)
