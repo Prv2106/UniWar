@@ -85,16 +85,19 @@ namespace UniWar {
             grafici di supporto ad ogni fase
         */
 
+
         try {
 
             if (CpuTurnCompleted && UserTurnCompleted) {
                 CpuTurnCompleted = false;
                 UserTurnCompleted = false;
                 Turn!.IdRound++;
+                UpdateRoundCounter();
             }
 
-            while (Turn!.currentPlayer == CPU) {
-                endGameButton.IsVisible = false; // è il turno della CPU
+            while (Turn!.currentPlayer == CPU) { // è il turno della CPU
+                statisticsButton.IsVisible = false;
+                endGameButton.IsVisible = false; 
                 switch (Turn.Phase) {
                     case TurnPhases.Reinforcement:
                         await CpuReinforcement();   
@@ -105,9 +108,21 @@ namespace UniWar {
                 }
             }
 
+            if (CpuTurnCompleted && UserTurnCompleted) {
+                CpuTurnCompleted = false;
+                UserTurnCompleted = false;
+                Turn!.IdRound++;
+                UpdateRoundCounter();
+            }
+
             if (Turn.currentPlayer == User) {
-                // è il turno dell'utente
+                // è il turno dell'utente...
+
+                // gestiamo visualizzazione pulsante
+                if (!UniWarSystem.Instance.IsOffline) 
+                    statisticsButton.IsVisible = true;
                 endGameButton.IsVisible = true;
+                
                 switch (Turn.Phase) {
                     case TurnPhases.Reinforcement:
                         // a livello di UI aggiungiamo il contatore dei numeri dei carri armati da poter aggiungere rimanenti
@@ -156,16 +171,19 @@ namespace UniWar {
     }
 
 
-
-    public void BuildUserInformation() {
+    private void BuildUserInformation() {
         UserTankIcon.Source = IconSrcUser;
         NumTanks.Text = User!.GetNumTanks().ToString();
         GoalDescr.Text = User.Goal!.Description;
     }
 
-    public void UpdateUserCounters() {
+    private void UpdateUserCounters() {
         NumTanks.Text = User!.GetNumTanks().ToString();
         NumTerritories.Text = User.Territories.Count.ToString();
+    }
+
+    private void UpdateRoundCounter() {
+        RoundCounter.Text = Turn!.IdRound.ToString();
     }
 
     private void UpdateTankCounter(string territoryName) {
@@ -336,7 +354,7 @@ namespace UniWar {
 
     public async void OnEndGameClicked(object sender, EventArgs args) {
         // verifichiamo che siano passati almeno 2 giri
-        if (Turn!.IdRound >= 0) {
+        if (Turn!.IdRound >= 3) {
             // decretiamo il vincitore
             int userScore = 0;
             int cpuScore = 0;
@@ -531,6 +549,7 @@ namespace UniWar {
     // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu
     // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
     private async void OnPassButtonClicked(object sender, EventArgs e) {        
+        PassButton.IsVisible = false;
         await Task.Delay(500);
         // chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
         var discoverUserChoose = new TaskCompletionSource<bool>();
@@ -562,6 +581,10 @@ namespace UniWar {
         CpuTurnCompleted = true;
         Turn!.currentPlayer = User!;
         Turn.Phase = TurnPhases.Reinforcement;
+    }
+
+    private async void OnViewStatisticsClicked(object sender, EventArgs args) {
+        await Navigation.PushModalAsync(new GameStatisticsView((int)UniWarSystem.Instance.GameId!));
     }
         
         

@@ -6,6 +6,7 @@ from datetime import datetime
 import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
 import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
 import time
+from zoneinfo import ZoneInfo
 from uniwar import db_config, command_service, query_service, functions
 
 
@@ -190,7 +191,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
-                date = datetime.now().strftime("%Y-%m-%d %H:%M")
+                date = datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d %H:%M")
+                print(f"date: {date}", flush= True)
                 game_id = service.handle_insert_game_command(command_service.InsertGameCommand(conn, request.username, date))
                 print(f"Game id = {game_id}",flush=True)
                 return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")
