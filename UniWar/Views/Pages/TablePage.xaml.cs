@@ -648,7 +648,7 @@ namespace UniWar {
 
 
 
-        private async Task CpuAttack(){
+        private async Task CpuAttack() {
             TaskCompletionSource tcs;
             List<MapData> playersMaps = new List<MapData>() {
                 new MapData {
@@ -735,6 +735,7 @@ namespace UniWar {
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
             Console.WriteLine($"GameId = {(int) UniWarSystem.Instance.GameId!}");
+            
             if(!UniWarSystem.Instance.IsOffline)
                 stats.GameId = (int) UniWarSystem.Instance.GameId!;
             

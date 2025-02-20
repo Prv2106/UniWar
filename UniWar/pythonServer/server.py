@@ -229,6 +229,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     def sign_in(self, request, context):
         print("\n-------------------------------------------------------------------\n")
+        time.sleep(0.25)
         print(f"Ricevuta una richiesta di SignIn con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush=True)
         try:
             with pymysql.connect(**db_config.db_config) as conn:

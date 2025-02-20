@@ -5,7 +5,7 @@ namespace UniWar {
             di una nuova partita.
         */
 
-        private Player User {get;} // Ci teniamo un riferimento all'utente perché questa pagina è dedicata solo a lui
+        private Player? User {get; set;} // Ci teniamo un riferimento all'utente perché questa pagina è dedicata solo a lui
 
         public List<string> UserTerritories {get;} = [];
         // proprietà pubblica perchè deve essere accessibile allo XAML
@@ -15,30 +15,31 @@ namespace UniWar {
         public InitializationSummary() {
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
+        }
 
-            if (UniWarSystem.Instance.IsGameInitialized) {
-                // stiamo iniziando una nuova partita ma ne è già stata fatta una
-                bool isOffline = UniWarSystem.Instance.IsOffline;
-                string? loggedUsername = UniWarSystem.Instance.LoggedUsername;
-                UniWarSystem.ResetAll();
-                UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
-                UniWarSystem.Instance.IsOffline = isOffline;
-                UniWarSystem.Instance.LoggedUsername = loggedUsername;
-            } else {
-                // prima partita da quando l'utente ha avviato l'applicazione
-                UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
+        protected async override void OnAppearing() {
+            try {
+                if (UniWarSystem.Instance.IsGameInitialized) {
+                    // stiamo iniziando una nuova partita ma ne è già stata fatta una
+                    UniWarSystem.Instance.ResetAll();
+                    await UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
+                } else {
+                    // prima partita da quando l'utente ha avviato l'applicazione
+                    await UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
+                }
+            } catch (Exception e) {
+                //TODO: fare un testo di warning a livello grafico
+                Console.WriteLine("Si è verificata un'eccezione: " + e.Message);
             }
             
             User = UniWarSystem.Instance.User!;
             BuildThePage();           
         }
 
-
-
         // Per estrarre le informazioni da visualizzare nella card
         private void BuildThePage() {
             // nomi dei territori per le carte
-            foreach (var territory in User.Territories.Values) 
+            foreach (var territory in User!.Territories.Values) 
                 // mettiamo gli spazi
                 UserTerritories.Add(territory.Name.AddSpaces());
 
