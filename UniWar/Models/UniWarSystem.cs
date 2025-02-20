@@ -138,16 +138,20 @@ public class UniWarSystem { // singleton
             siano reistanziate
         */
 
+        TablePage.Instance.Reset();
+
         // per quanto riguarda, però, l'istanza di questa classe, dobbiamo 
         // preservare l'utente loggato
-        string loggedUsername = LoggedUsername!;
-        bool isOffline = IsOffline;
-        _instance = null;
-        Instance.LoggedUsername = loggedUsername;
-        Instance.IsOffline = isOffline;
-
         
-        TablePage.Instance.Reset();        
+        if (IsOffline) {
+            _instance = null;
+            Instance.IsOffline = true;
+        } else {
+            string loggedUsername = Instance.LoggedUsername!;
+            _instance = null;
+            Instance.LoggedUsername = loggedUsername;
+            Instance.IsOffline = false;
+        }              
     }
 
 
