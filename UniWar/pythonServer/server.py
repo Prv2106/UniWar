@@ -20,9 +20,9 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print(f"Territori difendenti: {request.defending_territories}")
         print(f"Territori attaccanti: {request.attacking_territories}")
         print(f"Territori persi: {request.lost_territories}")
-        print(f"Territori posseduti dall'utente: {request.user_owned_territories}")
+        print(f"Numero di Territori posseduti dall'utente: {len(request.user_owned_territories)}")
         print(f"Numero di carri armati posseduti dall'utente: {request.user_owned_tanks}", flush = True)
-        print(f"Territori posseduti dalla CPU: {request.cpu_owned_territories}")
+        print(f"Numero di Territori posseduti dalla CPU: {len(request.cpu_owned_territories)}")
         print(f"Numero di carri armati posseduti dalla CPU: {request.cpu_owned_tanks}", flush = True)
     
         data = functions.Data(request)
@@ -123,8 +123,9 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 cpu_owned_continents = functions.get_owned_continents(cpu_territories)
                 
                 # determiniamo il numero di giri effettivamente completati
-                
+                print(f"{rows}", flush=True)
                 completed_rounds = rows['round_id'] if rows['turn_completed'] == 2 else rows['round_id']-1
+                print(f"Completed rounds = {completed_rounds}")
                              
                 user_tanks_lost_per_round = rows['user_tanks_lost'] / completed_rounds
                 cpu_tanks_lost_per_round = rows['cpu_tanks_lost'] / completed_rounds
@@ -188,7 +189,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
-                date = datetime.now().strftime("%d/%m/%y %H:%M")
+                date = datetime.now().strftime("%Y-%m-%d %H:%M")
                 game_id = service.handle_insert_game_command(command_service.InsertGameCommand(conn, request.username, date))
                 print(f"Game id = {game_id}",flush=True)
                 return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")

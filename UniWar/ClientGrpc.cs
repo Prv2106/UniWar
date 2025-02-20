@@ -41,7 +41,9 @@ namespace UniWar {
                 request.LostTerritories!.AddRange(stats.LostTerritories);
 
             request.UserOwnedTerritories.AddRange(stats.UserOwnedTerritories);
+            Console.WriteLine($"Numero territori posseduti dall'utente: {request.UserOwnedTerritories}");
             request.CpuOwnedTerritories.AddRange(stats.CpuOwnedTerritories);
+            Console.WriteLine($"Numero territori posseduti dalla Cpu: {request.CpuOwnedTerritories}");
             
             try {
                 var response = await stub.send_statisticsAsync(request);

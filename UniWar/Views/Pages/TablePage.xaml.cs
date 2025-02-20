@@ -735,6 +735,7 @@ namespace UniWar {
             stats.UserTurn = false;
             stats.RoundId = Turn!.IdRound;
             Console.WriteLine($"GameId = {(int) UniWarSystem.Instance.GameId!}");
+            bool cpuWin = false;
             
             if(!UniWarSystem.Instance.IsOffline)
                 stats.GameId = (int) UniWarSystem.Instance.GameId!;
@@ -790,11 +791,7 @@ namespace UniWar {
                     stats.AttackingTerritories.Add(battle.AttackingTerritory, battle.LossesCPU);
                 }
 
-                foreach(var territory in CPU.Territories.Values)
-                    stats.CpuOwnedTerritories.Add(territory.Name);
-
-                foreach(var territory in User.Territories.Values)
-                    stats.UserOwnedTerritories.Add(territory.Name);
+         
 
                 stats.CpuOwnedTanks = CPU.GetNumTanks();
                 stats.UserOwnedTanks = User.GetNumTanks();
@@ -822,14 +819,24 @@ namespace UniWar {
                 BuildUserInformation();
 
                 if (battle.Win) {     
-                    await CollectsStatistics(stats);
-                    await UpdateGameResult(battle.Win);
-                    await Navigation.PushModalAsync(new WinOrLoseModal(false));
+                    cpuWin = true;
                     break;
                 }
             }
 
+            foreach(var territory in CPU!.Territories.Values)
+                    stats.CpuOwnedTerritories.Add(territory.Name);
+
+            foreach(var territory in User.Territories.Values)
+                    stats.UserOwnedTerritories.Add(territory.Name);
+
             await CollectsStatistics(stats);
+
+            if(cpuWin){
+                await UpdateGameResult(true);
+                await Navigation.PushModalAsync(new WinOrLoseModal(false));
+            }
+
         }
 
 

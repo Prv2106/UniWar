@@ -43,7 +43,9 @@ class InsertDataCommand:
         cpu_owned_territories = kwargs['cpu_owned_territories']        
         cpu_owned_tanks = kwargs['cpu_owned_tanks']        
         user_owned_territories_list = kwargs['user_owned_territories_list']        
-        cpu_owned_territories_list = kwargs['cpu_owned_territories_list']        
+        cpu_owned_territories_list = kwargs['cpu_owned_territories_list']
+        print(f"round_id ricevuto da request = {round_id}", flush=True)
+        
 
         service = query_service.QueryService()
         _,result =  service.handle_get_data_query(query_service.GetDataQuery(conn,kwargs['game_id']))
@@ -53,10 +55,14 @@ class InsertDataCommand:
             user_tanks_lost_defending,cpu_tanks_lost_defending,user_perfect_defenses,cpu_perfect_defenses,
             user_territories_lost,cpu_territories_lost) = result
             
+            print(f"round_id recuperato dal db = {round_id}", flush=True)
             if round_id == kwargs['round_id']:
                 turn_completed = 1 if turn_completed == 0 else 2
             else:
                 turn_completed = 0
+                
+            print(f"turn_completed = {turn_completed}", flush=True)
+    
             
             user_tanks_lost += kwargs['user_tanks_lost']
             user_tanks_lost_attacking += kwargs['user_tanks_lost_attacking']
@@ -105,7 +111,7 @@ class InsertDataCommand:
                 user_perfect_defenses,
                 cpu_perfect_defenses,
                 turn_completed,
-                round_id,
+                kwargs['round_id'],
                 user_owned_territories,
                 user_owned_tanks,
                 cpu_owned_territories,
@@ -172,7 +178,7 @@ class InsertDataCommand:
                 cpu_perfect_defenses,
                 turn_completed,
                 game_id,
-                round_id,
+                kwargs['round_id'],
                 user_owned_territories,
                 user_owned_tanks,
                 cpu_owned_territories,
