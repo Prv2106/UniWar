@@ -30,7 +30,24 @@ namespace UniWar {
                 loading.IsVisible = false;
                 warning.Text = e.Message;
                 warning.IsVisible = true; 
-            } else {
+            } 
+            else{
+                // tutto ok
+                loading.IsVisible = false;
+                page.IsVisible = true;
+                warning.IsVisible = false; 
+            }
+        }
+        
+        private void HideLoadingAnimation(string w) {
+            // da invocare alla fine del blocco try o del catch
+            if(w != ""){
+                page.IsVisible = false;
+                loading.IsVisible = false;
+                warning.Text = w;
+                warning.IsVisible = true; 
+            }
+            else{
                 // tutto ok
                 loading.IsVisible = false;
                 page.IsVisible = true;
@@ -47,12 +64,17 @@ namespace UniWar {
                 StatisticsResponse response = await ClientGrpc.GetStatistics(GameId);
                 Console.WriteLine($"Statistiche ricevute: {response}");
 
+                if (response.Status == false){
+                    HideLoadingAnimation(response.Message);
+                    return;
+                }
+
                 StatisticsList = new List<StatisticEntry> {
                     new("Territori posseduti", response.UserOwnedTerritories, response.CpuOwnedTerritories),
                     new("Carri armati posseduti", response.UserOwnedTanks, response.CpuOwnedTanks),
-                    new("Carri persi per giro", response.UserTanksLostPerRound, response.CpuTanksLostPerRound),
-                    new("Carri persi in attacco", response.UserTanksLostAttackingPerRound, response.CpuTanksLostAttackingPerRound),
-                    new("Carri persi in difesa", response.UserTanksLostDefendingPerRound, response.CpuTanksLostDefendingPerRound),
+                    new("Carri armati totali persi per giro", response.UserTanksLostPerRound, response.CpuTanksLostPerRound),
+                    new("Carri armati persi  in attacco per giro", response.UserTanksLostAttackingPerRound, response.CpuTanksLostAttackingPerRound),
+                    new("Carri armati persi in difesa per giro", response.UserTanksLostDefendingPerRound, response.CpuTanksLostDefendingPerRound),
                     new("Difese perfette", response.UserPerfectDefenses, response.CpuPerfectDefenses),
                     new("Attacchi falliti", response.CpuPerfectDefenses, response.UserPerfectDefenses),
                     new("Territori persi per giro", response.UserTerritoriesLostPerRound, response.CpuTerritoriesLostPerRound),
