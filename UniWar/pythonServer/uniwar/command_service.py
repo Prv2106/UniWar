@@ -35,7 +35,6 @@ class RegisterUserCommand:
 class InsertDataCommand:
    
     def __init__(self, conn, **kwargs):
-        print("Costruttore di InsertDataCommand",flush=True)
         self.conn = conn
         game_id =kwargs['game_id']
         round_id = kwargs['round_id']
@@ -122,8 +121,6 @@ class InsertDataCommand:
              
         
         else:
-            print(f"Result è None", flush=True)
-
             user_tanks_lost = kwargs['user_tanks_lost']
             user_tanks_lost_attacking = kwargs['user_tanks_lost_attacking']
             user_tanks_lost_defending = kwargs['user_tanks_lost_defending']
@@ -207,7 +204,7 @@ class EndGameCommand:
         self.is_win = 1 if is_win else 0
         self.end_game_query = """
         UPDATE Games
-        SET user_win = %s
+        SET state = %s
         WHERE id = %s
         """
                 

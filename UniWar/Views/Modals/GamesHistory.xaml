@@ -92,8 +92,10 @@
 
                     <!-- Colonna per la Data -->
                     <Label Text="{Binding Date}"
-                           HorizontalTextAlignment="Center"
+                           HorizontalTextAlignment="Start"
                            VerticalTextAlignment="Center"
+                           
+                           FontSize ="14"
                            Grid.Column="1"/>
 
                     <!-- Colonna per lo Stato -->

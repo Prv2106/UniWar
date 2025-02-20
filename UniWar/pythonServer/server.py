@@ -16,14 +16,14 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print("\n-------------------------------------------------------------------\n")
         print(f"Ricevuti dati per il giocatore: {request.player_id}")
         print(f"Id partita: {request.game_id}")
-       # print(f"Round: {request.round_id}, Turno utente: {request.user_turn}")
-       # print(f"Territori difendenti: {request.defending_territories}")
-       # print(f"Territori attaccanti: {request.attacking_territories}")
-       # print(f"Territori persi: {request.lost_territories}")
-       # print(f"Territori posseduti dall'utente: {request.user_owned_territories}")
-       # print(f"Numero di carri armati posseduti dall'utente: {request.user_owned_tanks}", flush = True)
-       # print(f"Territori posseduti dalla CPU: {request.cpu_owned_territories}")
-       # print(f"Numero di carri armati posseduti dalla CPU: {request.cpu_owned_tanks}", flush = True)
+        print(f"Round: {request.round_id}, Turno utente: {request.user_turn}")
+        print(f"Territori difendenti: {request.defending_territories}")
+        print(f"Territori attaccanti: {request.attacking_territories}")
+        print(f"Territori persi: {request.lost_territories}")
+        print(f"Territori posseduti dall'utente: {request.user_owned_territories}")
+        print(f"Numero di carri armati posseduti dall'utente: {request.user_owned_tanks}", flush = True)
+        print(f"Territori posseduti dalla CPU: {request.cpu_owned_territories}")
+        print(f"Numero di carri armati posseduti dalla CPU: {request.cpu_owned_tanks}", flush = True)
     
         data = functions.Data(request)
         
@@ -79,7 +79,9 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
-                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = response)  
+                game_info_list = [msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M") , state=game[3]) for game in response]
+                
+                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = game_info_list)  
                 
         except ValueError as e:
             print(f"{e}", flush= True)
@@ -100,13 +102,16 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
-                response = service.handle_get_data_query(query_service.GetDataQuery(conn, request.game_id))
-                
+                cursor,response = service.handle_get_data_query(query_service.GetDataQuery(conn, request.game_id))
+                if response is None:
+                    print("Response è none", flush=True)
                 # Estraiamo i valori dalla riga restituita dalla query
-                # descriptor è una lista di tuple dove ogni tupla rappresenta una colonna e in cui il primo elemento è il nome della colonna  
-                columns = [desc[0] for desc in conn.cursor().descriptor] # lista con i nomi delle colonne
+                # description è una lista di tuple dove ogni tupla rappresenta una colonna e in cui il primo elemento è il nome della colonna  
+                print("Response non è None", flush=True)
+                columns = [desc[0] for desc in cursor.description] # lista con i nomi delle colonne
+                print(f"{columns}", flush=True)
                 rows = dict(zip(columns,response)) # dizionario in modo da poter accedere ai campi utilizzando il nome
-                
+                print(f"{rows}", flush=True)
                 # Convertiamo i json in liste di stringhe
                 user_territories = json.loads(rows["user_owned_territories_list"])
                 cpu_territories = json.loads(rows["cpu_owned_territories_list"])
@@ -224,7 +229,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     def sign_in(self, request, context):
         print("\n-------------------------------------------------------------------\n")
-        time.sleep(0.5)
         print(f"Ricevuta una richiesta di SignIn con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush=True)
         try:
             with pymysql.connect(**db_config.db_config) as conn:

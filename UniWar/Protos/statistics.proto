@@ -73,7 +73,7 @@ message Response {
 message GameInfo {
     int32 id = 1; 
     string date = 2;
-    string state = 3;
+    int32 state = 3;
 }
 
 message GameInfoList {

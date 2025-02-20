@@ -3,14 +3,10 @@ using System.Threading.Tasks;
 
 namespace UniWar{
     public partial class WinOrLoseModal: ContentPage{
-            public WinOrLoseModal(bool PlayerWin, bool draw = false) {
+            public WinOrLoseModal(bool PlayerWin) {
                 InitializeComponent();
 
-                if (draw) {
-                    ImageInfo.Source = "agreement.png";
-                    Header.Text = ""; 
-                    Info.Text="Tu e la Cpu avete pareggiato!";
-                } else if (PlayerWin) {
+                if (PlayerWin) {
                     ImageInfo.Source = "win.png";
                     Header.Text = "Congratulazioni!"; 
                     Info.Text="Hai raggiunto l'obiettivo ed hai vinto!";

@@ -351,12 +351,10 @@ namespace UniWar {
             if (userScore > cpuScore) {
                 await UpdateGameResult(true);
                 await Navigation.PushModalAsync(new WinOrLoseModal(true));
-            } else if (userScore < cpuScore) {
+            } else {
                 await UpdateGameResult(false);
                 await Navigation.PushModalAsync(new WinOrLoseModal(false));
-            } else { // Pareggio
-                await Navigation.PushModalAsync(new WinOrLoseModal(true, true)); 
-            }
+            } 
         } else {
             ShowInformation("Devono almeno passare 2 giri!");
         }

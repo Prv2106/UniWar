@@ -26,7 +26,7 @@ namespace UniWar {
         
         public GamesHistory() {
             InitializeComponent();
-            BindingContext = this;    
+             
         }
 
         private void ShowLoadingAnimation() {
@@ -58,10 +58,22 @@ namespace UniWar {
             // per recuperare l'elenco delle partite per l'utente loggato
             ShowLoadingAnimation();
             try {
+                string state;
                 GameInfoList response = await ClientGrpc.GetGames(UniWarSystem.Instance.LoggedUsername!);
                 Console.WriteLine("Ho ricevuto la risposta");
-                foreach (GameInfo game in response.Games) 
-                    Games.Add(new Game(game.Id,game.Date,game.State));
+                foreach (GameInfo game in response.Games){
+                    if (game.State == 1)
+                        state = "vincitore";
+                    else if (game.State == 0)
+                        state = "Perdente";
+                    else
+                        state = "Incompleta";
+
+                    Console.WriteLine($"{game.Date}");
+                    Games.Add(new Game(game.Id,game.Date, state));
+                }
+                    
+                BindingContext = this;  
                 HideLoadingAnimation();
             } catch (Exception e) {
                 Console.WriteLine(e);

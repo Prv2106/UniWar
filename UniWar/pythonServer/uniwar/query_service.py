@@ -116,7 +116,7 @@ class QueryService:
     def handle_get_data_query(self, query: GetDataQuery):
             with query.conn.cursor() as cursor:
                 cursor.execute(query.get_data_query,(query.game_id,))
-                return cursor.fetchone()
+                return cursor,cursor.fetchone()
 
     def handle_get_game_query(self, query: GetGamesQuery):
         with query.conn.cursor() as cursor:
