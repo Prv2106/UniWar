@@ -12,7 +12,7 @@ enum class AttackOutcome {
 };
 // Funzione di attacco della cpu
 /* La funzione di attacco della cpu segue questa logica: 
-    - il cpu player attacca uno alla volta i territori del giocatore scegliendo il primo dei territori alla frontiera non posseduti che rispetta il seguente criterio (condizione di attacco):
+    - la cpu attacca uno alla volta i territori del giocatore scegliendo il primo dei territori alla frontiera non posseduti che rispetta il seguente criterio (condizione di attacco):
         - il territorio deve avere un numero di carri armati inferiore o uguale rispetto al territorio della cpu (chiave della lista neighbors in cui si trova il territorio di frontiera)
     - nella "battaglia" la cpu attacca sempre con 3 carri armati 
       (questo significa che deciderà di non effettuare un attacco se non esiste un territorio che rispetta il criterio di sopra e che al contempo possegga 4 o più carri armati)
@@ -53,7 +53,6 @@ const char* cpuAttack (const char* jsonData){
     clog << "Funzione cpuAttack:" << endl;
 
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    if(players.empty()) return "";
     uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
     uniwar::Player userPlayer = players[1];
     vector<json> battleResults;
@@ -63,6 +62,8 @@ const char* cpuAttack (const char* jsonData){
 
     while(true){
         clog << "Ciclo di attacco : " << ++ciclo << endl; // Debug
+        attackOutcome = AttackOutcome::NONE;
+
         // Recuperiamo i terriori di frontiera posseduti dalla cpu
         set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap()); 
 
@@ -92,6 +93,7 @@ const char* cpuAttack (const char* jsonData){
                     clog << "Ciclo while di battaglia: numero carri armati della cpu = " << cpuTanksCount << ", numero carri armati del giocatore = "<< userTanksCount << endl; // debug
                     
                     /** INIZIO DELLA BATTAGLIA **/
+                    attackOutcome = AttackOutcome::CONTINUE;
                     int cpuAttackDice[3];
                     int userDefenseDice[3] = {0,0,0};
                     int defenseDiceCount = uniwar::rollTheDice(cpuAttackDice,userDefenseDice,userTanksCount);
@@ -181,7 +183,7 @@ const char* cpuAttack (const char* jsonData){
         if(attackOutcome == AttackOutcome::NONE || attackOutcome == AttackOutcome::CONTINUE){
             break;
         }
-    }
+    } // fine del while(true)
 
     // Se la cpu non ha vinto restituisce il risultato della battaglia qui (potrebbe anche non aver attaccato affatto)
     jsonResult = json(battleResults).dump();
@@ -206,8 +208,6 @@ const char* reinforcement (const char* jsonData, int newTanks){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione reinforcement:" << endl;
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    if (players.empty()) 
-        return "";
 
     uniwar::Player& cpuPlayer = players[0]; 
     set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
@@ -245,8 +245,6 @@ const char* reinforcement (const char* jsonData, int newTanks){
         }
         if(newTanks == 0)
             break;
-        
-
     }
 
     while(newTanks > 0){
@@ -258,10 +256,8 @@ const char* reinforcement (const char* jsonData, int newTanks){
         newTanks--;
         clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
         clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
-
-        if(newTanks == 0)
-            break;
         }
+
     }
 
     // Una volta aggiornato il contesto restituiamo il risultato a C# andando a creare il nuovo json
@@ -280,7 +276,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
 }
 
 // Funzione che permette a C# di verificare se il giocatore ha vinto o meno
-bool winCheck (const char* jsonData){
+bool winCheck (const char* jsonData) {
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
     return uniwar::win(uniwar::getTerritoriesFromMap(players[0].getTanksMap()));
 }

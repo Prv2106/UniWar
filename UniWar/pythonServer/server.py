@@ -5,7 +5,6 @@ import json
 from datetime import datetime
 import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
 import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
-import time
 from zoneinfo import ZoneInfo
 from uniwar import db_config, command_service, query_service, functions
 
@@ -78,25 +77,42 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print("\n-------------------------------------------------------------------")
         print("RPC get_games:")
         print(f"Parametri richiesta: username = {request.username}")
+
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
-                game_info_list = [msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M") , state=game[3]) for game in response]
-                print("Operazione eseguita con successo",flush=True)
-                return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = game_info_list)  
-                
+                if response is not None:
+                    won = sum(1 for game in response if game[3] == 1)  # Partite vinte
+                    lost = sum(1 for game in response if game[3] == 0)  # Partite perse
+                    incomplete = sum(1 for game in response if game[3] == -1)  # Partite non finite
+
+                    game_info_list = [
+                        msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M"), state=game[3])
+                        for game in response
+                    ]
+
+                    # Genera il grafico a torta
+                    graph_url = functions.generate_game_results_pie_chart(won, lost, incomplete)
+
+                    print("Operazione eseguita con successo", flush=True)
+                    return msg.GameInfoList(
+                        message="Storico recuperato con successo", 
+                        status=True, 
+                        games=game_info_list,
+                        game_results_pie_chart=graph_url  # Aggiunto il grafico in base64
+                    )
+
         except ValueError as e:
-            print(f"{e}", flush= True)
+            print(f"{e}", flush=True)
             return msg.GameInfoList(message=str(e), status=False)
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.GameInfoList(message=str(err), status=False)
         except Exception as e:
-            print(f"Errore generico, codice di errore: {e}", flush = True)
+            print(f"Errore generico, codice di errore: {e}", flush=True)
             return msg.GameInfoList(message=str(e), status=False)
-        
+
   
     
     def get_statistics(self,request, context):
@@ -231,10 +247,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.Response(message=str(e), status=False)
         
-        
-        
+         
     # Gestione dell'utente
-
     def sign_in(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC sign_in:")  
@@ -282,7 +296,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             # Gestione degli errori di validazione
             return msg.Response(message=str(e), status=False)
         
-        
     def username_check(self,request,context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC username_check:")  
@@ -293,8 +306,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service = query_service.QueryService()
                 service.handle_username_check_query(query_service.UsernameCheckQuery(conn,request.username))
                 print("Operazione eseguita con successo",flush=True)
-                return msg.Response(message="Username valido", status = True)
-            
+                return msg.Response(message="Username valido", status = True)            
         except ValueError as e:
             print(f"{e}", flush= True)
             return msg.Response(message=str(e), status=False)
@@ -307,9 +319,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             return msg.Response(message=str(e), status=False)
 
     
-
-
-
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     statistics_pb2_grpc.add_StatisticsServiceServicer_to_server(StatisticsService(), server)

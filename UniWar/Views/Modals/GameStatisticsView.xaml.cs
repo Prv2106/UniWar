@@ -74,6 +74,7 @@ namespace UniWar {
                     new("Difese perfette", response.UserPerfectDefenses, response.CpuPerfectDefenses),
                     new("Attacchi falliti", response.CpuPerfectDefenses, response.UserPerfectDefenses),
                     new("Territori persi per giro", response.UserTerritoriesLostPerRound, response.CpuTerritoriesLostPerRound),
+                    new("Territori conquistati per giro", response.CpuTerritoriesLostPerRound, response.UserTerritoriesLostPerRound),
                     new("Percentuale mappa posseduta", $"{response.UserMapOwnershipPercentage:F2}%", $"{response.CpuMapOwnershipPercentage:F2}%")
                 };
 

@@ -1,14 +1,14 @@
 namespace UniWar{
     public partial class GenericModal: ContentPage{
-            private TaskCompletionSource _tcs;
+            private readonly TaskCompletionSource _tcs;
 
-            public GenericModal(string text, string info ,TaskCompletionSource tcs,int numTanks= 1) {
+            public GenericModal(string text, bool reinforcement ,TaskCompletionSource tcs,int numTanks= 1) {
                 InitializeComponent();
 
-                if(info == "NoAttack"){
+                if(!reinforcement){
                     ImageInfo.Source = "info.png";
                 }
-                else if(info == "Reinforcement"){
+                else {
                     ImageInfo.Source = "shock.png";
                     TankCount.IsVisible = true;
                     if(numTanks > 1)

@@ -193,17 +193,13 @@ class InsertDataCommand:
     
 class InsertGameCommand:
     def __init__(self,conn,username,date):
-        
         self.conn = conn
         self.username = username
         self.date = date
-        
         self.insert_game_query = """
             INSERT INTO Games (username, date) 
             VALUES (%s, %s)
         """
-
-        
 
 class EndGameCommand:
     def __init__(self, conn, game_id, is_win):
@@ -215,12 +211,7 @@ class EndGameCommand:
         SET state = %s
         WHERE id = %s
         """
-                
-        
-        
-            
-                    
-    
+
 
 # Servizio che gestisce i command
 class CommandService:
