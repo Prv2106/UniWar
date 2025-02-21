@@ -28,20 +28,20 @@
              <VerticalStackLayout x:Name="page" IsVisible="False">
               <Image
                 Source="statistics.png"
-                WidthRequest="90"
+                WidthRequest="60"
                 />
                 <!-- Titolo --> 
                 <HorizontalStackLayout HorizontalOptions ="Center">
                 <Label 
                      Text="Resoconto partita " 
-                     FontSize="25" 
+                     FontSize="22" 
                      FontAttributes="Bold"
                      TextColor="#333" 
                      HorizontalOptions="Center"
                      Margin ="0,10,0,10"/>
                 <Label x:Name ="Round"
                      Text="" 
-                     FontSize="25" 
+                     FontSize="22" 
                      FontAttributes="Bold"
                      TextColor="#333" 
                      HorizontalOptions="Center"

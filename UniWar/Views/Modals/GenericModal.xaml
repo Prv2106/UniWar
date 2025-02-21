@@ -18,9 +18,6 @@
                 HeightRequest="100" 
                 Margin="5"               
                 />
-
-                
-
             
               <Label Text="Attenzione"
                      FontSize="20"

@@ -78,6 +78,14 @@ namespace UniWar {
         HandleTurns();
     }
 
+     private void CheckIfRoundIsCompleted() {
+        if (CpuTurnCompleted && UserTurnCompleted) {
+                CpuTurnCompleted = false;
+                UserTurnCompleted = false;
+                Turn!.IdRound++;
+                RoundCounter.Text = Turn!.IdRound.ToString();
+            }
+    }
 
     public async void HandleTurns() {
         /*
@@ -86,16 +94,11 @@ namespace UniWar {
             grafici di supporto ad ogni fase
         */
 
+       
 
         try {
-
-            if (CpuTurnCompleted && UserTurnCompleted) {
-                CpuTurnCompleted = false;
-                UserTurnCompleted = false;
-                Turn!.IdRound++;
-                UpdateRoundCounter();
-            }
-
+            CheckIfRoundIsCompleted();
+            
             while (Turn!.currentPlayer == CPU) { // è il turno della CPU
                 statisticsButton.IsVisible = false;
                 endGameButton.IsVisible = false; 
@@ -109,12 +112,7 @@ namespace UniWar {
                 }
             }
 
-            if (CpuTurnCompleted && UserTurnCompleted) {
-                CpuTurnCompleted = false;
-                UserTurnCompleted = false;
-                Turn!.IdRound++;
-                UpdateRoundCounter();
-            }
+            CheckIfRoundIsCompleted();
 
             if (Turn.currentPlayer == User) {
                 // è il turno dell'utente...
@@ -177,6 +175,7 @@ namespace UniWar {
         UserTankIcon.Source = IconSrcUser;
         NumTanks.Text = User!.GetNumTanks().ToString();
         GoalDescr.Text = User.Goal!.Description;
+        NumTerritories.Text = User.Territories.Count.ToString();
     }
 
     private void UpdateUserCounters() {
@@ -184,9 +183,6 @@ namespace UniWar {
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
-    private void UpdateRoundCounter() {
-        RoundCounter.Text = Turn!.IdRound.ToString();
-    }
 
     private void UpdateTankCounter(string territoryName) {
         Grid territoryInMap = this.FindByName<Grid>(territoryName);
@@ -301,7 +297,7 @@ namespace UniWar {
                                 if (attackableTerritories.Count > 0) {
                                     // mostriamo la modale dove l'utente clicca il territorio da attaccare
                                     discoverUserChoose = new TaskCompletionSource<string>();
-                                    await Navigation.PushModalAsync(new SelectableTerritories(attackableTerritories, discoverUserChoose));
+                                    await Navigation.PushModalAsync(new SelectableTerritories(attackableTerritories, discoverUserChoose, isAttack: true));
                                     string attackedTerritoryChoosen = await discoverUserChoose.Task;
                                     await Task.Delay(400); // aspettiamo che si chiude la modale
                                                         // invochiamo la funzione di attacco passando territorio partenza e destinazione
@@ -324,7 +320,7 @@ namespace UniWar {
                                 if (neighboringTerritories.Count > 0) {
                                     // mostriamo la modale dove l'utente clicca il territorio verso cui spostare i carri armati
                                     discoverUserChoose = new TaskCompletionSource<string>();
-                                    await Navigation.PushModalAsync(new SelectableTerritories(neighboringTerritories, discoverUserChoose));
+                                    await Navigation.PushModalAsync(new SelectableTerritories(neighboringTerritories, discoverUserChoose, isAttack: false));
                                     string selectedTerritory = await discoverUserChoose.Task;
                                     await Task.Delay(400);
                                     // apriamo la modale dove facciamo scegliere all'utente il numero di carri armati da spostare
@@ -339,7 +335,9 @@ namespace UniWar {
                                 }
                                 else // i territori confinanti sono tutti nemici
                                     ShowInformation("I territori confinanti non appartengono a te, scegli un altro territorio..");
-                            }
+                            } 
+                                else // il territorio selezionato ha solo 1 carro armato!
+                                    ShowInformation("Il territorio selezionato ha solo 1 carro armato.. cosa dovresti spostare?!");
                             break;
                         default:
                             break;
@@ -379,15 +377,16 @@ namespace UniWar {
                 await Navigation.PushModalAsync(new WinOrLoseModal(false));
             } 
         } else {
-            ShowInformation("Devono almeno passare 2 giri!");
+            ShowInformation("Bisogna quantomeno trovarsi al terzo giro!");
         }
     }
 
     private async void ShowInformation(string text) {
-        attackBanner.IsVisible = true;
-        attackBanner.Text = text;
+        banner.IsVisible = true;
+        bannerText.Text = text;
         await Task.Delay(4000);
-        attackBanner.IsVisible = false;
+        bannerText.Text = "";
+        banner.IsVisible = false;
     }
 
     private void OnAttackButtonClicked(object sender, EventArgs e) {
@@ -441,14 +440,14 @@ namespace UniWar {
         List<int> cpuDice;
         // lanciamo i dadi
         RollTheDice(out userDice, out cpuDice, numTanksAttacker, numTanksDefender);
-        string result = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
+        (int tanksLostForUser, int tanksLostForCpu) = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
 
         // riempiamo le statistiche nei dizionari
         stats.AttackingTerritories.Add(from.Name, numTanksAttacker - from.Tanks.Count);
         stats.DefendingTerritories.Add(to.Name, numTanksDefender - to.Tanks.Count);
 
         var userClosedTheModal = new TaskCompletionSource();
-        await Navigation.PushModalAsync(new ShowDiceResultPage(userDice, cpuDice, result, userClosedTheModal));
+        await Navigation.PushModalAsync(new ShowDiceResultPage(userDice, cpuDice, tanksLostForUser, tanksLostForCpu, userClosedTheModal));
         // aspettiamo che l'utente chiude la modale
         await userClosedTheModal.Task; // questo, nella modale, avviene prima della .Pop()
         await Task.Delay(100); // aspettiamo che si chiude la modale
@@ -533,7 +532,7 @@ namespace UniWar {
         cpuDice.Sort((a,b) => b.CompareTo(a));
     }
 
-    private static string CompareDiceAndRemoveTanks(in List<int> userDice, in List<int> cpuDice, Territory attacking, Territory defending) {
+    private static (int, int) CompareDiceAndRemoveTanks(in List<int> userDice, in List<int> cpuDice, Territory attacking, Territory defending) {
         // confrontiamo le due liste (dadi) per un numero di volte pari alla lunghezza della lista più corta
         int counterForUser = 0;
         int counterForCpu = 0;
@@ -549,7 +548,9 @@ namespace UniWar {
                 counterForCpu++;
             }
         }
-        return $"Hai perso {counterForUser} carri armati, mentre la CPU ne ha persi {counterForCpu}";
+        // restituiamo, rispettivamente,
+        // numero carri armati persi dall'utente, numero carri armati persi dalla CPU
+        return (counterForUser, counterForCpu);
     }
 
     // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu
@@ -835,7 +836,7 @@ namespace UniWar {
 
                 tcs = new TaskCompletionSource();
                 // Mostriamo il risultato del lancio dei dadi
-                await Navigation.PushModalAsync(new ShowCpuDiceResultPage(battle.DicePlayer,battle.DiceCPU,battle.LossesCPU, battle.LossesPlayer, tcs));
+                await Navigation.PushModalAsync(new ShowDiceResultPage(battle.DicePlayer,battle.DiceCPU, battle.LossesPlayer, battle.LossesCPU, tcs));
                 await tcs.Task; // aspetta che facciamo setResult()
                 await Task.Delay(400); // per dare il tempo alla modale di chiudersi
 
