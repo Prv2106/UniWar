@@ -62,6 +62,8 @@ const char* cpuAttack (const char* jsonData){
 
     while(true){
         clog << "Ciclo di attacco : " << ++ciclo << endl; // Debug
+        attackOutcome = AttackOutcome::NONE;
+
         // Recuperiamo i terriori di frontiera posseduti dalla cpu
         set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap()); 
 
@@ -91,6 +93,7 @@ const char* cpuAttack (const char* jsonData){
                     clog << "Ciclo while di battaglia: numero carri armati della cpu = " << cpuTanksCount << ", numero carri armati del giocatore = "<< userTanksCount << endl; // debug
                     
                     /** INIZIO DELLA BATTAGLIA **/
+                    attackOutcome = AttackOutcome::CONTINUE;
                     int cpuAttackDice[3];
                     int userDefenseDice[3] = {0,0,0};
                     int defenseDiceCount = uniwar::rollTheDice(cpuAttackDice,userDefenseDice,userTanksCount);
@@ -180,7 +183,7 @@ const char* cpuAttack (const char* jsonData){
         if(attackOutcome == AttackOutcome::NONE || attackOutcome == AttackOutcome::CONTINUE){
             break;
         }
-    }
+    } // fine del while(true)
 
     // Se la cpu non ha vinto restituisce il risultato della battaglia qui (potrebbe anche non aver attaccato affatto)
     jsonResult = json(battleResults).dump();
@@ -254,9 +257,6 @@ const char* reinforcement (const char* jsonData, int newTanks){
         clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
         clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
 
-        if(newTanks == 0)
-            break;
-        }
     }
 
     // Una volta aggiornato il contesto restituiamo il risultato a C# andando a creare il nuovo json

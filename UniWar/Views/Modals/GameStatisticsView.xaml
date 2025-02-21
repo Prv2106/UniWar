@@ -92,6 +92,7 @@
                      MaximumWidthRequest="290"
                      >
                       <CollectionView ItemsSource="{Binding UserContinents}"
+                                   ItemsLayout ="HorizontalList"
                                    x:Name="UserContinentsView">
                      
                      <CollectionView.ItemTemplate >
