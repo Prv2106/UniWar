@@ -68,7 +68,7 @@ namespace UniWar {
                     HideLoadingAnimation(response.Message);
                     return;
                 }
-
+                Round.Text = "(round " + response.RoundId.ToString() +"):";
                 StatisticsList = new List<StatisticEntry> {
                     new("Territori posseduti", response.UserOwnedTerritories, response.CpuOwnedTerritories),
                     new("Carri armati posseduti", response.UserOwnedTanks, response.CpuOwnedTanks),

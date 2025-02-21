@@ -34,8 +34,8 @@ class StatisticsServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.send_statistics = channel.unary_unary(
-                '/statistics.StatisticsService/send_statistics',
+        self.send_data = channel.unary_unary(
+                '/statistics.StatisticsService/send_data',
                 request_serializer=statistics__pb2.StatisticsCollection.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
@@ -79,7 +79,7 @@ class StatisticsServiceStub(object):
 class StatisticsServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def send_statistics(self, request, context):
+    def send_data(self, request, context):
         """da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -131,8 +131,8 @@ class StatisticsServiceServicer(object):
 
 def add_StatisticsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'send_statistics': grpc.unary_unary_rpc_method_handler(
-                    servicer.send_statistics,
+            'send_data': grpc.unary_unary_rpc_method_handler(
+                    servicer.send_data,
                     request_deserializer=statistics__pb2.StatisticsCollection.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
@@ -183,7 +183,7 @@ class StatisticsService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def send_statistics(request,
+    def send_data(request,
             target,
             options=(),
             channel_credentials=None,
@@ -196,7 +196,7 @@ class StatisticsService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/statistics.StatisticsService/send_statistics',
+            '/statistics.StatisticsService/send_data',
             statistics__pb2.StatisticsCollection.SerializeToString,
             statistics__pb2.Response.FromString,
             options,

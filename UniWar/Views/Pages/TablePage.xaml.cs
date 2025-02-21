@@ -33,6 +33,7 @@ namespace UniWar {
 
     private bool CpuTurnCompleted {get; set;} = false;
     private bool UserTurnCompleted {get; set;} = false;
+    private bool UserAttack {get; set;} = false;
 
     public static TablePage Instance {
         get {
@@ -115,6 +116,7 @@ namespace UniWar {
 
             if (Turn.currentPlayer == User) {
                 // è il turno dell'utente...
+                UserAttack = false;
 
                 // gestiamo visualizzazione pulsante
                 if (!UniWarSystem.Instance.IsOffline) 
@@ -413,6 +415,7 @@ namespace UniWar {
     // Attacco di un territorio da parte dell'utente
     public async void AttackTerritory(string attackingTerritory, string attackedTerritory) {
         // prepariamo le statistiche
+        
         StatisticsCollection stats = new StatisticsCollection();
         stats.PlayerId = User!.Name;
         stats.DefendingTerritories = new Dictionary<string, int>();  
@@ -449,6 +452,9 @@ namespace UniWar {
         // Aggiorniamo la UI
         DeployTanks();
         UpdateUserCounters();
+
+        UserAttack = true; // l'utente ha effettuato almeno 1 attacco in questo turno
+
         // Dopo un attacco, verifichiamo se il territorio avversario è stato conquistato 
         if (to.Tanks.Count == 0) {
             // allora l'utente ha conquistato il territorio della cpu
@@ -547,6 +553,7 @@ namespace UniWar {
     // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
     private async void OnPassButtonClicked(object sender, EventArgs e) {        
         PassButton.IsVisible = false;
+        await InitializeStatistics(true);
         await Task.Delay(500);
         // chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
         var discoverUserChoose = new TaskCompletionSource<bool>();
@@ -707,6 +714,7 @@ namespace UniWar {
             if ((resultJson == string.Empty) || resultJson == "[]") {
                 Console.WriteLine("La CPU ha deciso di non attaccare");
                 tcs = new TaskCompletionSource();
+                await InitializeStatistics(false);
                 await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
                 await tcs.Task; // aspetta che facciamo setResult()
                 await Task.Delay(400); // per dare il tempo alla modale di chiudersi 
@@ -815,8 +823,7 @@ namespace UniWar {
 
          
 
-                stats.CpuOwnedTanks = CPU.GetNumTanks();
-                stats.UserOwnedTanks = User.GetNumTanks();
+               
 
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
@@ -846,6 +853,9 @@ namespace UniWar {
                 }
             }
 
+            stats.CpuOwnedTanks = CPU!.GetNumTanks();
+            stats.UserOwnedTanks = User.GetNumTanks();
+
             foreach(var territory in CPU!.Territories.Values)
                     stats.CpuOwnedTerritories.Add(territory.Name);
 
@@ -859,6 +869,40 @@ namespace UniWar {
                 await Navigation.PushModalAsync(new WinOrLoseModal(false));
             }
 
+        }
+
+
+
+        // Funzione per inizializzare le statistiche da passare nel caso in cui non venga effettuato un attacco
+        private async Task InitializeStatistics(bool isUserTurn){
+            if(!UniWarSystem.Instance.IsOffline){
+                StatisticsCollection stats = new StatisticsCollection();
+                stats.PlayerId = User!.Name;
+                stats.DefendingTerritories = new Dictionary<string, int>();  
+                stats.AttackingTerritories = new Dictionary<string, int>();
+                stats.LostTerritories = new List<string>();          
+                stats.UserOwnedTerritories = new List<string>();          
+                stats.CpuOwnedTerritories = new List<string>();          
+                stats.UserTurn = isUserTurn;
+                stats.RoundId = Turn!.IdRound;
+                stats.GameId = (int) UniWarSystem.Instance.GameId!;
+
+
+
+                stats.CpuOwnedTanks = CPU!.GetNumTanks();
+                stats.UserOwnedTanks = User.GetNumTanks();
+
+
+                foreach(var territory in CPU!.Territories.Values)
+                stats.CpuOwnedTerritories.Add(territory.Name);
+
+                foreach(var territory in User.Territories.Values)
+                    stats.UserOwnedTerritories.Add(territory.Name);
+
+
+
+                await CollectsStatistics(stats);
+            }
         }
 
 
@@ -883,7 +927,7 @@ namespace UniWar {
         private async Task CollectsStatistics(StatisticsCollection statistics) {
             if (!UniWarSystem.Instance.IsOffline) {
                 try {
-                    await ClientGrpc.SendStatistics(statistics);
+                    await ClientGrpc.SendData(statistics);
                 } catch (Grpc.Core.RpcException e) {
                     ShowInformation($"Non è stato possibile aggiornare le statistiche per questo round a causa di un errore nella chiamata rpc");
                     Console.WriteLine($"Errore: {e}");

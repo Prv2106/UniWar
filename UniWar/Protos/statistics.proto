@@ -4,7 +4,7 @@ package statistics;
 
 service StatisticsService {
     
-    rpc send_statistics (StatisticsCollection) returns (Response); 
+    rpc send_data (StatisticsCollection) returns (Response); 
     // da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
 
     rpc sign_in (SignInCredentials) returns (Response);
@@ -109,6 +109,7 @@ message StatisticsResponse{
     float cpu_map_ownership_percentage = 19;  // Percentuale di mappa posseduta dalla CPU
     string message = 20;
     bool status = 21;
+    int32 round_id =22;
     
 }
 

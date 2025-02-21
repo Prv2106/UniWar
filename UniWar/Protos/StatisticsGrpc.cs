@@ -67,10 +67,10 @@ namespace Statistics {
     static readonly grpc::Marshaller<global::Statistics.EndGameRequest> __Marshaller_statistics_EndGameRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.EndGameRequest.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response> __Method_send_statistics = new grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response>(
+    static readonly grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response> __Method_send_data = new grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response>(
         grpc::MethodType.Unary,
         __ServiceName,
-        "send_statistics",
+        "send_data",
         __Marshaller_statistics_StatisticsCollection,
         __Marshaller_statistics_Response);
 
@@ -172,9 +172,9 @@ namespace Statistics {
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The response received from the server.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Statistics.Response send_statistics(global::Statistics.StatisticsCollection request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Statistics.Response send_data(global::Statistics.StatisticsCollection request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return send_statistics(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return send_data(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
       /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
@@ -183,9 +183,9 @@ namespace Statistics {
       /// <param name="options">The options for the call.</param>
       /// <returns>The response received from the server.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Statistics.Response send_statistics(global::Statistics.StatisticsCollection request, grpc::CallOptions options)
+      public virtual global::Statistics.Response send_data(global::Statistics.StatisticsCollection request, grpc::CallOptions options)
       {
-        return CallInvoker.BlockingUnaryCall(__Method_send_statistics, null, options, request);
+        return CallInvoker.BlockingUnaryCall(__Method_send_data, null, options, request);
       }
       /// <summary>
       /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
@@ -196,9 +196,9 @@ namespace Statistics {
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_statisticsAsync(global::Statistics.StatisticsCollection request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_dataAsync(global::Statistics.StatisticsCollection request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
-        return send_statisticsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
+        return send_dataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
       /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
@@ -207,9 +207,9 @@ namespace Statistics {
       /// <param name="options">The options for the call.</param>
       /// <returns>The call object.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_statisticsAsync(global::Statistics.StatisticsCollection request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_dataAsync(global::Statistics.StatisticsCollection request, grpc::CallOptions options)
       {
-        return CallInvoker.AsyncUnaryCall(__Method_send_statistics, null, options, request);
+        return CallInvoker.AsyncUnaryCall(__Method_send_data, null, options, request);
       }
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::Statistics.Response sign_in(global::Statistics.SignInCredentials request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))

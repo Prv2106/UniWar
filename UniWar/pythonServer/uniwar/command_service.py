@@ -59,7 +59,7 @@ class InsertDataCommand:
             if round_id == kwargs['round_id']:
                 turn_completed = 1 if turn_completed == 0 else 2
             else:
-                turn_completed = 0
+                turn_completed = 1
                 
             print(f"turn_completed = {turn_completed}", flush=True)
     
@@ -138,6 +138,8 @@ class InsertDataCommand:
             user_perfect_defenses = kwargs['user_perfect_defenses']
             cpu_perfect_defenses = kwargs['cpu_perfect_defenses']
             turn_completed = 1
+            print(f"turn_completed = {turn_completed}", flush=True)
+
             
             self.insert_command_query = """
                 INSERT INTO Data (
