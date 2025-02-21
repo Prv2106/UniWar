@@ -828,10 +828,6 @@ namespace UniWar {
                     stats.AttackingTerritories.Add(battle.AttackingTerritory, battle.LossesCPU);
                 }
 
-         
-
-               
-
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
                 await tcs.Task; // aspetta che facciamo setResult()
@@ -881,7 +877,7 @@ namespace UniWar {
 
 
         // Funzione per inizializzare le statistiche da passare nel caso in cui non venga effettuato un attacco
-        private async Task InitializeStatistics(bool isUserTurn){
+        private async Task InitializeStatistics(bool isUserTurn) {
             if(!UniWarSystem.Instance.IsOffline){
                 StatisticsCollection stats = new StatisticsCollection
                 {
@@ -895,20 +891,15 @@ namespace UniWar {
                     RoundId = Turn!.IdRound,
                     GameId = (int)UniWarSystem.Instance.GameId!,
 
-
-
                     CpuOwnedTanks = CPU!.GetNumTanks(),
                     UserOwnedTanks = User.GetNumTanks()
                 };
-
 
                 foreach (var territory in CPU!.Territories.Values)
                 stats.CpuOwnedTerritories.Add(territory.Name);
 
                 foreach(var territory in User.Territories.Values)
                     stats.UserOwnedTerritories.Add(territory.Name);
-
-
 
                 await CollectsStatistics(stats);
             }
