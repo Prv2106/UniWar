@@ -256,6 +256,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
         newTanks--;
         clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
         clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+        }
 
     }
 
@@ -275,7 +276,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
 }
 
 // Funzione che permette a C# di verificare se il giocatore ha vinto o meno
-bool winCheck (const char* jsonData){
+bool winCheck (const char* jsonData) {
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
     return uniwar::win(uniwar::getTerritoriesFromMap(players[0].getTanksMap()));
 }
