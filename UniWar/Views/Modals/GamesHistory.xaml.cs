@@ -35,13 +35,13 @@ namespace UniWar {
             warning.IsVisible = false; 
         }
 
-        private void HideLoadingAnimation(Exception? e = null) {
+        private void HideLoadingAnimation(string? message = null) {
             // da invocare alla fine del blocco try o del catch
-            if (e is not null) {
+            if (message is not null) {
                 // ci sono problemi
                 page.IsVisible = false;
                 loading.IsVisible = false;
-                warning.Text = e.Message;
+                warning.Text = message;
                 warning.IsVisible = true; 
             } else {
                 // tutto ok
@@ -61,7 +61,11 @@ namespace UniWar {
                 string state;
                 GameInfoList response = await ClientGrpc.GetGames(UniWarSystem.Instance.LoggedUsername!);
                 Console.WriteLine("Ho ricevuto la risposta");
-                foreach (GameInfo game in response.Games){
+                if (response.Games.Count == 0) {
+                    // l'utente non ha ancora nessuna partita disputata nel database
+                    HideLoadingAnimation("Non sono presenti partite da te giocate nel database!");
+                } else {
+                    foreach (GameInfo game in response.Games){
                     if (game.State == 1)
                         state = "Vincitore";
                     else if (game.State == 0)
@@ -69,15 +73,17 @@ namespace UniWar {
                     else
                         state = "Incompleta";
 
-                    Console.WriteLine($"{game.Date}");
                     Games.Add(new Game(game.Id,game.Date, state));
                 }
-                    
-                BindingContext = this;  
-                HideLoadingAnimation();
+
+                    BindingContext = this;  
+                    HideLoadingAnimation();
+                }
+                
+                
             } catch (Exception e) {
                 Console.WriteLine(e);
-                HideLoadingAnimation(e);
+                HideLoadingAnimation(e.Message);
             } 
         }
 

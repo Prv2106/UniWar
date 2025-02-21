@@ -1278,6 +1278,7 @@
                CornerRadius="12"
                HasShadow="True"
                BackgroundColor="White"
+               MaximumWidthRequest="760"
                Margin="10"> <!-- Simula la profondità della Material Card -->
 
             <HorizontalStackLayout HorizontalOptions="Center">
@@ -1308,7 +1309,7 @@
                         x:Name="NumTerritories"
                         VerticalOptions="Center"
                         Margin="10"
-                        Text="21"
+                        Text=""
                         FontSize="15"
                         FontAttributes="Bold"
                         TextColor="#333"
@@ -1434,20 +1435,31 @@
         </Frame>
 
 
-
-
         <!-- Questa è la label che dice all'utente di selezionare un territorio da cui effettuare l'attacco -->
-        <Label x:Name="attackBanner"
-            WidthRequest="550"
-            HeightRequest="50"
-            Text="Seleziona il territorio da cui vuoi effettuare l'attacco"
-            BackgroundColor="Black"
-            TextColor="White"
-            Padding="15"
+        <Frame
+            MaximumWidthRequest="740"
+            x:Name="banner"
             IsVisible="False"
-            FontSize="18"
-            HorizontalTextAlignment="Center"
-            VerticalTextAlignment="Center"/>
+            CornerRadius="12"
+               HasShadow="True"
+            >
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Image
+                    Source="info.png"
+                    WidthRequest="20"
+                    Margin="0,0,10,0"
+                    />
+                <Label 
+                x:Name="bannerText"
+                Text=""
+                BackgroundColor="White"
+                TextColor="Black"
+                FontSize="16"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center"/>
+            </HorizontalStackLayout>
+            
+        </Frame>
 
 
 

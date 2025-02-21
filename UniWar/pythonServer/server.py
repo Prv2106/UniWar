@@ -76,6 +76,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def get_games(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print(f"Ricevuta una richiesta di GetGames per -> username = {request.username}", flush=True)
+        time.sleep(0.25)
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
@@ -100,6 +101,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def get_statistics(self,request, context):
         print("\n-------------------------------------------------------------------\n")
         print(f"Richiesta delle statistiche per partita con id = {request.game_id}", flush=True)
+        time.sleep(0.25)
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
@@ -257,6 +259,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def sign_up(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print(f"Ricevuta una richiesta di SignUp con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush= True)
+        time.sleep(0.25)
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()

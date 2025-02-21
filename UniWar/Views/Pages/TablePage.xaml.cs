@@ -77,6 +77,14 @@ namespace UniWar {
         HandleTurns();
     }
 
+     private void CheckIfRoundIsCompleted() {
+        if (CpuTurnCompleted && UserTurnCompleted) {
+                CpuTurnCompleted = false;
+                UserTurnCompleted = false;
+                Turn!.IdRound++;
+                RoundCounter.Text = Turn!.IdRound.ToString();
+            }
+    }
 
     public async void HandleTurns() {
         /*
@@ -85,16 +93,11 @@ namespace UniWar {
             grafici di supporto ad ogni fase
         */
 
+       
 
         try {
-
-            if (CpuTurnCompleted && UserTurnCompleted) {
-                CpuTurnCompleted = false;
-                UserTurnCompleted = false;
-                Turn!.IdRound++;
-                UpdateRoundCounter();
-            }
-
+            CheckIfRoundIsCompleted();
+            
             while (Turn!.currentPlayer == CPU) { // è il turno della CPU
                 statisticsButton.IsVisible = false;
                 endGameButton.IsVisible = false; 
@@ -108,12 +111,7 @@ namespace UniWar {
                 }
             }
 
-            if (CpuTurnCompleted && UserTurnCompleted) {
-                CpuTurnCompleted = false;
-                UserTurnCompleted = false;
-                Turn!.IdRound++;
-                UpdateRoundCounter();
-            }
+            CheckIfRoundIsCompleted();
 
             if (Turn.currentPlayer == User) {
                 // è il turno dell'utente...
@@ -175,6 +173,7 @@ namespace UniWar {
         UserTankIcon.Source = IconSrcUser;
         NumTanks.Text = User!.GetNumTanks().ToString();
         GoalDescr.Text = User.Goal!.Description;
+        NumTerritories.Text = User.Territories.Count.ToString();
     }
 
     private void UpdateUserCounters() {
@@ -182,9 +181,6 @@ namespace UniWar {
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
-    private void UpdateRoundCounter() {
-        RoundCounter.Text = Turn!.IdRound.ToString();
-    }
 
     private void UpdateTankCounter(string territoryName) {
         Grid territoryInMap = this.FindByName<Grid>(territoryName);
@@ -377,15 +373,16 @@ namespace UniWar {
                 await Navigation.PushModalAsync(new WinOrLoseModal(false));
             } 
         } else {
-            ShowInformation("Devono almeno passare 2 giri!");
+            ShowInformation("Bisogna quantomeno trovarsi al terzo giro!");
         }
     }
 
     private async void ShowInformation(string text) {
-        attackBanner.IsVisible = true;
-        attackBanner.Text = text;
+        banner.IsVisible = true;
+        bannerText.Text = text;
         await Task.Delay(4000);
-        attackBanner.IsVisible = false;
+        bannerText.Text = "";
+        banner.IsVisible = false;
     }
 
     private void OnAttackButtonClicked(object sender, EventArgs e) {
