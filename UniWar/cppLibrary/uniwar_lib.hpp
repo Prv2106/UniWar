@@ -71,6 +71,25 @@ NODISCARD const set<string> getTerritoriesFromMap(const map<string, T> & map) {
     return territories;
 }
 
+NODISCARD int rollTheDice(int (&cpuAttackDice)[3], int (&userDefenseDice)[3], const int& userTanksCount);
+
+
+inline void compareDice(const int (&cpuAttackDice)[3], const int (&userDefenseDice)[3],const int& defenseDiceCount ,int& cpuLosses, int& userLosses){
+    clog << "----------------------------------------------------------------------------" << endl;
+    for(int i=0; i < defenseDiceCount; i++){
+        clog << "Dado " << i << " della CPU = " << cpuAttackDice[i] << " , dado " << i << " del giocatore = " << userDefenseDice[i] << endl; // debug
+        if(cpuAttackDice[i] > userDefenseDice[i]){
+            userLosses++;
+        }
+        else {
+            cpuLosses++;
+        }
+        clog << "Perdite CPU = " << cpuLosses << ", Perdite giocatore = " << userLosses << endl; // debug
+    }
+    clog << "----------------------------------------------------------------------------" << endl;
+
+}
+
 
 NODISCARD bool win(const set<string> & territories);
 
