@@ -419,7 +419,7 @@ namespace UniWar {
         // prepariamo le statistiche
         
         StatisticsCollection stats = new StatisticsCollection();
-        stats.PlayerId = User!.Name;
+        stats.Username = User!.Name;
         stats.DefendingTerritories = new Dictionary<string, int>();  
         stats.AttackingTerritories = new Dictionary<string, int>();
         stats.LostTerritories = new List<string>();          
@@ -761,7 +761,7 @@ namespace UniWar {
             Territory? lostTerritory = null;
 
             StatisticsCollection stats = new StatisticsCollection();
-            stats.PlayerId = User!.Name;
+            stats.Username = User!.Name;
             stats.DefendingTerritories = new Dictionary<string, int>();  
             stats.AttackingTerritories = new Dictionary<string, int>();
             stats.LostTerritories = new List<string>();          
@@ -881,7 +881,7 @@ namespace UniWar {
         private async Task InitializeStatistics(bool isUserTurn){
             if(!UniWarSystem.Instance.IsOffline){
                 StatisticsCollection stats = new StatisticsCollection();
-                stats.PlayerId = User!.Name;
+                stats.Username = User!.Name;
                 stats.DefendingTerritories = new Dictionary<string, int>();  
                 stats.AttackingTerritories = new Dictionary<string, int>();
                 stats.LostTerritories = new List<string>();          

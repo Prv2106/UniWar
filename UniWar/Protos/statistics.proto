@@ -37,7 +37,7 @@ message Username{
 }
 
 message StatisticsCollection {
-    string player_id = 1;
+    string username = 1;
     int32 round_id = 2;
     bool user_turn = 3;
     repeated string lost_territories = 4;
@@ -52,12 +52,12 @@ message StatisticsCollection {
 }
 
 message SignInCredentials {
-    string player_id = 1;
+    string username = 1;
     string password = 2;
 }
 
 message SignUpCredentials {
-    string player_id = 1;
+    string username = 1;
     string password = 2;
 }
 

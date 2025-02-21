@@ -16,7 +16,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def send_data(self, request, context):
         print("\n-------------------------------------------------------------------")
         print("RPC send_data:")
-        print(f"Ricevuti dati per il giocatore: {request.player_id}")
+        print(f"Ricevuti dati per il giocatore: {request.username}")
         print(f"Id partita: {request.game_id}")
         print(f"Round: {request.round_id}, Turno utente: {request.user_turn}")
         print(f"Territori difendenti: {request.defending_territories}")
@@ -238,11 +238,11 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def sign_in(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC sign_in:")  
-        print(f"Parametri richiesta: username = {request.player_id}, password = {request.password}")
+        print(f"Parametri richiesta: username = {request.username}, password = {request.password}")
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
-                service.handle_login_user_query(query_service.LogInUserQuery(request.player_id, request.password, conn))
+                service.handle_login_user_query(query_service.LogInUserQuery(request.username, request.password, conn))
                 print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="SignIn effettuato con successo", status= True) 
             
@@ -261,19 +261,19 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def sign_up(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC sign_up:")  
-        print(f"Parametri richiesta: username = {request.player_id}, password = {request.password}")
+        print(f"Parametri richiesta: username = {request.username}, password = {request.password}")
         
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
-                service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password, conn))
+                service.handle_register_user(command_service.RegisterUserCommand(request.username, request.password, conn))
                 print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="Utente registrato con successo!", status=True)
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database
             if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
                 print(f"Errore di duplicazione, codice di errore: {err}", flush=True)
-                return msg.Response(message="Unavailable player_id", status=False)
+                return msg.Response(message="Unavailable username", status=False)
             else:
                 print(f"Errore durante l'inserimento nel database, codice di errore: {err}", flush=True)
                 return msg.Response(message="Database Error", status=False)
@@ -286,7 +286,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     def username_check(self,request,context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC username_check:")  
-        print(f"Parametri richiesta: username = {request.player_id}")
+        print(f"Parametri richiesta: username = {request.username}")
         
         try:
             with pymysql.connect(**db_config.db_config) as conn:
