@@ -65,6 +65,15 @@ namespace UniWar {
                     // l'utente non ha ancora nessuna partita disputata nel database
                     HideLoadingAnimation("Non sono presenti partite da te giocate nel database!");
                 } else {
+
+                    // Controlla se il server ha inviato il grafico in base64
+                    if (!string.IsNullOrEmpty(response.GameResultsPieChart)) {
+                        byte[] imageBytes = Convert.FromBase64String(response.GameResultsPieChart);
+                        // Create a new MemoryStream that will stay in scope
+                        var stream = new MemoryStream(imageBytes);
+                        Chart.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
+                    }
+
                     foreach (GameInfo game in response.Games){
                     if (game.State == 1)
                         state = "Vincitore";

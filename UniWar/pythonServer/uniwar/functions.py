@@ -54,3 +54,27 @@ def get_owned_continents(owned_territories):
             owned_continents.append(continent)
 
     return owned_continents
+
+
+
+import matplotlib.pyplot as plt
+import io
+import base64
+
+def generate_game_results_pie_chart(won, lost, incomplete):
+    labels = ['Vinte', 'Perse', 'Incomplete']
+    sizes = [won, lost, incomplete]
+    colors = ['#4CAF50', '#F44336', '#FFC107']  # Verde, Rosso, Giallo
+    explode = (0.1, 0.1, 0)  # Per evidenziare i primi due segmenti
+
+    plt.figure(figsize=(6,6))
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', colors=colors, explode=explode, startangle=140)
+
+    # Salvare il grafico come immagine in base64
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    graph_url = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
+    return graph_url

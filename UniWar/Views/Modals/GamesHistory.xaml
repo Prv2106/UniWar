@@ -34,8 +34,18 @@
 
 
               <VerticalStackLayout x:Name="page" IsVisible="False">
+             <Image 
+              x:Name="Chart"
+              WidthRequest="350"
+              HeightRequest="350"
+              Aspect="AspectFit"
+              HorizontalOptions="Center"
+              VerticalOptions="Center"
+              Margin ="0,-70,0,-50"
+              />
+       
               <!-- Titolo -->
-              <Label Text="Le tue ultime 10 partite:"
+              <Label Text="Le tue partite:"
                      FontSize="25"
                      FontAttributes="Bold"
                      TextColor="#333"
