@@ -523,9 +523,11 @@ namespace UniWar {
     // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
     private async void OnPassButtonClicked(object sender, EventArgs e) {        
         PassButton.IsVisible = false;
-        InitializeStatistics(out StatisticsCollection stats, true);
-        SetStatsTanksAndTerritories(ref stats);
-        await CollectsStatistics(stats);
+        if(!UserAttack){
+            InitializeStatistics(out StatisticsCollection stats, true);
+            SetStatsTanksAndTerritories(ref stats);
+            await CollectsStatistics(stats);
+        }
         await Task.Delay(500);
         // chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
         var discoverUserChoose = new TaskCompletionSource<bool>();

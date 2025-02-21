@@ -12,7 +12,7 @@ enum class AttackOutcome {
 };
 // Funzione di attacco della cpu
 /* La funzione di attacco della cpu segue questa logica: 
-    - il cpu player attacca uno alla volta i territori del giocatore scegliendo il primo dei territori alla frontiera non posseduti che rispetta il seguente criterio (condizione di attacco):
+    - la cpu attacca uno alla volta i territori del giocatore scegliendo il primo dei territori alla frontiera non posseduti che rispetta il seguente criterio (condizione di attacco):
         - il territorio deve avere un numero di carri armati inferiore o uguale rispetto al territorio della cpu (chiave della lista neighbors in cui si trova il territorio di frontiera)
     - nella "battaglia" la cpu attacca sempre con 3 carri armati 
       (questo significa che deciderà di non effettuare un attacco se non esiste un territorio che rispetta il criterio di sopra e che al contempo possegga 4 o più carri armati)
