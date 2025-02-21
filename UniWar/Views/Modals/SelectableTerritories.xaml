@@ -14,17 +14,22 @@
               
               <!-- Titolo -->
               <Image
-                Source="soldier.png"
-                WidthRequest="200"
+                x:Name="image"
+                WidthRequest="180"
+                Margin="10,0,0,0"
                 />
               <!-- Testo che spiega all'utente che deve fare -->
-              <Label Text="Seleziona il territorio nemico da attaccare!"
-                     FontSize="25"
-                     TextColor="#666"
-                     HorizontalOptions="Center"
-                     Margin="0,5,0,10"/>
+              <Label 
+                    HorizontalTextAlignment="Center"
+                    x:Name="text"
+                    Text=""
+                    FontSize="25"
+                    TextColor="#666"
+                    HorizontalOptions="Center"
+                    Margin="0,0,0,20"/>
 
              <CollectionView ItemsSource="{Binding SelectableTerritoriesNames}"
+                                   HorizontalOptions="Center"
                                    ItemsLayout="HorizontalList"
                                    Margin="0,20,0,40">
                      

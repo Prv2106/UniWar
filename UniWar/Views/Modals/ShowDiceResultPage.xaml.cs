@@ -2,7 +2,7 @@ namespace UniWar {
     public partial class ShowDiceResultPage : ContentPage {
         private TaskCompletionSource _tsc;
 
-        public ShowDiceResultPage(List<int> userDice, List<int> cpuDice, string result, TaskCompletionSource tsc) {
+        public ShowDiceResultPage(List<int> userDice, List<int> cpuDice, int tanksLostForUser, int tanksLostForCpu, TaskCompletionSource tsc) {
             InitializeComponent();
 
             for (int i = 0; i < userDice.Count; i++) {
@@ -17,7 +17,7 @@ namespace UniWar {
                 img.IsVisible = true;
             }
 
-            WarningText.Text = result;
+            WarningText.Text = $"Hai perso {tanksLostForUser} carri armati, mentre la CPU ne ha persi {tanksLostForCpu}";
 
             _tsc = tsc;
         }

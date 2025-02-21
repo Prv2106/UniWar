@@ -5,7 +5,7 @@ namespace UniWar {
         private TaskCompletionSource<string> _territoryChoosen;
         
         // pubblico perchè deve essere accessibilen allo XAML
-        public SelectableTerritories(List<string> neighboringTerritories, TaskCompletionSource<string> taskCompletionSource) {
+        public SelectableTerritories(List<string> neighboringTerritories, TaskCompletionSource<string> taskCompletionSource, bool isAttack) {
             // attackingTerritory è senza spazi (chiave pronta per dizionario)
             InitializeComponent();
             foreach (var territory in neighboringTerritories) 
@@ -15,6 +15,16 @@ namespace UniWar {
             BindingContext = this; // serve far si che CollectionView possa accedere alle proprietà
 
             _territoryChoosen = taskCompletionSource;
+
+            if (isAttack) {
+                // allora l'utente sta selezionando il territorio nemico da attaccare
+                image.Source = "soldier.png";
+                text.Text = "Seleziona il territorio nemico da attaccare!";
+            } else {
+                // sta effettuando uno spostamento strategico, i territori mostrati sono i suoi!
+                image.Source = "running_soldiers.png";
+                text.Text = "Seleziona uno dei tuoi territori confinanti dove vuoi spostare qualche carro armato!";
+            }
         }
 
         

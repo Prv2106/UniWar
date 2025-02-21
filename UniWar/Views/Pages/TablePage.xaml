@@ -3,7 +3,7 @@
              x:Class="UniWar.TablePage"
              Title="">
             
-    <VerticalStackLayout>
+    <VerticalStackLayout VerticalOptions="Start" Padding="0,0,0,20">
 
         <AbsoluteLayout WidthRequest="735" HeightRequest="480" HorizontalOptions="Center" VerticalOptions="Start">
         <!-- NOTA BENE: 

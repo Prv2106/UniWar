@@ -16,38 +16,34 @@ namespace UniWar {
             GameId = gameId;
         }
 
+        public class StatisticEntry {
+            public string StatName { get; }
+            public string UserValue { get; }
+            public string CpuValue { get; }
+
+            public StatisticEntry(string statName, object userValue, object cpuValue) {
+                StatName = statName;
+                UserValue = userValue.ToString()!;
+                CpuValue = cpuValue.ToString()!;
+            }
+        }
+
         private void ShowLoadingAnimation() {
             loading.IsVisible = true;
             page.IsVisible = false;
             warning.IsVisible = false; 
         }
 
-        private void HideLoadingAnimation(Exception? e = null) {
+        private void HideLoadingAnimation(string? message = null) {
             // da invocare alla fine del blocco try o del catch
-            if (e is not null) {
+            if (message is not null) {
                 // ci sono problemi
                 page.IsVisible = false;
                 loading.IsVisible = false;
-                warning.Text = e.Message;
+                warning.Text = message;
                 warning.IsVisible = true; 
             } 
             else {
-                // tutto ok
-                loading.IsVisible = false;
-                page.IsVisible = true;
-                warning.IsVisible = false; 
-            }
-        }
-        
-        private void HideLoadingAnimation(string w) {
-            // da invocare alla fine del blocco try o del catch
-            if(w != ""){
-                page.IsVisible = false;
-                loading.IsVisible = false;
-                warning.Text = w;
-                warning.IsVisible = true; 
-            }
-            else{
                 // tutto ok
                 loading.IsVisible = false;
                 page.IsVisible = true;
@@ -64,7 +60,7 @@ namespace UniWar {
                 StatisticsResponse response = await ClientGrpc.GetStatistics(GameId);
                 Console.WriteLine($"Statistiche ricevute: {response}");
 
-                if (response.Status == false){
+                if (response.Status == false) {
                     HideLoadingAnimation(response.Message);
                     return;
                 }
@@ -87,7 +83,7 @@ namespace UniWar {
                     UserContinentsView.IsVisible = true;
                     UserContinents.Clear();
                     foreach(var continent in response.UserOwnedContinents)
-                        UserContinents.Add(continent);
+                        UserContinents.Add(continent.AddSpaces());
                 }
 
                 BindingContext = this;
@@ -95,24 +91,12 @@ namespace UniWar {
             } 
             catch (Exception e) {
                 Console.WriteLine(e);
-                HideLoadingAnimation(e);
+                HideLoadingAnimation(e.Message);
             }
         }
 
         private async void OnCloseButtonClicked(object o, EventArgs args) {
             await Navigation.PopModalAsync();
-        }
-
-        public class StatisticEntry {
-            public string StatName { get; }
-            public string UserValue { get; }
-            public string CpuValue { get; }
-
-            public StatisticEntry(string statName, object userValue, object cpuValue) {
-                StatName = statName;
-                UserValue = userValue.ToString()!;
-                CpuValue = cpuValue.ToString()!;
-            }
         }
     }
 }
