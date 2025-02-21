@@ -31,7 +31,7 @@ namespace UniWar {
                 warning.Text = e.Message;
                 warning.IsVisible = true; 
             } 
-            else{
+            else {
                 // tutto ok
                 loading.IsVisible = false;
                 page.IsVisible = true;
