@@ -28,7 +28,6 @@ namespace UniWar {
                     await UniWarSystem.Instance.InitializeGame(); // caricamento dei dati
                 }
             } catch (Exception e) {
-                //TODO: fare un testo di warning a livello grafico
                 Console.WriteLine("Si è verificata un'eccezione: " + e.Message);
             }
             

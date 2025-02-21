@@ -5,7 +5,6 @@ import json
 from datetime import datetime
 import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
 import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
-import time
 from zoneinfo import ZoneInfo
 from uniwar import db_config, command_service, query_service, functions
 
