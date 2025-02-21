@@ -1,6 +1,6 @@
 public struct StatisticsCollection {
     
-    public string PlayerId {get; set;}
+    public string Username {get; set;}
     public int RoundId {get; set;}
     public int GameId {get; set;}
 

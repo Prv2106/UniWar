@@ -19,7 +19,7 @@ namespace UniWar {
                 UserOwnedTanks = stats.UserOwnedTanks,
                 CpuOwnedTanks = stats.CpuOwnedTanks,
                 GameId = stats.GameId,
-                PlayerId = stats.PlayerId
+                Username = stats.Username
             };
 
 
@@ -60,53 +60,7 @@ namespace UniWar {
 
         }
 
-        public async static Task<Response> SignIn(string username, string password) {
-            var stub = GetStub();
-
-            var request = new SignInCredentials {
-                PlayerId = username,
-                Password = password
-            };
-
-            try {
-                var response = await stub.sign_inAsync(request);
-                Console.WriteLine($"Risposta dal server: {response.Message}");
-                return response;
-            }
-            catch (Grpc.Core.RpcException rpcEx) {
-                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
-                throw; 
-            }
-            catch (Exception ex) { 
-                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
-                throw; 
-            }
-        }
-
-        public async static Task<Response> SignUp(string username, string password) {
-            var stub = GetStub();
-
-            var request = new SignUpCredentials {
-                PlayerId = username,
-                Password = password
-            };
-
-            try {
-                var response = await stub.sign_upAsync(request);
-                Console.WriteLine($"Risposta dal server: {response.Message}");
-                return response;       
-            }
-            catch (Grpc.Core.RpcException rpcEx) {
-                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
-                throw; 
-            }
-            catch (Exception ex) { 
-                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
-                throw;
-            }
-        }
-
-
+        
         public async static Task<GameInfoList> GetGames(string username) {
             var stub = GetStub();
 
@@ -125,29 +79,7 @@ namespace UniWar {
         }
 
 
-        public async static Task<Response> UsernameCheck(string id) {
-            var stub = GetStub();
-
-            var request = new Username();
-            request.Username_ = id;
-
-            try{
-                var response = await stub.username_checkAsync(request);
-                Console.WriteLine($"Risposta ricevuta dal server: {response}");
-                return response;
-            }
-            catch (Grpc.Core.RpcException rpcEx) {
-                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
-                throw; 
-            }
-            catch (Exception ex) { 
-                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
-                throw; 
-            }
-        }
-
-
-        public async static Task<StatisticsResponse> GetStatistics(int GameId) {
+                public async static Task<StatisticsResponse> GetStatistics(int GameId) {
             var stub = GetStub();
 
             var request = new StatisticRequest();
@@ -212,8 +144,75 @@ namespace UniWar {
 
         }
 
+        // Gestione dell'utente
+        public async static Task<Response> SignIn(string username, string password) {
+            var stub = GetStub();
 
-    
+            var request = new SignInCredentials {
+                Username = username,
+                Password = password
+            };
+
+            try {
+                var response = await stub.sign_inAsync(request);
+                Console.WriteLine($"Risposta dal server: {response.Message}");
+                return response;
+            }
+            catch (Grpc.Core.RpcException rpcEx) {
+                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
+                throw; 
+            }
+            catch (Exception ex) { 
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
+                throw; 
+            }
+        }
+
+        public async static Task<Response> SignUp(string username, string password) {
+            var stub = GetStub();
+
+            var request = new SignUpCredentials {
+                Username = username,
+                Password = password
+            };
+
+            try {
+                var response = await stub.sign_upAsync(request);
+                Console.WriteLine($"Risposta dal server: {response.Message}");
+                return response;       
+            }
+            catch (Grpc.Core.RpcException rpcEx) {
+                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
+                throw; 
+            }
+            catch (Exception ex) { 
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
+                throw;
+            }
+        }
+
+
+
+        public async static Task<Response> UsernameCheck(string id) {
+            var stub = GetStub();
+
+            var request = new Username();
+            request.Username_ = id;
+
+            try{
+                var response = await stub.username_checkAsync(request);
+                Console.WriteLine($"Risposta ricevuta dal server: {response}");
+                return response;
+            }
+            catch (Grpc.Core.RpcException rpcEx) {
+                Console.WriteLine($"Errore gRPC: {rpcEx.Status.StatusCode} - {rpcEx.Status.Detail}");
+                throw; 
+            }
+            catch (Exception ex) { 
+                Console.WriteLine($"Errore generico durante l'invio dei dati: {ex.Message}");
+                throw; 
+            }
+        } 
 
 
         

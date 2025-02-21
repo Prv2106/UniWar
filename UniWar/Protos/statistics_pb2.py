@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10statistics.proto\x12\nstatistics\"1\n\x0e\x45ndGameRequest\x12\x0f\n\x07game_id\x18\x01 \x01(\x05\x12\x0e\n\x06is_win\x18\x02 \x01(\x08\"#\n\x10StatisticRequest\x12\x0f\n\x07game_id\x18\x01 \x01(\x05\"\x1c\n\x08Username\x12\x10\n\x08username\x18\x01 \x01(\t\"\x9b\x04\n\x14StatisticsCollection\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08round_id\x18\x02 \x01(\x05\x12\x11\n\tuser_turn\x18\x03 \x01(\x08\x12\x18\n\x10lost_territories\x18\x04 \x03(\t\x12Y\n\x15\x64\x65\x66\x65nding_territories\x18\x05 \x03(\x0b\x32:.statistics.StatisticsCollection.DefendingTerritoriesEntry\x12Y\n\x15\x61ttacking_territories\x18\x06 \x03(\x0b\x32:.statistics.StatisticsCollection.AttackingTerritoriesEntry\x12\x18\n\x10user_owned_tanks\x18\x07 \x01(\x05\x12\x1e\n\x16user_owned_territories\x18\x08 \x03(\t\x12\x0f\n\x07game_id\x18\t \x01(\x05\x12\x1d\n\x15\x63pu_owned_territories\x18\n \x03(\t\x12\x17\n\x0f\x63pu_owned_tanks\x18\x0b \x01(\x05\x1a;\n\x19\x44\x65\x66\x65ndingTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x1a;\n\x19\x41ttackingTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"8\n\x11SignInCredentials\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"8\n\x11SignUpCredentials\x12\x11\n\tplayer_id\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"+\n\x08Response\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\x08\"3\n\x08GameInfo\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\r\n\x05state\x18\x03 \x01(\x05\"T\n\x0cGameInfoList\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\x08\x12#\n\x05games\x18\x03 \x03(\x0b\x32\x14.statistics.GameInfo\"\xda\x05\n\x12StatisticsResponse\x12\x1e\n\x16user_owned_territories\x18\x01 \x01(\x05\x12\x18\n\x10user_owned_tanks\x18\x02 \x01(\x05\x12\x1d\n\x15\x63pu_owned_territories\x18\x03 \x01(\x05\x12\x17\n\x0f\x63pu_owned_tanks\x18\x04 \x01(\x05\x12\x1d\n\x15user_owned_continents\x18\x05 \x03(\t\x12\x1c\n\x14\x63pu_owned_continents\x18\x06 \x03(\t\x12\x10\n\x08user_win\x18\x07 \x01(\x05\x12!\n\x19user_tanks_lost_per_round\x18\x08 \x01(\x02\x12 \n\x18\x63pu_tanks_lost_per_round\x18\t \x01(\x02\x12+\n#user_tanks_lost_attacking_per_round\x18\n \x01(\x02\x12*\n\"cpu_tanks_lost_attacking_per_round\x18\x0b \x01(\x02\x12+\n#user_tanks_lost_defending_per_round\x18\x0c \x01(\x02\x12*\n\"cpu_tanks_lost_defending_per_round\x18\r \x01(\x02\x12\x1d\n\x15user_perfect_defenses\x18\x0e \x01(\x05\x12\x1c\n\x14\x63pu_perfect_defenses\x18\x0f \x01(\x05\x12\'\n\x1fuser_territories_lost_per_round\x18\x10 \x01(\x02\x12&\n\x1e\x63pu_territories_lost_per_round\x18\x11 \x01(\x02\x12%\n\x1duser_map_ownership_percentage\x18\x12 \x01(\x02\x12$\n\x1c\x63pu_map_ownership_percentage\x18\x13 \x01(\x02\x12\x0f\n\x07message\x18\x14 \x01(\t\x12\x0e\n\x06status\x18\x15 \x01(\x08\x12\x10\n\x08round_id\x18\x16 \x01(\x05\"C\n\x0fNewGameResponse\x12\x0f\n\x07game_id\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\x08\x32\xa0\x04\n\x11StatisticsService\x12\x43\n\tsend_data\x12 .statistics.StatisticsCollection\x1a\x14.statistics.Response\x12>\n\x07sign_in\x12\x1d.statistics.SignInCredentials\x1a\x14.statistics.Response\x12>\n\x07sign_up\x12\x1d.statistics.SignUpCredentials\x1a\x14.statistics.Response\x12<\n\x0eusername_check\x12\x14.statistics.Username\x1a\x14.statistics.Response\x12N\n\x0eget_statistics\x12\x1c.statistics.StatisticRequest\x1a\x1e.statistics.StatisticsResponse\x12;\n\tget_games\x12\x14.statistics.Username\x1a\x18.statistics.GameInfoList\x12=\n\x08new_game\x12\x14.statistics.Username\x1a\x1b.statistics.NewGameResponse\x12<\n\x08\x65nd_game\x12\x1a.statistics.EndGameRequest\x1a\x14.statistics.Responseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10statistics.proto\x12\nstatistics\"1\n\x0e\x45ndGameRequest\x12\x0f\n\x07game_id\x18\x01 \x01(\x05\x12\x0e\n\x06is_win\x18\x02 \x01(\x08\"#\n\x10StatisticRequest\x12\x0f\n\x07game_id\x18\x01 \x01(\x05\"\x1c\n\x08Username\x12\x10\n\x08username\x18\x01 \x01(\t\"\x9a\x04\n\x14StatisticsCollection\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08round_id\x18\x02 \x01(\x05\x12\x11\n\tuser_turn\x18\x03 \x01(\x08\x12\x18\n\x10lost_territories\x18\x04 \x03(\t\x12Y\n\x15\x64\x65\x66\x65nding_territories\x18\x05 \x03(\x0b\x32:.statistics.StatisticsCollection.DefendingTerritoriesEntry\x12Y\n\x15\x61ttacking_territories\x18\x06 \x03(\x0b\x32:.statistics.StatisticsCollection.AttackingTerritoriesEntry\x12\x18\n\x10user_owned_tanks\x18\x07 \x01(\x05\x12\x1e\n\x16user_owned_territories\x18\x08 \x03(\t\x12\x0f\n\x07game_id\x18\t \x01(\x05\x12\x1d\n\x15\x63pu_owned_territories\x18\n \x03(\t\x12\x17\n\x0f\x63pu_owned_tanks\x18\x0b \x01(\x05\x1a;\n\x19\x44\x65\x66\x65ndingTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\x1a;\n\x19\x41ttackingTerritoriesEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x05:\x02\x38\x01\"7\n\x11SignInCredentials\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"7\n\x11SignUpCredentials\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"+\n\x08Response\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\x08\"3\n\x08GameInfo\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\r\n\x05state\x18\x03 \x01(\x05\"T\n\x0cGameInfoList\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\x08\x12#\n\x05games\x18\x03 \x03(\x0b\x32\x14.statistics.GameInfo\"\xda\x05\n\x12StatisticsResponse\x12\x1e\n\x16user_owned_territories\x18\x01 \x01(\x05\x12\x18\n\x10user_owned_tanks\x18\x02 \x01(\x05\x12\x1d\n\x15\x63pu_owned_territories\x18\x03 \x01(\x05\x12\x17\n\x0f\x63pu_owned_tanks\x18\x04 \x01(\x05\x12\x1d\n\x15user_owned_continents\x18\x05 \x03(\t\x12\x1c\n\x14\x63pu_owned_continents\x18\x06 \x03(\t\x12\x10\n\x08user_win\x18\x07 \x01(\x05\x12!\n\x19user_tanks_lost_per_round\x18\x08 \x01(\x02\x12 \n\x18\x63pu_tanks_lost_per_round\x18\t \x01(\x02\x12+\n#user_tanks_lost_attacking_per_round\x18\n \x01(\x02\x12*\n\"cpu_tanks_lost_attacking_per_round\x18\x0b \x01(\x02\x12+\n#user_tanks_lost_defending_per_round\x18\x0c \x01(\x02\x12*\n\"cpu_tanks_lost_defending_per_round\x18\r \x01(\x02\x12\x1d\n\x15user_perfect_defenses\x18\x0e \x01(\x05\x12\x1c\n\x14\x63pu_perfect_defenses\x18\x0f \x01(\x05\x12\'\n\x1fuser_territories_lost_per_round\x18\x10 \x01(\x02\x12&\n\x1e\x63pu_territories_lost_per_round\x18\x11 \x01(\x02\x12%\n\x1duser_map_ownership_percentage\x18\x12 \x01(\x02\x12$\n\x1c\x63pu_map_ownership_percentage\x18\x13 \x01(\x02\x12\x0f\n\x07message\x18\x14 \x01(\t\x12\x0e\n\x06status\x18\x15 \x01(\x08\x12\x10\n\x08round_id\x18\x16 \x01(\x05\"C\n\x0fNewGameResponse\x12\x0f\n\x07game_id\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x0e\n\x06status\x18\x03 \x01(\x08\x32\xa0\x04\n\x11StatisticsService\x12\x43\n\tsend_data\x12 .statistics.StatisticsCollection\x1a\x14.statistics.Response\x12>\n\x07sign_in\x12\x1d.statistics.SignInCredentials\x1a\x14.statistics.Response\x12>\n\x07sign_up\x12\x1d.statistics.SignUpCredentials\x1a\x14.statistics.Response\x12<\n\x0eusername_check\x12\x14.statistics.Username\x1a\x14.statistics.Response\x12N\n\x0eget_statistics\x12\x1c.statistics.StatisticRequest\x1a\x1e.statistics.StatisticsResponse\x12;\n\tget_games\x12\x14.statistics.Username\x1a\x18.statistics.GameInfoList\x12=\n\x08new_game\x12\x14.statistics.Username\x1a\x1b.statistics.NewGameResponse\x12<\n\x08\x65nd_game\x12\x1a.statistics.EndGameRequest\x1a\x14.statistics.Responseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -42,25 +42,25 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_USERNAME']._serialized_start=120
   _globals['_USERNAME']._serialized_end=148
   _globals['_STATISTICSCOLLECTION']._serialized_start=151
-  _globals['_STATISTICSCOLLECTION']._serialized_end=690
-  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_start=570
-  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_end=629
-  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_start=631
-  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_end=690
-  _globals['_SIGNINCREDENTIALS']._serialized_start=692
-  _globals['_SIGNINCREDENTIALS']._serialized_end=748
-  _globals['_SIGNUPCREDENTIALS']._serialized_start=750
-  _globals['_SIGNUPCREDENTIALS']._serialized_end=806
-  _globals['_RESPONSE']._serialized_start=808
-  _globals['_RESPONSE']._serialized_end=851
-  _globals['_GAMEINFO']._serialized_start=853
-  _globals['_GAMEINFO']._serialized_end=904
-  _globals['_GAMEINFOLIST']._serialized_start=906
-  _globals['_GAMEINFOLIST']._serialized_end=990
-  _globals['_STATISTICSRESPONSE']._serialized_start=993
-  _globals['_STATISTICSRESPONSE']._serialized_end=1723
-  _globals['_NEWGAMERESPONSE']._serialized_start=1725
-  _globals['_NEWGAMERESPONSE']._serialized_end=1792
-  _globals['_STATISTICSSERVICE']._serialized_start=1795
-  _globals['_STATISTICSSERVICE']._serialized_end=2339
+  _globals['_STATISTICSCOLLECTION']._serialized_end=689
+  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_start=569
+  _globals['_STATISTICSCOLLECTION_DEFENDINGTERRITORIESENTRY']._serialized_end=628
+  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_start=630
+  _globals['_STATISTICSCOLLECTION_ATTACKINGTERRITORIESENTRY']._serialized_end=689
+  _globals['_SIGNINCREDENTIALS']._serialized_start=691
+  _globals['_SIGNINCREDENTIALS']._serialized_end=746
+  _globals['_SIGNUPCREDENTIALS']._serialized_start=748
+  _globals['_SIGNUPCREDENTIALS']._serialized_end=803
+  _globals['_RESPONSE']._serialized_start=805
+  _globals['_RESPONSE']._serialized_end=848
+  _globals['_GAMEINFO']._serialized_start=850
+  _globals['_GAMEINFO']._serialized_end=901
+  _globals['_GAMEINFOLIST']._serialized_start=903
+  _globals['_GAMEINFOLIST']._serialized_end=987
+  _globals['_STATISTICSRESPONSE']._serialized_start=990
+  _globals['_STATISTICSRESPONSE']._serialized_end=1720
+  _globals['_NEWGAMERESPONSE']._serialized_start=1722
+  _globals['_NEWGAMERESPONSE']._serialized_end=1789
+  _globals['_STATISTICSSERVICE']._serialized_start=1792
+  _globals['_STATISTICSSERVICE']._serialized_end=2336
 # @@protoc_insertion_point(module_scope)
