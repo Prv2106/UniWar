@@ -9,7 +9,7 @@ namespace UniWar {
             return new StatisticsService.StatisticsServiceClient(GrpcChannel.ForAddress(_serverAddress));
         }
 
-        public async static Task SendStatistics(StatisticsCollection stats) {
+        public async static Task SendData(StatisticsCollection stats) {
             var stub = GetStub();
 
             // Mappiamo la struct C# nel messaggio gRPC
@@ -46,7 +46,7 @@ namespace UniWar {
             Console.WriteLine($"Numero territori posseduti dalla Cpu: {request.CpuOwnedTerritories}");
             
             try {
-                var response = await stub.send_statisticsAsync(request);
+                var response = await stub.send_dataAsync(request);
                 Console.WriteLine($"Risposta dal server: {response.Message}");
             }
             catch (Grpc.Core.RpcException rpcEx) {

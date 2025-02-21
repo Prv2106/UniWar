@@ -13,7 +13,7 @@ from uniwar import db_config, command_service, query_service, functions
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     # rpc per l'invio dei dati dopo una battaglia  
-    def send_statistics(self, request, context):
+    def send_data(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print(f"Ricevuti dati per il giocatore: {request.player_id}")
         print(f"Id partita: {request.game_id}")
@@ -165,7 +165,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                         cpu_owned_continents = cpu_owned_continents,                    
                         user_win = rows['user_win'],                    
                         user_perfect_defenses = rows['user_perfect_defenses'],                    
-                        cpu_perfect_defenses = rows['cpu_perfect_defenses']
+                        cpu_perfect_defenses = rows['cpu_perfect_defenses'],
+                        round_id = completed_rounds
                         )
                 else:
                     return msg.StatisticsResponse(message="Non sono disponibili dati per questa partita",status= False)

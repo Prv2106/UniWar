@@ -4,10 +4,7 @@ using json = nlohmann::json;
 using namespace std;
 
 
-
 static string jsonResult; // Variabile statica per evitare memory leak
-
-
 
 // Funzione di attacco della cpu
 /* La funzione di attacco della cpu segue questa logica: 
@@ -48,13 +45,10 @@ static string jsonResult; // Variabile statica per evitare memory leak
 */
 
 const char* cpuAttack (const char* jsonData){
-    // Preparazione 1: Recuperiamo i giocatori dal json e creiamo il vettore di json per contenere i risultati intermedi delle battaglie
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
     if(players.empty()) return "";
-
     uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
     uniwar::Player userPlayer = players[1];
-
     vector<json> battleResults;
 
     bool attackChecking = true;
@@ -63,7 +57,6 @@ const char* cpuAttack (const char* jsonData){
     
     while(attackChecking){
         clog << "Ciclo di attacco : " << ciclo++ << endl; // Debug
-
         attackChecking = false;
         set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
 
@@ -72,9 +65,9 @@ const char* cpuAttack (const char* jsonData){
         for(const auto & cpuTerritory: ownedFrontiers){
             clog << "Valutazione territorio di attacco: " << cpuTerritory << endl; // debug
 
-            if(cpuPlayer.getTanksCount(cpuTerritory) < 4){
+            if(cpuPlayer.getTanksCount(cpuTerritory) < 4){ // Deve avere almeo 4 territori per attaccare
                 clog << "Territorio " << cpuTerritory << " non idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri armati" <<endl; // debug
-                continue; // Deve avere almeo 4 territori per attaccare
+                continue; 
             }
             clog << "Territorio " << cpuTerritory << " idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri" <<endl; // debug
 
@@ -85,35 +78,35 @@ const char* cpuAttack (const char* jsonData){
                 // Se il territorio appartiene alla cpu lo saltiamo
                 if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
 
-
                 // adesso dobbiamo verificare la condizione di attacco
                 int userTanksCount = userPlayer.getTanksCount(neighborTerritory);
                 int cpuTanksCount = cpuPlayer.getTanksCount(cpuTerritory);
                 
-
-                // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non soddisfa la condizione di attacco e dobbiamo passare al vicino successivo
+                // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non è soddisfatta la condizione di attacco e dobbiamo passare al vicino successivo
                 while((userTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ 
-                    clog << "Possibile candidato come territorio da attaccare: " << neighborTerritory << " idoneo per essere attaccato ("<< userTanksCount << ") carri armati" << endl; // debug
-                    clog << "Ciclo while di battaglia: carri CPU = " << cpuTanksCount << ", Carri giocatore = "<< userTanksCount << ", Conquered = " << conquered << endl; // debug
+                    clog << "Territorio: " << neighborTerritory << " idoneo per essere attaccato ("<< userTanksCount << ") carri armati" << endl; // debug
+                    clog << "Ciclo while di battaglia: carri della CPU = " << cpuTanksCount << ", Carri giocatore = "<< userTanksCount << ", Conquered = " << conquered << endl; // debug
                     
                     /** INIZIO DELLA BATTAGLIA **/
-
-                    // La CPU attacca sempre con 3 carri armati, quindi simuliamo il lancio di 3 dadi (numero casuale tra 1 e 6)
-                    /* In particolare:
+                    /* 
+                        La CPU attacca sempre con 3 carri armati, quindi simuliamo il lancio di 3 dadi (numero casuale tra 1 e 6)
+                        In particolare:
                         rand() % 6 restituisce un numero tra 0 e 5 (prendiamo il resto della divisione per 6).
                         + 1 sposta l'intervallo a 1-6, simulando il lancio di un dado. 
                     */
 
-                    srand(time(NULL));
 
-                    int cpuAttackDice[3] = {rand() % 6 + 1, rand() % 6 + 1, rand() % 6 + 1};
-                    int defenceDiceCount = min(3,userTanksCount); // il giocatore si può difendere con al massimo 3 dadi (ma dipende dal numero di carri armati che ha su quel territorio)
+                    std::random_device rd;
+                    std::mt19937 gen(rd());
+                    std::uniform_int_distribution<int> distrib(1, 6);
 
-                    int userDefenseDice[3] = {0,0,0};
+                    int cpuAttackDice[3] = {distrib(gen), distrib(gen), distrib(gen)};
+                    int defenceDiceCount = std::min(3, userTanksCount);
+                    int userDefenseDice[3] = {0, 0, 0};
 
                     // Simuliamo il lancio dei dadi per il giocatore
-                    for(int i=0; i<defenceDiceCount; i++){
-                        userDefenseDice[i] = rand() % 6 + 1;
+                    for (int i = 0; i < defenceDiceCount; i++) {
+                        userDefenseDice[i] = distrib(gen);
                     }
 
                     // Adesso ordiniamo i dadi della cpu e del giocatore in ordine decrescente
@@ -215,26 +208,18 @@ const char* cpuAttack (const char* jsonData){
                         break;
                     }
 
-
                 } // fine while battaglia con territorio
 
                 if(conquered){
                     // Se è stato conquistato un territorio bisogna ripetere il ciclo for più esterno perché bisogna riconsiderare l'assetto della cpu
                     break;
                 }
-          
-                
-
             } // fine for per scorrere i vicini
-
                 if(conquered){
                     // Se è stato conquistato un territorio bisogna ripetere il ciclo for più esterno perché bisogna riconsiderare l'assetto della cpu
                     break;
                 }
-          
-
         } // Fine for per trovare i territori potenziali attaccanti
-
         // Se non sono stati conquistati territori, alla fine del for più esterno finirà anche la fase di attacco della cpu perché vorrà dire che non può effettuare altri attacchi
     }
 

@@ -30,10 +30,24 @@
                 Source="statistics.png"
                 WidthRequest="90"
                 />
-                <!-- Titolo -->                
-                <Label Text="Resoconto partita:" FontSize="25" FontAttributes="Bold"
-                       TextColor="#333" HorizontalOptions="Center"
-                       Margin ="0,10,0,10"/>
+                <!-- Titolo --> 
+                <HorizontalStackLayout HorizontalOptions ="Center">
+                <Label 
+                     Text="Resoconto partita " 
+                     FontSize="25" 
+                     FontAttributes="Bold"
+                     TextColor="#333" 
+                     HorizontalOptions="Center"
+                     Margin ="0,10,0,10"/>
+                <Label x:Name ="Round"
+                     Text="" 
+                     FontSize="25" 
+                     FontAttributes="Bold"
+                     TextColor="#333" 
+                     HorizontalOptions="Center"
+                     Margin ="5,9,0,10"/>
+                     
+                </HorizontalStackLayout>               
 
                 <!-- Tabella -->
                 <Grid ColumnDefinitions="*,*,*" Padding="10" BackgroundColor="LightGray" WidthRequest="392">
