@@ -53,7 +53,6 @@ const char* cpuAttack (const char* jsonData){
     clog << "Funzione cpuAttack:" << endl;
 
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    if(players.empty()) return "";
     uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
     uniwar::Player userPlayer = players[1];
     vector<json> battleResults;
@@ -206,9 +205,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione reinforcement:" << endl;
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    if (players.empty()) 
-        return "";
-
+    
     uniwar::Player& cpuPlayer = players[0]; 
     set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
     int max = 0;

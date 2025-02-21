@@ -4,7 +4,6 @@ Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità 
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
-using Statistics;
 
 namespace UniWar {
     public partial class TablePage : ContentPage {
@@ -96,11 +95,8 @@ namespace UniWar {
             grafici di supporto ad ogni fase
         */
 
-       
-
         try {
-            CheckIfRoundIsCompleted();
-            
+            CheckIfRoundIsCompleted();            
             while (Turn!.currentPlayer == CPU) { // è il turno della CPU
                 statisticsButton.IsVisible = false;
                 endGameButton.IsVisible = false; 
@@ -366,10 +362,7 @@ namespace UniWar {
                 
             foreach (var t in CPU!.Territories.Values)
                 cpuScore += t.Score;
-
             Console.WriteLine($"CpuScore = {cpuScore}, UserScore = {userScore}");
-
-             
 
             if (userScore > cpuScore) {
                 await UpdateGameResult(true);
@@ -419,29 +412,14 @@ namespace UniWar {
     // Attacco di un territorio da parte dell'utente
     public async void AttackTerritory(string attackingTerritory, string attackedTerritory) {
         // prepariamo le statistiche
-        
-        StatisticsCollection stats = new StatisticsCollection();
-        stats.Username = User!.Name;
-        stats.DefendingTerritories = new Dictionary<string, int>();  
-        stats.AttackingTerritories = new Dictionary<string, int>();
-        stats.LostTerritories = new List<string>();          
-        stats.UserOwnedTerritories = new List<string>();          
-        stats.CpuOwnedTerritories = new List<string>();          
-        stats.UserTurn = true;
-        stats.RoundId = Turn!.IdRound;
-        if(!UniWarSystem.Instance.IsOffline)
-                stats.GameId = (int) UniWarSystem.Instance.GameId!;
-
-
+        InitializeStatistics(out StatisticsCollection stats, true);
 
         Territory from = User!.Territories[attackingTerritory];
         int numTanksAttacker = from.Tanks.Count;
         Territory to = CPU!.Territories[attackedTerritory];
         int numTanksDefender = to.Tanks.Count;
-        List<int> userDice;
-        List<int> cpuDice;
         // lanciamo i dadi
-        RollTheDice(out userDice, out cpuDice, numTanksAttacker, numTanksDefender);
+        RollTheDice(out List<int> userDice, out List<int> cpuDice, numTanksAttacker, numTanksDefender);
         (int tanksLostForUser, int tanksLostForCpu) = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
 
         // riempiamo le statistiche nei dizionari
@@ -466,7 +444,7 @@ namespace UniWar {
             User!.Territories.Add(attackedTerritory, to);
 
             // statistica sui territori persi dalla CPU
-            stats.LostTerritories.Add(to.Name);
+            stats.LostTerritories!.Add(to.Name);
 
             // adesso l'utente deve spostare i carri armati
             var tcs = new TaskCompletionSource<int>();
@@ -480,14 +458,7 @@ namespace UniWar {
             UpdateUserCounters();
 
             // aggiorniamo le statistiche
-            foreach (var territory in User.Territories.Values) 
-                stats.UserOwnedTerritories.Add(territory.Name);
-
-            foreach (var territory in CPU.Territories.Values) 
-                stats.CpuOwnedTerritories.Add(territory.Name);
-                
-            stats.UserOwnedTanks = User.GetNumTanks();
-            stats.CpuOwnedTanks = CPU.GetNumTanks();
+            SetStatsTanksAndTerritories(ref stats);
             
             // verifichiamo se con questo territorio in più l'utente ha vinto:
             if (IsWin()) {
@@ -497,14 +468,7 @@ namespace UniWar {
             }
             
         } else { // aggiorniamo le statistiche
-            foreach (var territory in User.Territories.Values) 
-                stats.UserOwnedTerritories.Add(territory.Name);
-
-            foreach (var territory in CPU.Territories.Values) 
-                stats.CpuOwnedTerritories.Add(territory.Name);
-                
-            stats.UserOwnedTanks = User.GetNumTanks();
-            stats.CpuOwnedTanks = CPU.GetNumTanks();
+            SetStatsTanksAndTerritories(ref stats);
         }
 
         await CollectsStatistics(stats);
@@ -559,7 +523,9 @@ namespace UniWar {
     // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
     private async void OnPassButtonClicked(object sender, EventArgs e) {        
         PassButton.IsVisible = false;
-        await InitializeStatistics(true);
+        InitializeStatistics(out StatisticsCollection stats, true);
+        SetStatsTanksAndTerritories(ref stats);
+        await CollectsStatistics(stats);
         await Task.Delay(500);
         // chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
         var discoverUserChoose = new TaskCompletionSource<bool>();
@@ -611,7 +577,7 @@ namespace UniWar {
         private async Task CpuReinforcement(){
             TaskCompletionSource tcs;
             // Creazione della mappa da passare a C++
-            List<MapData> playersMaps = new List<MapData> {
+            List<MapData> playersMaps = [
                 new MapData {
                     PlayerId = CPU!.Name,
                     // Usiamo un Espressione LINQ per creare un nuovo dizionario nella forma Dictionary<string, List<string>> a partire dal dizionario Dictionary<string, Territory>
@@ -628,11 +594,9 @@ namespace UniWar {
                     Tanks = CPU.Territories.ToDictionary(
                         t => t.Key,
                         t => t.Value.Tanks.Count
-
                     )
-
                 }
-            };
+            ];
 
             // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
             // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
@@ -660,7 +624,6 @@ namespace UniWar {
             // updatedMaps diventa quindi MapData (che quindi può essere utilizzata per aggiornare le classi in C#).
             var updatedMap = JsonSerializer.Deserialize<MapData>(resultJson);
             
-        
             // Scorriamo i territori della CPU e de il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati tanti carri armati quanti ne mancano
             foreach(var territory in updatedMap.Tanks){
                 if(CPU.Territories.ContainsKey(territory.Key)){
@@ -674,10 +637,9 @@ namespace UniWar {
 
             DeployTanks();
             tcs = new TaskCompletionSource();
-            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ","Reinforcement",tcs,newTanks));
+            await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ",true,tcs,newTanks));
             await tcs.Task; // aspetta che facciamo setResult()
             await Task.Delay(400); // per dare il tempo alla modale di chiudersi
-                                
             Turn!.Phase = TurnPhases.Attack;
         }
 
@@ -685,7 +647,7 @@ namespace UniWar {
 
         private async Task CpuAttack() {
             TaskCompletionSource tcs;
-            List<MapData> playersMaps = new List<MapData>() {
+            List<MapData> playersMaps = [
                 new MapData {
                     PlayerId = CPU!.Name,
                     Neighbors = CPU.Territories.ToDictionary(
@@ -698,7 +660,7 @@ namespace UniWar {
                     )
                 },
 
-                new MapData{
+                new MapData {
                     PlayerId = User!.Name,
                     Neighbors = User.Territories.ToDictionary(
                         t => t.Key,
@@ -709,18 +671,19 @@ namespace UniWar {
                         t => t.Value.Tanks.Count
                     )
                 }            
-            };
+            ];
 
             string jsonData = JsonSerializer.Serialize(playersMaps, jsonSerializerOpt);
             // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
             IntPtr resultPtr = cpuAttack(jsonData);
             string? resultJson = Marshal.PtrToStringUTF8(resultPtr);
 
-            if ((resultJson == string.Empty) || resultJson == "[]") {
-                Console.WriteLine("La CPU ha deciso di non attaccare");
+            if ((resultJson == string.Empty) || resultJson == "[]") { // La cpu ha deciso di non attaccare
                 tcs = new TaskCompletionSource();
-                await InitializeStatistics(false);
-                await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare", "NoAttack",tcs));
+                InitializeStatistics(out StatisticsCollection stats, false);
+                SetStatsTanksAndTerritories(ref stats);
+                await CollectsStatistics(stats);
+                await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare",false,tcs));
                 await tcs.Task; // aspetta che facciamo setResult()
                 await Task.Delay(400); // per dare il tempo alla modale di chiudersi 
             } else {
@@ -739,7 +702,7 @@ namespace UniWar {
 
 
         bool IsWin(){
-            List<MapData> playersMaps = new List<MapData>() {
+            List<MapData> playersMaps = [
                 new MapData {
                     PlayerId = User!.Name,
                     Neighbors = User.Territories.ToDictionary(
@@ -751,7 +714,7 @@ namespace UniWar {
                         t => t.Value.Tanks.Count
                     )
                 }
-            };
+            ];
         
             string jsonData = JsonSerializer.Serialize(playersMaps,jsonSerializerOpt);
             return winCheck(jsonData);
@@ -760,28 +723,14 @@ namespace UniWar {
         private async Task SimulateBattle(List<BattleResult> battleList) {
             TaskCompletionSource tcs;
             Territory? lostTerritory = null;
+            InitializeStatistics(out StatisticsCollection stats, false);
 
-            StatisticsCollection stats = new StatisticsCollection(){
-                Username = User!.Name,
-                DefendingTerritories = [],  
-                AttackingTerritories = [],
-                LostTerritories = [],          
-                UserOwnedTerritories = [],          
-                CpuOwnedTerritories = [],          
-                UserTurn = false,
-                RoundId = Turn!.IdRound,
-            };
-            
             bool cpuWin = false;
-            
-            if(!UniWarSystem.Instance.IsOffline)
-                stats.GameId = (int) UniWarSystem.Instance.GameId!;
-            
-                        
+
             foreach(var battle in battleList){
                  bool territoryLoss = false;
-                
-                foreach(var territory in User.Territories.Values){
+
+                foreach(var territory in User!.Territories.Values){
                     if(battle.DefendingTanksCountMap.TryGetValue(territory.Name, out int value)) {
                         int difference = value - territory.Tanks.Count;
                         if(difference < 0){
@@ -801,7 +750,7 @@ namespace UniWar {
                         User.RemoveTerritory(territory);
                         lostTerritory = territory;
                         territoryLoss = true;
-                        stats.LostTerritories.Add(lostTerritory.Name);
+                        stats.LostTerritories!.Add(lostTerritory.Name);
                     }
                 }
 
@@ -828,9 +777,8 @@ namespace UniWar {
                     stats.AttackingTerritories.Add(battle.AttackingTerritory, battle.LossesCPU);
                 }
 
-         
 
-               
+                SetStatsTanksAndTerritories(ref stats);
 
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
@@ -860,15 +808,7 @@ namespace UniWar {
                 }
             }
 
-            stats.CpuOwnedTanks = CPU!.GetNumTanks();
-            stats.UserOwnedTanks = User.GetNumTanks();
-
-            foreach(var territory in CPU!.Territories.Values)
-                    stats.CpuOwnedTerritories.Add(territory.Name);
-
-            foreach(var territory in User.Territories.Values)
-                    stats.UserOwnedTerritories.Add(territory.Name);
-
+            
             await CollectsStatistics(stats);
 
             if(cpuWin){
@@ -879,39 +819,35 @@ namespace UniWar {
         }
 
 
+        private void SetStatsTanksAndTerritories(ref StatisticsCollection stats){
+            stats.CpuOwnedTanks = CPU!.GetNumTanks();
+            stats.UserOwnedTanks = User!.GetNumTanks();
 
-        // Funzione per inizializzare le statistiche da passare nel caso in cui non venga effettuato un attacco
-        private async Task InitializeStatistics(bool isUserTurn){
-            if(!UniWarSystem.Instance.IsOffline){
-                StatisticsCollection stats = new StatisticsCollection
-                {
-                    Username = User!.Name,
-                    DefendingTerritories = new Dictionary<string, int>(),
-                    AttackingTerritories = new Dictionary<string, int>(),
-                    LostTerritories = new List<string>(),
-                    UserOwnedTerritories = new List<string>(),
-                    CpuOwnedTerritories = new List<string>(),
-                    UserTurn = isUserTurn,
-                    RoundId = Turn!.IdRound,
-                    GameId = (int)UniWarSystem.Instance.GameId!,
+            foreach(var territory in CPU!.Territories.Values)
+                    stats.CpuOwnedTerritories.Add(territory.Name);
 
-
-
-                    CpuOwnedTanks = CPU!.GetNumTanks(),
-                    UserOwnedTanks = User.GetNumTanks()
-                };
-
-
-                foreach (var territory in CPU!.Territories.Values)
-                stats.CpuOwnedTerritories.Add(territory.Name);
-
-                foreach(var territory in User.Territories.Values)
+            foreach(var territory in User.Territories.Values)
                     stats.UserOwnedTerritories.Add(territory.Name);
 
+        }
 
 
-                await CollectsStatistics(stats);
-            }
+
+        // Funzione per inizializzare le statistiche da passare nel caso in cui non venga effettuato un attacco
+        private void InitializeStatistics(out StatisticsCollection stats, bool isUserTurn){
+            stats = new StatisticsCollection {
+                Username = User!.Name,
+                DefendingTerritories = [],
+                AttackingTerritories = [],
+                LostTerritories = [],
+                UserOwnedTerritories = [],
+                CpuOwnedTerritories = [],
+                UserTurn = isUserTurn,
+                RoundId = Turn!.IdRound
+            };
+
+            if(!UniWarSystem.Instance.IsOffline)
+                stats.GameId = (int)UniWarSystem.Instance.GameId!;
         }
 
 
