@@ -249,13 +249,15 @@ const char* reinforcement (const char* jsonData, int newTanks){
 
     while(newTanks > 0){
         for(auto & territory: ownedFrontiers){
-        int tankCount = cpuPlayer.getTanksCount(territory);
-        clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-        cpuPlayer.modifyTankCount(territory, tankCount + 1);
+            int tankCount = cpuPlayer.getTanksCount(territory);
+            clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
+            cpuPlayer.modifyTankCount(territory, tankCount + 1);
 
-        newTanks--;
-        clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-        clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            newTanks--;
+            clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
+            clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            if(newTanks == 0)
+                break;
         }
 
     }
