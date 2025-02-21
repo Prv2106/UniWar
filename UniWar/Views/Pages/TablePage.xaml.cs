@@ -778,7 +778,7 @@ namespace UniWar {
                 }
 
 
-                SetStatsTanksAndTerritories(ref stats);
+                
 
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
@@ -808,7 +808,7 @@ namespace UniWar {
                 }
             }
 
-            
+            SetStatsTanksAndTerritories(ref stats);
             await CollectsStatistics(stats);
 
             if(cpuWin){

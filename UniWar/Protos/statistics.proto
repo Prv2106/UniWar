@@ -80,6 +80,7 @@ message GameInfoList {
     string message = 1;
     bool status = 2;
     repeated GameInfo games = 3;
+    string game_results_pie_chart = 4; // Aggiunto il campo per il grafico in base64
 }
 
 message StatisticsResponse{
