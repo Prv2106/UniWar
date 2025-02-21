@@ -230,9 +230,10 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
 // - false se il giocatore non ha vinto
 // Affinchè il gioocatore vinca la sua lista di territori deve comprendere ALMENO 3 continenti e deve comprendere ALMENO 28 territori
 bool win(const set<string> & territories){
-    cout << "\n\nInizio Algoritmo per determinare la condizione di vittoria" << endl;
+    clog << "----------------------------------------------------------------------------" << endl;
+    clog << "Inizio Algoritmo per determinare la condizione di vittoria" << endl;
     if(territories.size() < 28){
-        cout << "Condizione di vittoria non rispettata: " << territories.size() << " territori conquistati" << endl;
+        clog << "Condizione di vittoria non rispettata: " << territories.size() << " territori conquistati" << endl;
         return false;
 
     }
@@ -240,7 +241,7 @@ bool win(const set<string> & territories){
     set<string> completedContinents;
 
     for(const auto & pair: continents){
-        cout << "Controlliamo il cotinente " << pair.first << endl; 
+        clog << "Controlliamo il cotinente " << pair.first << endl; 
         // Usiamo i riferimenti per evitare di allocare altra memoria
         const auto& continent = pair.first;
         const auto& continentTerritories = pair.second;
@@ -248,7 +249,7 @@ bool win(const set<string> & territories){
         // cicliamo la lista di territori
         bool completed = true;
         for(const auto & territory: continentTerritories){
-            cout << "Controlliamo il territorio " << territory << endl;
+            clog << "Controlliamo il territorio " << territory << endl;
 
             /*
                 La funzione find cerca l'elemento territory tra gli elementi che vanno da territories.begin() fino a territories.end(). 
@@ -256,37 +257,80 @@ bool win(const set<string> & territories){
             */
             if(find(territories.begin(), territories.end(), territory) == territories.end()){
                 completed = false;
-                cout << "Territorio " << territory << " mancante" << endl;
+                clog << "Territorio " << territory << " mancante" << endl;
                 break; // è inutile continuare il ciclo perché manca almeno 1 territorio per completare il continente
             }
-            cout << "Il territorio " << territory << " è presente" << endl;
+            clog << "Il territorio " << territory << " è presente" << endl;
 
         }
 
         // se il giocatore possiede tutti i territori del continente allora aggiungiamo il continente tra quelli completati
         if(completed){
-            cout << "Il continente " << continent << " è completo" << endl;
+            clog << "Il continente " << continent << " è completo" << endl;
             completedContinents.insert(continent);
         }
 
         if(completedContinents.size() > 2){
-            cout << "Vittoria!\nContinenti completati: ";
+            clog << "Vittoria!\nContinenti completati: ";
     
             // Stampiamo tutti i continenti completati
             for (const auto& continent : completedContinents) {
-                cout << continent << " ";
+                clog << continent << " ";
             }          
-            cout << endl;
+            clog << endl;
             return true;
         }
     }
     
 
-    cout << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << endl;
+    clog << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << endl;
     // se il giocatore non ha completato almeno 3 continenti 
     return false;
 
-} // fine del namespace uniwar
+} 
 
+// Funzione che simula il lancio dei dadi e che li ordina in modo decrescente
+int rollTheDice(int (&cpuAttackDice)[3], int (&userDefenseDice)[3], const int& userTanksCount){
+    /* 
+        La CPU attacca sempre con 3 carri armati, quindi simuliamo il lancio di 3 dadi (numero casuale tra 1 e 6)
+        In particolare:
+        rand() % 6 restituisce un numero tra 0 e 5 (prendiamo il resto della divisione per 6).
+        + 1 sposta l'intervallo a 1-6, simulando il lancio di un dado. 
+    */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> distrib(1, 6);
+
+    // Assegniamo i valori dei dadi alla CPU
+    cpuAttackDice[0] = distrib(gen);
+    cpuAttackDice[1] = distrib(gen);
+    cpuAttackDice[2] = distrib(gen);
+
+    int defenseDiceCount = std::min(3, userTanksCount);
+
+    // Simuliamo il lancio dei dadi per il giocatore
+    for (int i = 0; i < defenseDiceCount; i++) {
+        userDefenseDice[i] = distrib(gen);
+    }
+
+    // Adesso ordiniamo i dadi della cpu e del giocatore in ordine decrescente
+    /* per fare questo sfruttiamo la funzione sort della libreria standard, la quale ha questa sintassi: std::sort(inizio, fine, criterio);
+        - inizio -> Iteratore o puntatore al primo elemento da ordinare.
+        - fine -> Iteratore o puntatore alla posizione successiva all'ultimo elemento.
+        - criterio (opzionale) -> Funzione o oggetto che specifica l'ordinamento (default crescente)
+
+        In questo caso, passiamo il nome del vettore statico (puntatore al primo elemento) e utilizziamo la condizione greater<int>().
+        greater è un funtore, quindi la classe Greater ha ridefinito l'operatore () in modo tale che ritorni un booleano sulla base di un confronto di disuguaglianza:
+            - se il primo elemento è maggiore del secondo ritorna true, altrimenti false
+    
+    */
+    sort(cpuAttackDice,cpuAttackDice + 3, greater<int>());
+    sort(userDefenseDice,userDefenseDice + defenseDiceCount, greater<int>());
+    
+    return defenseDiceCount;
 
 }
+
+
+
+} // fine del namespace uniwar 

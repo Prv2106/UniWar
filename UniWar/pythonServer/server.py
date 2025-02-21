@@ -14,7 +14,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
     # rpc per l'invio dei dati dopo una battaglia  
     def send_data(self, request, context):
-        print("\n-------------------------------------------------------------------\n")
+        print("\n-------------------------------------------------------------------")
+        print("RPC send_data:")
         print(f"Ricevuti dati per il giocatore: {request.player_id}")
         print(f"Id partita: {request.game_id}")
         print(f"Round: {request.round_id}, Turno utente: {request.user_turn}")
@@ -22,9 +23,9 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         print(f"Territori attaccanti: {request.attacking_territories}")
         print(f"Territori persi: {request.lost_territories}")
         print(f"Numero di Territori posseduti dall'utente: {len(request.user_owned_territories)}")
-        print(f"Numero di carri armati posseduti dall'utente: {request.user_owned_tanks}", flush = True)
+        print(f"Numero di carri armati posseduti dall'utente: {request.user_owned_tanks}")
         print(f"Numero di Territori posseduti dalla CPU: {len(request.cpu_owned_territories)}")
-        print(f"Numero di carri armati posseduti dalla CPU: {request.cpu_owned_tanks}", flush = True)
+        print(f"Numero di carri armati posseduti dalla CPU: {request.cpu_owned_tanks}")
     
         data = functions.Data(request)
         
@@ -60,7 +61,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     cpu_owned_territories_list= cpu_owned_territories_json,
                     )
                 )
-                
+                print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="Statistiche ricevute con successo!", status = True)        
         
         except pymysql.MySQLError as err:
@@ -74,14 +75,15 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     
     def get_games(self, request, context):
-        print("\n-------------------------------------------------------------------\n")
-        print(f"Ricevuta una richiesta di GetGames per -> username = {request.username}", flush=True)
+        print("\n-------------------------------------------------------------------")
+        print("RPC get_games:")
+        print(f"Parametri richiesta: username = {request.username}")
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
                 game_info_list = [msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M") , state=game[3]) for game in response]
-                
+                print("Operazione eseguita con successo",flush=True)
                 return msg.GameInfoList(message="Storico recuperato con successo", status= True, games = game_info_list)  
                 
         except ValueError as e:
@@ -98,8 +100,9 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
   
     
     def get_statistics(self,request, context):
-        print("\n-------------------------------------------------------------------\n")
-        print(f"Richiesta delle statistiche per partita con id = {request.game_id}", flush=True)
+        print("\n-------------------------------------------------------------------")
+        print("RPC get_statistics:")        
+        print(f"Parametri richiesta:  game_id= {request.game_id}")
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
@@ -108,9 +111,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     # Estraiamo i valori dalla riga restituita dalla query
                     # description è una lista di tuple dove ogni tupla rappresenta una colonna e in cui il primo elemento è il nome della colonna  
                     columns = [desc[0] for desc in cursor.description] # lista con i nomi delle colonne
-                    print(f"{columns}", flush=True)
                     rows = dict(zip(columns,response)) # dizionario in modo da poter accedere ai campi utilizzando il nome
-                    print(f"{rows}", flush=True)
                     # Convertiamo i json in liste di stringhe
                     user_territories = json.loads(rows["user_owned_territories_list"])
                     cpu_territories = json.loads(rows["cpu_owned_territories_list"])
@@ -122,14 +123,13 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     cpu_owned_continents = functions.get_owned_continents(cpu_territories)
                     
                     # determiniamo il numero di giri effettivamente completati
-                    print(f"{rows}", flush=True)
                     completed_rounds = rows['round_id'] if rows['turn_completed'] == 2 else rows['round_id']-1
                     if completed_rounds == 0:
                         completed_rounds = 1
                                                 
                     user_tanks_lost_per_round = round(rows['user_tanks_lost'] / completed_rounds, 2)
                     cpu_tanks_lost_per_round = round(rows['cpu_tanks_lost'] / completed_rounds, 2)
-
+                    
                     user_tanks_lost_attacking_per_round = round(rows['user_tanks_lost_attacking'] / completed_rounds, 2)
                     cpu_tanks_lost_attacking_per_round = round(rows['cpu_tanks_lost_attacking'] / completed_rounds, 2)
 
@@ -143,7 +143,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     user_map_ownership_percentage = (rows['user_owned_territories'] / 42 ) * 100
                     cpu_map_ownership_percentage = (rows['cpu_owned_territories'] / 42 ) * 100
                     
-                    
+                    print("Operazione eseguita con successo",flush=True)
+                
                     return msg.StatisticsResponse(
                         message="Storico recuperato con successo", 
                         status= True,
@@ -169,6 +170,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                         round_id = completed_rounds
                         )
                 else:
+                    print("Non sono disponibili dati per questa partita",flush=True)
                     return msg.StatisticsResponse(message="Non sono disponibili dati per questa partita",status= False)
         except ValueError as e:
             print(f"{e}", flush= True)
@@ -186,16 +188,16 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         
     # rpc da richiamare quando si vuole iniziare una nuova partita
     def new_game(self,request,context):
-        print("\n-------------------------------------------------------------------\n")
-        print(f"Ricevuta richiesta per new_game -> {request.username}", flush= True)
+        print("\n-------------------------------------------------------------------")
+        print("RPC new_game:")        
+        print(f"Parametri richiesta: username = {request.username}")
         
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
                 date = datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d %H:%M")
-                print(f"date: {date}", flush= True)
                 game_id = service.handle_insert_game_command(command_service.InsertGameCommand(conn, request.username, date))
-                print(f"Game id = {game_id}",flush=True)
+                print("Operazione eseguita con successo",flush=True)
                 return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")
     
         except pymysql.MySQLError as err:
@@ -212,7 +214,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     # rpc da richiamare quando si termina una partita
     def end_game(self,request, context):
         print("\n-------------------------------------------------------------------\n")
-        print(f"Ricevuta richiesta per end_game -> {request.game_id},{request.is_win}", flush= True)
+        print("RPC end_game:")  
+        print(f"Parametri richiesta: game_id = {request.game_id}, is_win = {request.is_win}", flush= True)
 
         try:
             with pymysql.connect(**db_config.db_config) as conn:
@@ -234,13 +237,13 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     def sign_in(self, request, context):
         print("\n-------------------------------------------------------------------\n")
-        time.sleep(0.25)
-        print(f"Ricevuta una richiesta di SignIn con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush=True)
+        print("RPC sign_in:")  
+        print(f"Parametri richiesta: username = {request.player_id}, password = {request.password}")
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 service.handle_login_user_query(query_service.LogInUserQuery(request.player_id, request.password, conn))
-                print("SignIn eseguito con successo",flush=True)
+                print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="SignIn effettuato con successo", status= True) 
             
         except ValueError as e:
@@ -257,16 +260,15 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     def sign_up(self, request, context):
         print("\n-------------------------------------------------------------------\n")
-        print(f"Ricevuta una richiesta di SignUp con i seguenti valori -> player_id = {request.player_id}, password = {request.password}", flush= True)
+        print("RPC sign_up:")  
+        print(f"Parametri richiesta: username = {request.player_id}, password = {request.password}")
+        
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
                 service.handle_register_user(command_service.RegisterUserCommand(request.player_id, request.password, conn))
-                print("SignUp eseguito con successo",flush=True)
-
-                # Creazione della risposta di successo
+                print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="Utente registrato con successo!", status=True)
-
         except pymysql.MySQLError as err:
             # Gestione degli errori specifici del database
             if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
@@ -283,12 +285,14 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         
     def username_check(self,request,context):
         print("\n-------------------------------------------------------------------\n")
-        print(f"Ricevuta richiesta per il check dello username {request.username}", flush=True)
+        print("RPC username_check:")  
+        print(f"Parametri richiesta: username = {request.player_id}")
         
         try:
             with pymysql.connect(**db_config.db_config) as conn:
                 service = query_service.QueryService()
                 service.handle_username_check_query(query_service.UsernameCheckQuery(conn,request.username))
+                print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="Username valido", status = True)
             
         except ValueError as e:
