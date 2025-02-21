@@ -5,11 +5,11 @@ public class Turn {
     (incrementandola man mano che tutti hanno eseguito il turno)*/
     public int IdRound {get; set;}
    
-    public Player currentPlayer {get; set;}
+    public Player CurrentPlayer {get; set;}
     
     public Turn(Player player) {
         Phase = TurnPhases.Reinforcement;
         IdRound = 1;
-        currentPlayer = player;
+        CurrentPlayer = player;
     }
 }

@@ -97,7 +97,7 @@ namespace UniWar {
 
         try {
             CheckIfRoundIsCompleted();            
-            while (Turn!.currentPlayer == CPU) { // è il turno della CPU
+            while (Turn!.CurrentPlayer == CPU) { // è il turno della CPU
                 statisticsButton.IsVisible = false;
                 endGameButton.IsVisible = false; 
                 switch (Turn.Phase) {
@@ -112,7 +112,7 @@ namespace UniWar {
 
             CheckIfRoundIsCompleted();
 
-            if (Turn.currentPlayer == User) {
+            if (Turn.CurrentPlayer == User) {
                 // è il turno dell'utente...
                 UserAttack = false;
 
@@ -548,14 +548,14 @@ namespace UniWar {
 
     private void PassTurnToCpu() {
         UserTurnCompleted = true;
-        Turn!.currentPlayer = CPU!;
+        Turn!.CurrentPlayer = CPU!;
         Turn.Phase = TurnPhases.Reinforcement;
         HandleTurns();
     }
 
     private void PassTurnToUser() {
         CpuTurnCompleted = true;
-        Turn!.currentPlayer = User!;
+        Turn!.CurrentPlayer = User!;
         Turn.Phase = TurnPhases.Reinforcement;
     }
 

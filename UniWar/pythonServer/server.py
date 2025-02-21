@@ -231,10 +231,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.Response(message=str(e), status=False)
         
-        
-        
+         
     # Gestione dell'utente
-
     def sign_in(self, request, context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC sign_in:")  
@@ -282,7 +280,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             # Gestione degli errori di validazione
             return msg.Response(message=str(e), status=False)
         
-        
     def username_check(self,request,context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC username_check:")  
@@ -293,8 +290,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service = query_service.QueryService()
                 service.handle_username_check_query(query_service.UsernameCheckQuery(conn,request.username))
                 print("Operazione eseguita con successo",flush=True)
-                return msg.Response(message="Username valido", status = True)
-            
+                return msg.Response(message="Username valido", status = True)            
         except ValueError as e:
             print(f"{e}", flush= True)
             return msg.Response(message=str(e), status=False)
@@ -307,9 +303,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             return msg.Response(message=str(e), status=False)
 
     
-
-
-
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     statistics_pb2_grpc.add_StatisticsServiceServicer_to_server(StatisticsService(), server)

@@ -205,7 +205,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione reinforcement:" << endl;
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    
+
     uniwar::Player& cpuPlayer = players[0]; 
     set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
     int max = 0;
@@ -242,8 +242,6 @@ const char* reinforcement (const char* jsonData, int newTanks){
         }
         if(newTanks == 0)
             break;
-        
-
     }
 
     while(newTanks > 0){
