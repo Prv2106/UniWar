@@ -78,19 +78,23 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
-                <Label      x:Name ="UserContinentsLabel"
-                            Text = "Continenti da te conquistati"
-                            FontSize="20"
-                            TextColor="#666"
-                            HorizontalOptions="Center"
-                            IsVisible ="false"
-                            Margin="0,30,0,10"/>
-                 <CollectionView ItemsSource="{Binding UserContinents}"
-                                   HorizontalOptions="Center"
-                                   MaximumWidthRequest="370"
+                   <Label      
+                     x:Name ="UserContinentsLabel"
+                     Text = "Continenti da te conquistati"
+                     FontSize="20"
+                     TextColor="#666"
+                     HorizontalOptions="Center"
+                     IsVisible ="false"
+                     Margin="0,30,0,10"/>
+
+                <HorizontalStackLayout
+                     HorizontalOptions="Center"
+                     MaximumWidthRequest="290"
+                     >
+                      <CollectionView ItemsSource="{Binding UserContinents}"
                                    x:Name="UserContinentsView">
                      
-                     <CollectionView.ItemTemplate>
+                     <CollectionView.ItemTemplate >
                             <DataTemplate>
                             <HorizontalStackLayout>
                                    <Frame 
@@ -112,6 +116,9 @@
                             </DataTemplate>
                      </CollectionView.ItemTemplate>
               </CollectionView>
+
+                </HorizontalStackLayout>
+                
                      
             </VerticalStackLayout>
 
