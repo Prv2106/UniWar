@@ -11,6 +11,7 @@ from uniwar import db_config, command_service, query_service, functions
 
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
+    
     # rpc per l'invio dei dati dopo una battaglia  
     def send_data(self, request, context):
         print("\n-------------------------------------------------------------------")

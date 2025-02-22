@@ -55,143 +55,161 @@ enum class AttackOutcome {
 const char* cpuAttack (const char* jsonData){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione cpuAttack:" << endl;
-
-    vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
-    uniwar::Player userPlayer = players[1];
-    vector<json> battleResults;
-    bool attackChecking = true;
-    int ciclo = 0; // per il debug 
-    AttackOutcome attackOutcome = AttackOutcome::NONE;
-
-    while(true){
-        clog << "Ciclo di attacco : " << ++ciclo << endl; // Debug
-        attackOutcome = AttackOutcome::NONE;
-
-        // Recuperiamo i terriori di frontiera posseduti dalla cpu
-        set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap()); 
-
-        for(const auto & cpuTerritory: ownedFrontiers){
-            clog << "Valutazione del territorio della cpu:  " << cpuTerritory << " come potenziale territorio di attacco" << endl; // debug
-
-            if(cpuPlayer.getTanksCount(cpuTerritory) < 4){ // Deve avere almeo 4 territori per attaccare
-                clog << "Il territorio " << cpuTerritory << " non è idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri armati" <<endl; // debug
-                continue; 
+    try{
+        vector<uniwar::Player> players;
+            try {
+                players = uniwar::initializePlayers(jsonData);
+                if (players.empty()) {
+                    throw runtime_error("Errore: nessun giocatore inizializzato correttamente.");
+                }
+            } catch (const exception& e) {
+                cerr << "Errore durante l'inizializzazione dei giocatori: " << e.what() << endl;
+                return "{}";  // JSON vuoto come fallback
             }
-            clog << "Il territorio " << cpuTerritory << " è idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri armati" <<endl; // debug
+        uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
+        uniwar::Player userPlayer = players[1];
+        vector<json> battleResults;
+        bool attackChecking = true;
+        int ciclo = 0; // per il debug 
+        AttackOutcome attackOutcome = AttackOutcome::NONE;
 
-            // Se il territorio di frontiera posseduto dalla cpu ha almeno 4 carri armati significa che potenzialmente potrebbe attaccare. 
-            // Adesso si deve verificare se esiste un territorio vicino per il quale valga la condizone di attacco
-            // Scorriamo la lista dei vicini del potenziale territorio attaccante
-            for(const auto & neighborTerritory: cpuPlayer.getNeighbors(cpuTerritory)){
-                // Se il territorio appartiene alla cpu lo saltiamo
-                if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
+        while(true){
+            clog << "Ciclo di attacco : " << ++ciclo << endl; // Debug
+            attackOutcome = AttackOutcome::NONE;
 
-                // adesso dobbiamo verificare la condizione di attacco
-                int userTanksCount = userPlayer.getTanksCount(neighborTerritory);
-                int cpuTanksCount = cpuPlayer.getTanksCount(cpuTerritory);
-                
-                // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non è soddisfatta la condizione di attacco e dobbiamo passare al vicino successivo
-                while((userTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4) && (cpuTanksCount > 3)){ 
-                    clog << "Il Territorio del giocatore: " << neighborTerritory << " è idoneo per essere attaccato ("<< userTanksCount << ") carri armati" << endl; // debug
-                    clog << "Ciclo while di battaglia: numero carri armati della cpu = " << cpuTanksCount << ", numero carri armati del giocatore = "<< userTanksCount << endl; // debug
+            // Recuperiamo i terriori di frontiera posseduti dalla cpu
+            set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap()); 
+
+            for(const auto & cpuTerritory: ownedFrontiers){
+                clog << "Valutazione del territorio della cpu:  " << cpuTerritory << " come potenziale territorio di attacco" << endl; // debug
+
+                if(cpuPlayer.getTanksCount(cpuTerritory) < 4){ // Deve avere almeo 4 territori per attaccare
+                    clog << "Il territorio " << cpuTerritory << " non è idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri armati" <<endl; // debug
+                    continue; 
+                }
+                clog << "Il territorio " << cpuTerritory << " è idoneo per attaccare (" << cpuPlayer.getTanksCount(cpuTerritory) << ") carri armati" <<endl; // debug
+
+                // Se il territorio di frontiera posseduto dalla cpu ha almeno 4 carri armati significa che potenzialmente potrebbe attaccare. 
+                // Adesso si deve verificare se esiste un territorio vicino per il quale valga la condizone di attacco
+                // Scorriamo la lista dei vicini del potenziale territorio attaccante
+                for(const auto & neighborTerritory: cpuPlayer.getNeighbors(cpuTerritory)){
+                    // Se il territorio appartiene alla cpu lo saltiamo
+                    if(cpuPlayer.getTanksMap().count(neighborTerritory)) continue; // count verifica se la chiave è presente nella mappa (restituisce 1 se presente, 0 altrimenti)
+
+                    // adesso dobbiamo verificare la condizione di attacco
+                    int userTanksCount = userPlayer.getTanksCount(neighborTerritory);
+                    int cpuTanksCount = cpuPlayer.getTanksCount(cpuTerritory);
                     
-                    /** INIZIO DELLA BATTAGLIA **/
-                    attackOutcome = AttackOutcome::CONTINUE;
-                    int cpuAttackDice[3];
-                    int userDefenseDice[3] = {0,0,0};
-                    int defenseDiceCount = uniwar::rollTheDice(cpuAttackDice,userDefenseDice,userTanksCount);
-
-                    // confrontiamo i dadi 
-                    int cpuLosses = 0, userLosses = 0;
-                    uniwar::compareDice(cpuAttackDice,userDefenseDice,defenseDiceCount,cpuLosses,userLosses);
-
-                    clog << "Numero carri armati per il territorio attaccante della cpu (prima dell'attacco) = " << cpuTanksCount << endl; //debug
-                    clog << "Numero carri armati per il territorio attaccato del giocatore (prima dell'attacco) = " << userTanksCount << endl; //debug
-
-                    // A questo punto bisogna aggiornare il numero di carri armati della cpu e del giocatore dopo l'attacco
-                    cpuPlayer.modifyTankCount(cpuTerritory,cpuTanksCount - cpuLosses);
-                    userPlayer.modifyTankCount(neighborTerritory,userTanksCount - userLosses);
-
-                    // Aggiorniamo il numero di carri armati della cpu e quello del giocatore
-                    userTanksCount = userPlayer.getTanksCount(neighborTerritory);
-                    cpuTanksCount= cpuPlayer.getTanksCount(cpuTerritory);
-
-                    clog << "Numero carri armati per il territorio attaccante della cpu (dopo dell'attacco) = " << cpuTanksCount << endl; //debug
-                    clog << "Numero carri armati per il territorio attaccato del giocatore (dopo dell'attacco) = " << userTanksCount << endl; //debug
-
-                    bool win = false;
-
-                    // Verifichiamo se il giocatore ha perso il territorio e in caso affermativo aggiorniamo il contesto di gioco e verifichiamo se la cpu ha vinto
-                    if(userPlayer.getTanksCount(neighborTerritory) == 0){
-                        clog << userPlayer.getName() << " ha perso il terriotio " << neighborTerritory << endl; // debug
-
-                        // Assegnamo il territorio conquistato alla cpu ed effettuiamo lo SPOSTAMENTO STRATEGICO
-                        // In particolare, al nuovo territorio assegnamo come numero di carri armati il numero di carri armati del territorio attaccante -1 (perché al territorio attaccante deve restare 1 carro armato)
-                        cpuPlayer.addTerritory(neighborTerritory,userPlayer.getNeighbors(neighborTerritory), cpuPlayer.getTanksCount(cpuTerritory) -1);
-                        // aggiorniamo il numero di carri armati del territorio attaccante
-                        cpuPlayer.modifyTankCount(cpuTerritory,1);
-                        // rimuoviamo il territorio perso dal giocatore
-                        userPlayer.removeTerritory(neighborTerritory);
-                        attackOutcome = AttackOutcome::CONQUERED;
-                        clog << "Dopo lo spostamento strategico, il territorio della cpu  " << cpuTerritory << " ha " << cpuPlayer.getTanksCount(cpuTerritory) << " carri armati" << endl; // debug
-
-                        if(uniwar::win(uniwar::getTerritoriesFromMap(cpuPlayer.getTanksMap()))){
-                            win = true;
-                        }
+                    // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non è soddisfatta la condizione di attacco e dobbiamo passare al vicino successivo
+                    while((userTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4) && (cpuTanksCount > 3)){ 
+                        clog << "Il Territorio del giocatore: " << neighborTerritory << " è idoneo per essere attaccato ("<< userTanksCount << ") carri armati" << endl; // debug
+                        clog << "Ciclo while di battaglia: numero carri armati della cpu = " << cpuTanksCount << ", numero carri armati del giocatore = "<< userTanksCount << endl; // debug
                         
-                       
-                    } // Fine if per verificare la condizione di perdita del territorio
+                        /** INIZIO DELLA BATTAGLIA **/
+                        attackOutcome = AttackOutcome::CONTINUE;
+                        int cpuAttackDice[3];
+                        int userDefenseDice[3] = {0,0,0};
+                        int defenseDiceCount = uniwar::rollTheDice(cpuAttackDice,userDefenseDice,userTanksCount);
 
-                    clog << "Aggiorniamo il json relativo alla battaglia " << battleResults.size() + 1 << endl;
-                    // Aggiorniamo il json da restituire a C#
-                    json battleJson;
-                    battleJson["Battle"] = battleResults.size() + 1;
-                    battleJson["AttackingPlayer"] = cpuPlayer.getName();
-                    battleJson["DefendingPlayer"] = userPlayer.getName();
-                    battleJson["Win"] = win;
-                    battleJson["DiceCPU"] = {cpuAttackDice[0], cpuAttackDice[1], cpuAttackDice[2]};
-                    battleJson["DicePlayer"] = {userDefenseDice[0], userDefenseDice[1], userDefenseDice[2]}; // si assume 0 per dado non lanciato
-                    battleJson["AttackingTerritory"] = cpuTerritory;  
-                    battleJson["DefendingTerritory"] = neighborTerritory;
-                    battleJson["AttackingNeighborsMap"] = cpuPlayer.getNeighborsMap();
-                    battleJson["DefendingNeighborsMap"] = userPlayer.getNeighborsMap();
-                    battleJson["AttackingTanksCountMap"] = cpuPlayer.getTanksMap();
-                    battleJson["DefendingTanksCountMap"] = userPlayer.getTanksMap();
-                    battleJson["LossesCPU"] = cpuLosses;
-                    battleJson["LossesPlayer"] = userLosses;
-                    // Aggiungiamo il json della battaglia nel vettore di json (perché potrebbero essere ingaggiate anche più battaglie)
-                    battleResults.push_back(battleJson);
+                        // confrontiamo i dadi 
+                        int cpuLosses = 0, userLosses = 0;
+                        uniwar::compareDice(cpuAttackDice,userDefenseDice,defenseDiceCount,cpuLosses,userLosses);
 
-                    if(win || (battleResults.size() == 3)){ 
-                        jsonResult = json(battleResults).dump();
-                        return jsonResult.c_str();
-                    }
+                        clog << "Numero carri armati per il territorio attaccante della cpu (prima dell'attacco) = " << cpuTanksCount << endl; //debug
+                        clog << "Numero carri armati per il territorio attaccato del giocatore (prima dell'attacco) = " << userTanksCount << endl; //debug
 
-                    if(attackOutcome == AttackOutcome::CONQUERED){ // Siccome una conquista è stata fatta usciamo dal while della battaglia per poter valutare un nuovo attacco considerando anche il nuovo territorio
+                        // A questo punto bisogna aggiornare il numero di carri armati della cpu e del giocatore dopo l'attacco
+                        cpuPlayer.modifyTankCount(cpuTerritory,cpuTanksCount - cpuLosses);
+                        userPlayer.modifyTankCount(neighborTerritory,userTanksCount - userLosses);
+
+                        // Aggiorniamo il numero di carri armati della cpu e quello del giocatore
+                        userTanksCount = userPlayer.getTanksCount(neighborTerritory);
+                        cpuTanksCount= cpuPlayer.getTanksCount(cpuTerritory);
+
+                        clog << "Numero carri armati per il territorio attaccante della cpu (dopo dell'attacco) = " << cpuTanksCount << endl; //debug
+                        clog << "Numero carri armati per il territorio attaccato del giocatore (dopo dell'attacco) = " << userTanksCount << endl; //debug
+
+                        bool win = false;
+
+                        // Verifichiamo se il giocatore ha perso il territorio e in caso affermativo aggiorniamo il contesto di gioco e verifichiamo se la cpu ha vinto
+                        if(userPlayer.getTanksCount(neighborTerritory) == 0){
+                            clog << userPlayer.getName() << " ha perso il terriotio " << neighborTerritory << endl; // debug
+
+                            // Assegnamo il territorio conquistato alla cpu ed effettuiamo lo SPOSTAMENTO STRATEGICO
+                            // In particolare, al nuovo territorio assegnamo come numero di carri armati il numero di carri armati del territorio attaccante -1 (perché al territorio attaccante deve restare 1 carro armato)
+                            cpuPlayer.addTerritory(neighborTerritory,userPlayer.getNeighbors(neighborTerritory), cpuPlayer.getTanksCount(cpuTerritory) -1);
+                            // aggiorniamo il numero di carri armati del territorio attaccante
+                            cpuPlayer.modifyTankCount(cpuTerritory,1);
+                            // rimuoviamo il territorio perso dal giocatore
+                            userPlayer.removeTerritory(neighborTerritory);
+                            attackOutcome = AttackOutcome::CONQUERED;
+                            clog << "Dopo lo spostamento strategico, il territorio della cpu  " << cpuTerritory << " ha " << cpuPlayer.getTanksCount(cpuTerritory) << " carri armati" << endl; // debug
+
+                            if(uniwar::win(uniwar::getTerritoriesFromMap(cpuPlayer.getTanksMap()))){
+                                win = true;
+                            }
+                            
+                        
+                        } // Fine if per verificare la condizione di perdita del territorio
+
+                        clog << "Aggiorniamo il json relativo alla battaglia " << battleResults.size() + 1 << endl;
+                        // Aggiorniamo il json da restituire a C#
+                        json battleJson;
+                        battleJson["Battle"] = battleResults.size() + 1;
+                        battleJson["AttackingPlayer"] = cpuPlayer.getName();
+                        battleJson["DefendingPlayer"] = userPlayer.getName();
+                        battleJson["Win"] = win;
+                        battleJson["DiceCPU"] = {cpuAttackDice[0], cpuAttackDice[1], cpuAttackDice[2]};
+                        battleJson["DicePlayer"] = {userDefenseDice[0], userDefenseDice[1], userDefenseDice[2]}; // si assume 0 per dado non lanciato
+                        battleJson["AttackingTerritory"] = cpuTerritory;  
+                        battleJson["DefendingTerritory"] = neighborTerritory;
+                        battleJson["AttackingNeighborsMap"] = cpuPlayer.getNeighborsMap();
+                        battleJson["DefendingNeighborsMap"] = userPlayer.getNeighborsMap();
+                        battleJson["AttackingTanksCountMap"] = cpuPlayer.getTanksMap();
+                        battleJson["DefendingTanksCountMap"] = userPlayer.getTanksMap();
+                        battleJson["LossesCPU"] = cpuLosses;
+                        battleJson["LossesPlayer"] = userLosses;
+                        // Aggiungiamo il json della battaglia nel vettore di json (perché potrebbero essere ingaggiate anche più battaglie)
+                        battleResults.push_back(battleJson);
+
+                        if(win || (battleResults.size() == 3)){ 
+                            jsonResult = json(battleResults).dump();
+                            return jsonResult.c_str();
+                        }
+
+                        if(attackOutcome == AttackOutcome::CONQUERED){ // Siccome una conquista è stata fatta usciamo dal while della battaglia per poter valutare un nuovo attacco considerando anche il nuovo territorio
+                            break;
+                        }
+
+                    } // fine while battaglia con territorio
+
+                    if(attackOutcome == AttackOutcome::CONQUERED){ // Se è stato conquistato un territorio bisogna ripetere il ciclo for più esterno perché bisogna riconsiderare l'assetto della cpu
                         break;
                     }
-
-                } // fine while battaglia con territorio
-
+                } // fine for per scorrere i vicini
                 if(attackOutcome == AttackOutcome::CONQUERED){ // Se è stato conquistato un territorio bisogna ripetere il ciclo for più esterno perché bisogna riconsiderare l'assetto della cpu
                     break;
                 }
-            } // fine for per scorrere i vicini
-            if(attackOutcome == AttackOutcome::CONQUERED){ // Se è stato conquistato un territorio bisogna ripetere il ciclo for più esterno perché bisogna riconsiderare l'assetto della cpu
+            } // Fine for per trovare i territori potenziali attaccanti
+            
+            // Se non sono stati conquistati territori, alla fine del for più esterno finirà anche la fase di attacco della cpu perché vorrà dire che non può effettuare altri attacchi
+            if(attackOutcome == AttackOutcome::NONE || attackOutcome == AttackOutcome::CONTINUE){
                 break;
             }
-        } // Fine for per trovare i territori potenziali attaccanti
-        
-        // Se non sono stati conquistati territori, alla fine del for più esterno finirà anche la fase di attacco della cpu perché vorrà dire che non può effettuare altri attacchi
-        if(attackOutcome == AttackOutcome::NONE || attackOutcome == AttackOutcome::CONTINUE){
-            break;
-        }
-    } // fine del while(true)
+        } // fine del while(true)
 
-    // Se la cpu non ha vinto restituisce il risultato della battaglia qui (potrebbe anche non aver attaccato affatto)
-    jsonResult = json(battleResults).dump();
-    return jsonResult.c_str();
+        // La cpu ha deciso di non attaccare
+        if (attackOutcome == AttackOutcome::NONE){
+            return "Pass";
+        }
+        
+        // Se la cpu non ha vinto (ma ha attaccato) restituisce il risultato della battaglia qui 
+        jsonResult = json(battleResults).dump();
+        return jsonResult.c_str();
+    }catch (const exception& e) {
+        cerr << "Errore critico in reinforcement: " << e.what() << endl;
+        return "{}";  // JSON vuoto come fallback
+    }
 }
 
 
@@ -209,75 +227,91 @@ const char* cpuAttack (const char* jsonData){
 const char* reinforcement (const char* jsonData, int newTanks){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione reinforcement:" << endl;
-    vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    uniwar::Player& cpuPlayer = players[0]; 
-    set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
-    int max = 0;
-    // Recuperiamo il numero massimo di carri armati
-    for(const auto& territory: ownedFrontiers){
-        if(cpuPlayer.getTanksCount(territory) > max)
-            max = cpuPlayer.getTanksCount(territory);
-    }
-
-    clog << "Nuovi carri a disposizione per la cpu: " << newTanks << endl;
-    clog << "\nPrimo round robin (precedenza ai territori con 1 carro armato):\n" <<endl;
-    for(auto & territory: ownedFrontiers){
-        int tankCount = cpuPlayer.getTanksCount(territory);
-        if(tankCount== 1 && newTanks > 0){
-            clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-            cpuPlayer.modifyTankCount(territory, tankCount + 1);
-            newTanks--;
-            clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-            clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+    try{
+        vector<uniwar::Player> players;
+        try {
+            players = uniwar::initializePlayers(jsonData);
+            if (players.empty()) {
+                throw runtime_error("Errore: nessun giocatore inizializzato correttamente.");
+            }
+        } catch (const exception& e) {
+            cerr << "Errore durante l'inizializzazione dei giocatori: " << e.what() << endl;
+            return "{}";  // JSON vuoto come fallback
         }
-        if(newTanks == 0)
-            break;
-        
-    }
-
-    clog << "\nSecondo round robin:\n" <<endl;
-    for(auto & territory: ownedFrontiers){
-        int tankCount = cpuPlayer.getTanksCount(territory);
-        if((tankCount < max) && newTanks > 0){
-            clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-            cpuPlayer.modifyTankCount(territory, tankCount + 1);
-            newTanks--;
-            clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-            clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+    
+        uniwar::Player& cpuPlayer = players[0]; 
+        set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
+        int max = 0;
+        // Recuperiamo il numero massimo di carri armati
+        for(const auto& territory: ownedFrontiers){
+            if(cpuPlayer.getTanksCount(territory) > max)
+                max = cpuPlayer.getTanksCount(territory);
         }
-        if(newTanks == 0)
-            break;
-    }
-
-    clog << "\nRound robin con while:\n" <<endl;
-    while(newTanks > 0){
+    
+        clog << "Nuovi carri a disposizione per la cpu: " << newTanks << endl;
+        clog << "\nPrimo round robin (precedenza ai territori con 1 carro armato):\n" <<endl;
         for(auto & territory: ownedFrontiers){
             int tankCount = cpuPlayer.getTanksCount(territory);
-            clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-            cpuPlayer.modifyTankCount(territory, tankCount + 1);
-
-            newTanks--;
-            clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-            clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            if(tankCount== 1 && newTanks > 0){
+                clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
+                cpuPlayer.modifyTankCount(territory, tankCount + 1);
+                newTanks--;
+                clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
+                clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            }
+            if(newTanks == 0)
+                break;
+            
+        }
+    
+        clog << "\nSecondo round robin:\n" <<endl;
+        for(auto & territory: ownedFrontiers){
+            int tankCount = cpuPlayer.getTanksCount(territory);
+            if((tankCount < max) && newTanks > 0){
+                clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
+                cpuPlayer.modifyTankCount(territory, tankCount + 1);
+                newTanks--;
+                clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
+                clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            }
             if(newTanks == 0)
                 break;
         }
+    
+        clog << "\nRound robin con while:\n" <<endl;
+        while(newTanks > 0){
+            for(auto & territory: ownedFrontiers){
+                int tankCount = cpuPlayer.getTanksCount(territory);
+                clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
+                cpuPlayer.modifyTankCount(territory, tankCount + 1);
+    
+                newTanks--;
+                clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
+                clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+                if(newTanks == 0)
+                    break;
+            }
+    
+        }
+    
+        // Una volta aggiornato il contesto restituiamo il risultato a C# andando a creare il nuovo json
+        // Creiamo un oggetto json e inseriamo i campi
+        json updatedPlayerData; 
+        updatedPlayerData["PlayerId"] = cpuPlayer.getName();
+        updatedPlayerData["Neighbors"] = cpuPlayer.getNeighborsMap();
+        updatedPlayerData["Tanks"] = cpuPlayer.getTanksMap();
+    
+        // Convertiamo l'oggetto JSON in una stringa JSON
+        jsonResult = json(updatedPlayerData).dump();  // Serializziamo i dati in formato stringa
+    
+        // La funzione c_str() della classe std::string restituisce un puntatore a carattere (const char*)
+        return jsonResult.c_str();
+    
 
+    }catch (const exception& e) {
+        cerr << "Errore critico in reinforcement: " << e.what() << endl;
+        return "{}";  // JSON vuoto come fallback
     }
-
-    // Una volta aggiornato il contesto restituiamo il risultato a C# andando a creare il nuovo json
-    // Creiamo un oggetto json e inseriamo i campi
-    json updatedPlayerData; 
-    updatedPlayerData["PlayerId"] = cpuPlayer.getName();
-    updatedPlayerData["Neighbors"] = cpuPlayer.getNeighborsMap();
-    updatedPlayerData["Tanks"] = cpuPlayer.getTanksMap();
-
-    // Convertiamo l'oggetto JSON in una stringa JSON
-    jsonResult = json(updatedPlayerData).dump();  // Serializziamo i dati in formato stringa
-
-    // La funzione c_str() della classe std::string restituisce un puntatore a carattere (const char*)
-    return jsonResult.c_str();
-
 }
 
 // Funzione che permette a C# di verificare se il giocatore ha vinto o meno

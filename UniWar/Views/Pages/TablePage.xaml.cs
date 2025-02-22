@@ -619,6 +619,13 @@ namespace UniWar {
             // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
             string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
 
+            if (string.IsNullOrEmpty(resultJson) || resultJson == "{}") {
+                ShowInformation("Si è verificato un errore");
+                await Task.Delay(1500); // diamo il tempo di visualizzare l'errore
+                Application.Current!.MainPage = new AppShell(); // Torniamo alla schermata principale
+            }
+
+
             // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
             // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
 
@@ -678,9 +685,16 @@ namespace UniWar {
             string jsonData = JsonSerializer.Serialize(playersMaps, jsonSerializerOpt);
             // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
             IntPtr resultPtr = cpuAttack(jsonData);
-            string? resultJson = Marshal.PtrToStringUTF8(resultPtr);
+             string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
 
-            if ((resultJson == string.Empty) || resultJson == "[]") { // La cpu ha deciso di non attaccare
+             if (string.IsNullOrEmpty(resultJson) || resultJson == "{}") {
+                ShowInformation("Si è verificato un errore");
+                await Task.Delay(1500); // diamo il tempo di visualizzare l'errore
+                Application.Current!.MainPage = new AppShell(); // Torniamo alla schermata principale
+            }
+
+
+            if (resultJson == "Pass") { // La cpu ha deciso di non attaccare
                 tcs = new TaskCompletionSource();
                 InitializeStatistics(out StatisticsCollection stats, false);
                 SetStatsTanksAndTerritories(ref stats);
