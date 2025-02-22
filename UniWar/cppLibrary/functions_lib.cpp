@@ -56,6 +56,7 @@ const char* cpuAttack (const char* jsonData){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione cpuAttack:" << endl;
     try{
+        srand(time(0)); // Inizializziamo il seme
         vector<uniwar::Player> players;
             try {
                 players = uniwar::initializePlayers(jsonData);

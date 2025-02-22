@@ -275,20 +275,17 @@ int rollTheDice(int (&cpuAttackDice)[3], int (&userDefenseDice)[3], const int& u
         rand() % 6 restituisce un numero tra 0 e 5 (prendiamo il resto della divisione per 6).
         + 1 sposta l'intervallo a 1-6, simulando il lancio di un dado. 
     */
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> distrib(1, 6);
 
     // Assegniamo i valori dei dadi alla CPU
-    cpuAttackDice[0] = distrib(gen);
-    cpuAttackDice[1] = distrib(gen);
-    cpuAttackDice[2] = distrib(gen);
+    cpuAttackDice[0] = (rand() %6) + 1;
+    cpuAttackDice[1] = (rand() %6) + 1;
+    cpuAttackDice[2] = (rand() %6) + 1;
 
     int defenseDiceCount = std::min(3, userTanksCount);
 
     // Simuliamo il lancio dei dadi per il giocatore
     for (int i = 0; i < defenseDiceCount; i++) {
-        userDefenseDice[i] = distrib(gen);
+        userDefenseDice[i] = (rand() %6) + 1;
     }
 
     // Adesso ordiniamo i dadi della cpu e del giocatore in ordine decrescente
