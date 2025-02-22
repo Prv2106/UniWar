@@ -171,13 +171,13 @@ namespace UniWar {
 
     private void BuildUserInformation() {
         UserTankIcon.Source = IconSrcUser;
-        NumTanks.Text = User!.GetNumTanks().ToString();
+        NumTanks.Text = User!.GetNumTanks.ToString();
         GoalDescr.Text = User.Goal!.Description;
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
     private void UpdateUserCounters() {
-        NumTanks.Text = User!.GetNumTanks().ToString();
+        NumTanks.Text = User!.GetNumTanks.ToString();
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
@@ -837,8 +837,8 @@ namespace UniWar {
 
 
     private void SetStatsTanksAndTerritories(ref StatisticsCollection stats){
-        stats.CpuOwnedTanks = CPU!.GetNumTanks();
-        stats.UserOwnedTanks = User!.GetNumTanks();
+        stats.CpuOwnedTanks = CPU!.GetNumTanks;
+        stats.UserOwnedTanks = User!.GetNumTanks;
 
         foreach(var territory in CPU!.Territories.Values)
                 stats.CpuOwnedTerritories.Add(territory.Name);
