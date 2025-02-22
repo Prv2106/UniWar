@@ -23,10 +23,9 @@ namespace UniWar {
             await Navigation.PushModalAsync(new GamesHistory());
         }
 
-        private async void OnLogoutClicked(object sender, EventArgs e) {
+        private void OnLogoutClicked(object sender, EventArgs e) {
             UniWarSystem.Instance.OfflineMode();
-            await Navigation.PopToRootAsync();
+            Application.Current!.MainPage = new AppShell();
         }
-
     } 
 }

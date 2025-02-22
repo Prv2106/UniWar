@@ -44,7 +44,7 @@ namespace UniWar {
         }
     }
 
-    public void Reset() {
+    public static void Reset() {
         _instance = null;
     }
 

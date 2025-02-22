@@ -8,6 +8,7 @@
                HasShadow="True"
                BackgroundColor="White"
                Margin="10"
+               MaximumWidthRequest="770"
                VerticalOptions="Center">
             
             <VerticalStackLayout>
