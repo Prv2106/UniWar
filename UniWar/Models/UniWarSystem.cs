@@ -54,7 +54,7 @@ public class UniWarSystem { // singleton
         IsGameInitialized = true; // booleano che se vero ci dice che sono già state fatte partite nella sessione corrente
         /* 
             è, sostanzialmente, il metodo che inizializza la partita...
-            - sceglie un colore per i carri armati per i partecipanti (l’utente e il sistema stesso… in maniera random tra i colori previsti dal risiko).
+            - sceglie un colore per i carri armati per i partecipanti in maniera random tra i colori previsti dal risiko.
             - “mischia” le “carte” dei territori e le distribuisce equamente tra i partecipanti.
             - assegna un obiettivo ai partecipanti.
             - sceglie chi inizia il turno tra cpu e utente
@@ -113,14 +113,10 @@ public class UniWarSystem { // singleton
         User.TankColor = colorForUser;
         Cpu.TankColor = colorForCpu;
 
-
-       
         if (gen.Next(2)== 0) 
             Turn = new Turn(User);
         else 
             Turn = new Turn(Cpu);
-    
-     
     }
 
     private async Task CreateGameInDatabase() {

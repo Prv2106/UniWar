@@ -6,12 +6,14 @@ namespace UniWar {
             InitializeComponent();
 
             for (int i = 0; i < userDice.Count; i++) {
+                if (userDice[i] == 0) continue; // nel caso dell'algoritmo in c++
                 Image img = (Image) userDiceImages.Children[i];
                 img.Source = "attack" + userDice[i] + ".png";
                 img.IsVisible = true;
             }
 
             for (int i = 0; i < cpuDice.Count; i++) {
+                if (cpuDice[i] == 0) continue; // nel caso dell'algoritmo in c++
                 Image img = (Image) cpuDiceImages.Children[i];
                 img.Source = "defend" + cpuDice[i] + ".png";
                 img.IsVisible = true;
