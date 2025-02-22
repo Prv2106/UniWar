@@ -72,7 +72,6 @@ namespace UniWar {
                         // Create a new MemoryStream that will stay in scope
                         var stream = new MemoryStream(imageBytes);
                         Chart.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
-                        Chart.WidthRequest = 240;
                     }
 
                     string state;
