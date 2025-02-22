@@ -61,9 +61,6 @@ class GetDataQuery:
 
 
 
-
-
-
 class GetGamesQuery:
     def __init__(self,conn, username):
         
