@@ -156,7 +156,6 @@ vector<Player> initializePlayers(const char* jsonData){
                 continue;
             }
 
-
             // Sfruttiamo la funzione membro "get" per convertire i valori dell'oggetto json in tipi di dati standard di C++.
             // In particolare, recuperiamo le mappe di vicini e carri armati
             auto neighborsMap = player["Neighbors"].get<map<string, vector<string>>>(); 
@@ -208,7 +207,7 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
     for(const auto& pair: map){
         const auto& neighbors = pair.second;
         bool frontier = false;
-        
+
         // Se ALMENO 1 territorio tra i vicini non appartiene ai territori posseduti allora il territorio chiave della mappa è un territorio di frontiera posseduto 
         for(const auto& territory: neighbors){
             if(find(ownedTerritories.begin(), ownedTerritories.end(), territory) == ownedTerritories.end()){
