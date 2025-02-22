@@ -1,7 +1,10 @@
 /*
-In C#, la direttiva using System.Runtime.InteropServices; serve a importare il namespace System.Runtime.InteropServices, che contiene classi e metodi per interagire con il codice nativo (ad esempio, codice C o C++). 
-Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità tra il codice gestito (C#) e il codice non gestito (come quello C++).
+    In C#, la direttiva using System.Runtime.InteropServices; serve a importare il namespace System.Runtime.InteropServices, 
+    che contiene classi e metodi per interagire con il codice nativo (ad esempio, codice C o C++). 
+    Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità tra il 
+    codice gestito (C#) e il codice non gestito (come quello C++).
 */
+
 using System.Runtime.InteropServices;
 using System.Text.Json;
 
@@ -44,7 +47,7 @@ namespace UniWar {
         }
     }
 
-    public void Reset() {
+    public static void Reset() {
         _instance = null;
     }
 
@@ -53,13 +56,15 @@ namespace UniWar {
         try {
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior{IsVisible=false});
             InitializeComponent();
+
             Turn = UniWarSystem.Instance.Turn!;
             User = UniWarSystem.Instance.User!;
-            // recuperiamo il nome del file dell'icona del carro armato utente
-            IconSrcUser = User.Territories.Values.First().Tanks[0].GetTankIconByColor();
             CPU = UniWarSystem.Instance.Cpu!;
+
             // recuperiamo il nome del file dell'icona del carro armato CPU
             IconSrcCpu = CPU.Territories.Values.First().Tanks[0].GetTankIconByColor();
+             // recuperiamo il nome del file dell'icona del carro armato utente
+            IconSrcUser = User.Territories.Values.First().Tanks[0].GetTankIconByColor();
 
             BuildGraphics();
         } catch (Exception e) {
@@ -75,17 +80,17 @@ namespace UniWar {
         // costruiamo la parte delle informazioni per l'utente sotto la mappa
         BuildUserInformation();
 
-        // gestiamo i turni
+        // infine, gestiamo i turni
         HandleTurns();
     }
 
      private void CheckIfRoundIsCompleted() {
         if (CpuTurnCompleted && UserTurnCompleted) {
-                CpuTurnCompleted = false;
-                UserTurnCompleted = false;
-                Turn!.IdRound++;
-                RoundCounter.Text = Turn!.IdRound.ToString();
-            }
+            CpuTurnCompleted = false;
+            UserTurnCompleted = false;
+            Turn!.IdRound++;
+            RoundCounter.Text = Turn!.IdRound.ToString();
+        }
     }
 
     public async void HandleTurns() {
@@ -96,6 +101,7 @@ namespace UniWar {
         */
 
         try {
+
             CheckIfRoundIsCompleted();            
             while (Turn!.CurrentPlayer == CPU) { // è il turno della CPU
                 statisticsButton.IsVisible = false;
@@ -111,12 +117,11 @@ namespace UniWar {
             }
 
             CheckIfRoundIsCompleted();
-
             if (Turn.CurrentPlayer == User) {
                 // è il turno dell'utente...
                 UserAttack = false;
 
-                // gestiamo visualizzazione pulsante
+                // gestiamo la visualizzazione del pulsante relativo alle statistiche
                 if (!UniWarSystem.Instance.IsOffline) 
                     statisticsButton.IsVisible = true;
                 endGameButton.IsVisible = true;
@@ -136,6 +141,7 @@ namespace UniWar {
                         break;
                     case TurnPhases.StrategicShift:
                         ShowOrdHideAttackView();
+                        ShowInformation("Fai click sul territorio DA cui vuoi spostare i carri armati");
                         break;
                 }
             } 
@@ -169,13 +175,13 @@ namespace UniWar {
 
     private void BuildUserInformation() {
         UserTankIcon.Source = IconSrcUser;
-        NumTanks.Text = User!.GetNumTanks().ToString();
+        NumTanks.Text = User!.GetNumTanks.ToString();
         GoalDescr.Text = User.Goal!.Description;
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
     private void UpdateUserCounters() {
-        NumTanks.Text = User!.GetNumTanks().ToString();
+        NumTanks.Text = User!.GetNumTanks.ToString();
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
@@ -535,7 +541,6 @@ namespace UniWar {
         if (choose == true) {
             // passiamo alla terza ed ultima fase del turno
             Turn!.Phase=TurnPhases.StrategicShift;
-            ShowInformation("Fai click sul territorio DA cui vuoi spostare i carri armati");
             HandleTurns(); 
         } else {
             // passiamo il turno alla CPU
@@ -834,8 +839,8 @@ namespace UniWar {
 
 
         private void SetStatsTanksAndTerritories(ref StatisticsCollection stats){
-            stats.CpuOwnedTanks = CPU!.GetNumTanks();
-            stats.UserOwnedTanks = User!.GetNumTanks();
+            stats.CpuOwnedTanks = CPU!.GetNumTanks;
+            stats.UserOwnedTanks = User!.GetNumTanks;
 
             foreach(var territory in CPU!.Territories.Values)
                     stats.CpuOwnedTerritories.Add(territory.Name);

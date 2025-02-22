@@ -30,7 +30,7 @@ public class UniWarSystem { // singleton
     
     // il costruttore deve essere privato (accessibile solo da dentro)
     private UniWarSystem() {
-        _continents = new Dictionary<string, Continent>();
+        _continents = [];
         _territories = [];
         _goals = [new Goal("Conquista almeno 3 continenti e almeno 28 territori")];
         InitializeAll();
@@ -51,7 +51,7 @@ public class UniWarSystem { // singleton
     
     // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
     public async Task InitializeGame() {
-        IsGameInitialized = true; // booleano che se vero ci dice che sono già state fatte partite nella sessione corrente
+        IsGameInitialized = true; // booleano che se vero ci dice che sono già state fatte partite nella sessione di gioco corrente
         /* 
             è, sostanzialmente, il metodo che inizializza la partita...
             - sceglie un colore per i carri armati per i partecipanti in maniera random tra i colori previsti dal risiko.
@@ -64,24 +64,23 @@ public class UniWarSystem { // singleton
         // come PRIMISSIMA cosa, dobbiamo creare un GameId e creare una nuova entry nel database!
         await CreateGameInDatabase();
 
-        Random gen = new Random();
+        Random gen = new();
 
-        // qui il sistema deve distribuire equamente i territori ai due giocatori
+        // bisogna distribuire equamente i territori ai due giocatori
         User = new Player("UserPlayer");
         Cpu = new Player("CpuPlayer");
 
         // recuperiamo tutti i territori
         List<Territory> allTerritories = [];
-        foreach (Territory t in _territories.Values) 
-                allTerritories.Add(t);
+        allTerritories.AddRange(_territories.Values);
 
-        
         // eseguiamo uno shuffle (metodo implementato nell'extension)
         allTerritories.Shuffle();
 
         // 21 territori a User e 21 alla CPU
         var firstHalf = allTerritories.Take(21).ToList(); // restituisce i primi 21 elementi
         var secondHalf = allTerritories.Skip(21).ToList(); // restituisce i restanti elementi dopo i primi 21
+
         foreach (var ter in firstHalf)
             User.AddTerritory(ter);
 
@@ -96,14 +95,13 @@ public class UniWarSystem { // singleton
         } while (colorForUser == colorForCpu);
            
         // per ogni territorio del'utente, associamo 3 carri armati 
-        foreach (Territory territory in User.Territories.Values){
+        foreach (Territory territory in User.Territories.Values) 
             territory.AddTanks(colorForUser,3);
-        }
         
         // per ogni territorio della CPU, associamo 3 carri armati 
-        foreach (Territory territory in Cpu.Territories.Values){
+        foreach (Territory territory in Cpu.Territories.Values) 
             territory.AddTanks(colorForCpu,3);
-        }
+        
             
         // obiettivo ai partecipanti
         User.Goal = _goals[0];
@@ -134,7 +132,7 @@ public class UniWarSystem { // singleton
             siano reistanziate
         */
 
-        TablePage.Instance.Reset();
+        TablePage.Reset();
 
         // per quanto riguarda, però, l'istanza di questa classe, dobbiamo 
         // preservare l'utente loggato

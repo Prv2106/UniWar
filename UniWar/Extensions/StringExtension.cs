@@ -2,14 +2,13 @@ using System.Text.RegularExpressions;
 
 public static class StringExtensions {
     /*
-        vogliamo implementare 3 metodi che rimuovo e aggiungono gli spazi ai nomi dei territori:
+        vogliamo implementare metodi che rimuovono e aggiungono gli spazi ai nomi dei territori:
         es: 
             AmericaDelSud --> America Del Sud
             America Del Sud --> AmericaDelSud
     */
 
     
-	
 	public static string AddSpaces(this string text) {
         // SINTASSI extension: Il primo parametro del metodo deve avere 
         // il modificatore this seguito dal tipo che si intende estendere! 
