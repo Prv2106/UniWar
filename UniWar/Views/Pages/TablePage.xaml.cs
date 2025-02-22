@@ -142,8 +142,6 @@ namespace UniWar {
         } catch (Exception e) {
             ShowInformation("Errore: " + e.Message);
         }
-
-
     }
 
     private void ShowOrHideReinforcementView() {
