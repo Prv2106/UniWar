@@ -10,43 +10,47 @@ enum class AttackOutcome {
     CONTINUE, // Attacco effettuato ma senza conquistare i terriotri 
     CONQUERED // Attacco con conquista del territorio
 };
+
 // Funzione di attacco della cpu
 /* La funzione di attacco della cpu segue questa logica: 
     - la cpu attacca uno alla volta i territori del giocatore scegliendo il primo dei territori alla frontiera non posseduti che rispetta il seguente criterio (condizione di attacco):
-        - il territorio deve avere un numero di carri armati inferiore o uguale rispetto al territorio della cpu (chiave della lista neighbors in cui si trova il territorio di frontiera)
+        - il territorio deve avere un numero di carri armati inferiore o uguale rispetto al territorio della cpu (chiave del dizionario neighbors in cui si trova il territorio di frontiera)
     - nella "battaglia" la cpu attacca sempre con 3 carri armati 
-      (questo significa che deciderà di non effettuare un attacco se non esiste un territorio che rispetta il criterio di sopra e che al contempo possegga 4 o più carri armati)
+      (questo significa che deciderà di non effettuare un attacco se non esiste un suo territorio di frontiera che possegga almeno 4 carri armati e che abbia un vicino per il quale valga la condizione di attacco)
 
     - Se viene ingaggiato un attacco:
-        - vengono lanciati 3 dati (generati 3 numeri casuali da 1 a 6) per la cpu e per quanto riguarda il giocatore un numero di dadi pari al numero di carri che possiede,
-          nel territorio attaccato, fino a un massimo di 3 (si può difendere al massimo con 3 carri)
-        - il lancio di ciascun dato della CPU è confrontato con quello dei dati del giocatore, si confrontano i valori maggiori ottenuti dado per dado:
+        - vengono "lanciati" 3 dadi (generati 3 numeri casuali da 1 a 6) per la cpu e per quanto riguarda il giocatore un numero di dadi pari al numero di carri armati che possiede,
+          nel territorio attaccato, fino a un massimo di 3 (si può difendere al massimo con 3 carri armati)
+        - il lancio di ciascun dato della cpu è confrontato con quello del giocatore, si confrontano i valori maggiori ottenuti dado per dado (in caso di pareggio vince il giocatore):
             - es 1. se la cpu ottiene [4,5,5] e il giocatore ottiene [6,4,3] il confronto sarà [6 > 5, 4 < 5, 3 < 4] e la CPU perderà 1 carro armato mentre il giocatore 2
             - es 2. se la cpu lancia 3 dati e il giocatore 2: -> cpu [4,5,5] e giocatore [6,5] allora in questo caso il giocatore non perde alcun carro armato mentre la cpu ne perde 2
 
     - Una battaglia finisce se si verifica una delle seguenti condizioni:
-        - il numero di carri armati associati al territorio attaccato diventa 0
-        - la cpu decide di non continuare l'attacco (perché il numero di carri armati posseduti nel territorio con il quale ha effettuato l'attacco è diventato inferiore al numero di carri del territorio attaccato)
+        - il numero di carri armati associati al territorio attaccato diventa 0 (quindi il territorio attaccato viene conquistato)
+        - il numero di carri armati del territorio attaccante diventa inferiore al numero di carri armati del territorio attaccato (condizione di attacco non più valida)
+        - il numero di carri armati del territorio attaccante è diventato < 4 (la cpu deve avere almeno 4 carri armati per attaccare)
 
     - al termine della battaglia, in caso di conquista del territorio la cpu sposta il massimo numero possibile di carri nel territorio conquistato (il territorio con cui ha effettuato l'attacco resterà con 1 solo carro armato
-      , di conseguenza almeno 1 carro sarà spostato nel territorio conquistato) questo è lo SPOSTAMENTO STRATEGICO
-    - finito lo spostamento strategico la cpu invocherà la funzione "win" per capire se la condizione di vittoria è o meno soddisfatta
-    - se win restituisce true allora viene restituito un json a C# con lo stato del terreno aggiornato e con un indicazione circa il fatto che la cpu ha vinto
+      , di conseguenza almeno 1 carro sarà spostato nel territorio conquistato) questo è lo SPOSTAMENTO STRATEGICO effettuato dalla cpu.
+    - se non viene conquistato il territorio si procede con la battaglia successiva che può riguardare gli stessi territori della battaglia precedente se le condizioni necessarie per la battaglia sono rispettate oppure
+      può coinvolgere il prossimo territorio che soddisfa le condizioni nel ciclo di attacco (la cpu può comunque effettuare solo 3 attacchi) 
+      
+    Finito lo spostamento strategico la cpu invocherà la funzione "win" per capire se la condizione di vittoria è o meno soddisfatta:
+    - se win restituisce true allora viene restituito un json a C# con lo stato della mappa aggiornato e con un indicazione circa il fatto che la cpu ha vinto
     - se win restituisce false, la cpu può scegliere 2 strade:
         - continuare ad attaccare (ricomincia il ciclo di valutazione dei territori da attaccare da capo)
         - termina il proprio turno restituendo un json a C# contenente le informazioni sulla battaglia (se ciclando tra i vari territori non è possibile effettuare un altro attacco): 
             - viene creato un vettore di json in cui avremo un campo numerato "Battaglia" che permetterà di capire a quale battaglia si riferisce ciascun oggetto json,
-              questo perché la cpu potrebbe ingaggiare più battaglie nello stesso turno
+              questo perché la cpu potrebbe ingaggiare più battaglie nello stesso turno (fino ad un massimo di 3)
             - in ciascun oggetto json rappresentante una battaglia vengono memorizzati:
-                - contesto di gioco (cioè le mappe)
+                - contesto di gioco (cioè i dizionari)
                 - risultati dei dadi lanciati (sia dalla CPU che dal giocatore, per permettere poi alla UI di riprodurre l'andamento della battaglia)
                 - condizione di vittoria (booleano)
                 - territorio attaccato
                 - territorio attaccante
                 - numero della battaglia
-                - nomi dei gioatori coinvolti
-    - possono essere effettuati al massimo 3 attacchi per turno
-*/
+                - numero di carri armati persi dalla cpu e dal giocatore
+    */
 
 const char* cpuAttack (const char* jsonData){
     clog << "----------------------------------------------------------------------------" << endl;
@@ -88,7 +92,7 @@ const char* cpuAttack (const char* jsonData){
                 int cpuTanksCount = cpuPlayer.getTanksCount(cpuTerritory);
                 
                 // Se il territorio del giocatore ha più carri armati del territorio attaccante della cpu allora non è soddisfatta la condizione di attacco e dobbiamo passare al vicino successivo
-                while((userTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4)){ 
+                while((userTanksCount <= cpuTanksCount) && (cpuTanksCount >= 4) && (cpuTanksCount > 3)){ 
                     clog << "Il Territorio del giocatore: " << neighborTerritory << " è idoneo per essere attaccato ("<< userTanksCount << ") carri armati" << endl; // debug
                     clog << "Ciclo while di battaglia: numero carri armati della cpu = " << cpuTanksCount << ", numero carri armati del giocatore = "<< userTanksCount << endl; // debug
                     
@@ -195,20 +199,17 @@ const char* cpuAttack (const char* jsonData){
 
 
 // Funzione per il rinforzo dei territori della CPU
-/*  La funzione di rinforzo segue questa logica: il cpu player assegna i nuovi carri armati tramite un round robin a ciascuno dei suoi territori di frontiera.
-    In particolare, da precedenza ai territori di frontiera con 1 solo carro armato per poi applicare un round robin a tutti quelli che hanno un numero di carri armati inferiore al numero massimo di carri assegnati ad un territorio
-    - per prima cosa si recuperano i territori di frontiera posseduti
-    - a questo punto si fa un primo ciclo dove si assegna un carro armato alla volta ai territori di frontiera che ne possiedono solo 1
-    - poi si fa un ulteriore ciclo nel quale si assegna un carro armato alla volta ai territori di frontiera il cui numero di carri armati è inferiore al numero massimo di carri posseduti da un territorio di frontiera
-    - infine, si fa un round robin finale in cui viene assegnato un carro armato ciascuno
-    Nota: i vari cicli vengono fatti fino a quando i nuovi carri disponibili terminano
-
+/*  La funzione di rinforzo segue questa logica: la cpu assegna i nuovi carri armati tramite un round robin a ciascuno dei suoi territori di frontiera.
+    In particolare, per garantire una distribuzione più equa possibile vengono effettuati 3 cicli di round robin (2 cicli for e un while finale) con logiche differenti:
+        - nel primo ciclo di round robin viene assegnato 1 carro armato alla volta solamente ai territori di frontiera che posseggono 1 solo carro armato
+        - nel secondo ciclo di round robin viene assegnato 1 carro armato alla volta ai territori di frontiera il cui numero di carri armati è inferiore al massimo numero di carri armati posseduti da uno dei territori di frontiera
+        - nel terzo ciclo si sfrutta, invece, un round robin puro per assegnare 1 carro armato alla volta a ciascuno dei territori di frontiera
+    Nota: Il passaggio da un ciclo al successivo avviene solamente nel caso in cui alla fine di un ciclo restano ancora dei nuovi carri armati da assegnare
 */
 const char* reinforcement (const char* jsonData, int newTanks){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione reinforcement:" << endl;
     vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-
     uniwar::Player& cpuPlayer = players[0]; 
     set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
     int max = 0;
@@ -219,6 +220,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
     }
 
     clog << "Nuovi carri a disposizione per la cpu: " << newTanks << endl;
+    clog << "\nPrimo round robin (precedenza ai territori con 1 carro armato):\n" <<endl;
     for(auto & territory: ownedFrontiers){
         int tankCount = cpuPlayer.getTanksCount(territory);
         if(tankCount== 1 && newTanks > 0){
@@ -231,9 +233,9 @@ const char* reinforcement (const char* jsonData, int newTanks){
         if(newTanks == 0)
             break;
         
-
     }
 
+    clog << "\nSecondo round robin:\n" <<endl;
     for(auto & territory: ownedFrontiers){
         int tankCount = cpuPlayer.getTanksCount(territory);
         if((tankCount < max) && newTanks > 0){
@@ -247,15 +249,18 @@ const char* reinforcement (const char* jsonData, int newTanks){
             break;
     }
 
+    clog << "\nRound robin con while:\n" <<endl;
     while(newTanks > 0){
         for(auto & territory: ownedFrontiers){
-        int tankCount = cpuPlayer.getTanksCount(territory);
-        clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
-        cpuPlayer.modifyTankCount(territory, tankCount + 1);
+            int tankCount = cpuPlayer.getTanksCount(territory);
+            clog << "Numero carri (Prima della modifica) per territorio " << territory << ": " << tankCount << endl;
+            cpuPlayer.modifyTankCount(territory, tankCount + 1);
 
-        newTanks--;
-        clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
-        clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            newTanks--;
+            clog << "Numero carri (Dopo la modifica) per territorio " << territory << ": " << cpuPlayer.getTanksCount(territory) << endl;
+            clog << "Nuovi carri ancora da assegnare: " << newTanks << endl;
+            if(newTanks == 0)
+                break;
         }
 
     }

@@ -51,8 +51,6 @@ namespace uniwar{
 };
 
 
-
-
 // In questo caso, extern indica al compilatore che la definizione si trova in un altro file
 /*
     Senza extern, la mappa verrebbe ridefinita in ogni file che include l'header, causando errori di linker (multiple definition error).
@@ -90,7 +88,6 @@ inline void compareDice(const int (&cpuAttackDice)[3], const int (&userDefenseDi
 
 }
 
-
 NODISCARD bool win(const set<string> & territories);
 
 NODISCARD vector<uniwar::Player> initializePlayers(const char* jsonData);
@@ -100,9 +97,6 @@ NODISCARD const set<string> getNotOwnedFrontier(const map<string, vector<string>
 NODISCARD const set<string> getOwnedFrontier(const map<string, vector<string>> & map);
 
 
-
-
 } // fine del namespace uniwar
-
 
 #endif // Fine della libreria
