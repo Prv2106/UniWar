@@ -67,12 +67,13 @@ def generate_game_results_pie_chart(won, lost, incomplete):
     explode = (0.1, 0.1, 0)  # Per evidenziare i primi due segmenti (vittorie e sconfitte)
 
     # Filtriamo le etichette quando e se il valore è 0
-    filtered_labels = [label if size > 0 else "" for label, size in zip(labels, values)]
+    filtered_labels = [label if size > 0 else "_" for label, size in zip(labels, values)]
+    filtered_labels = [s for s in filtered_labels if s != "_"]
     filtered_values = [size for size in values if size > 0]
     filtered_explode = [e for e, size in zip(explode, values) if size > 0]
     filtered_colors = [c for c, size in zip(colors, values) if size > 0]
 
-    plt.figure(figsize=(6,6)) # dimensioni 6x6 pollici
+    plt.figure(figsize=(4,4)) # dimensioni 6x6 pollici
     plt.pie(
         filtered_values,
         labels=filtered_labels,
