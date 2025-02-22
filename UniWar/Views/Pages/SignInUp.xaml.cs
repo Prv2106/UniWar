@@ -19,8 +19,10 @@ namespace UniWar{
 
         private async void UpdateUI() {
             UsernameEntry.TextColor = Colors.White;
+
             Button.Clicked -= OnSignInButtonClicked!;
             Button.Clicked -= OnSignUpButtonClicked!;
+
             UsernameEntry.Completed -= OnSignInButtonClicked!;
             PasswordEntry.Completed -= OnSignInButtonClicked!;
             UsernameEntry.Completed -= OnSignUpButtonClicked!;
@@ -51,7 +53,6 @@ namespace UniWar{
                 SwitchModeLabel.Text = "Hai già un account? Accedi";
             }
 
-            // Assicura che il messaggio di errore scompaia quando l'utente scrive
             UsernameEntry.TextChanged -= OnEntryTextChanged!;
             PasswordEntry.TextChanged -= OnEntryTextChanged!;
             UsernameEntry.TextChanged += OnEntryTextChanged!;
@@ -111,9 +112,11 @@ namespace UniWar{
                 UniWarSystem.Instance.SetLogged(username);
                 HideWarning();
                 await Navigation.PushAsync(new MainPage());
-            } catch (Grpc.Core.RpcException) {
-                ShowWarning("Non è stato possibile effettuare l'accesso per qualche problema nella remote procedure call");
-            } catch (Exception) {
+            } catch (Grpc.Core.RpcException ex) {
+                Console.WriteLine($"{ex}");
+                ShowWarning("Non è stato possibile effettuare l'accesso per qualche problema nella comunicazione con il server");
+            } catch (Exception ex) {
+                Console.WriteLine($"{ex}");
                 ShowWarning("Si è verificato un errore sconosciuto durante l'accesso");
             } finally {
                 ShowOrHideLoading();
@@ -136,13 +139,14 @@ namespace UniWar{
                     ShowWarning(response.Message);
                     return;
                 }
-                Console.WriteLine("SignUp effettuato con successo");
                 HideWarning();
                 UniWarSystem.Instance.SetLogged(username);
                 await Navigation.PushAsync(new MainPage());
-            } catch (Grpc.Core.RpcException) {
-                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella remote procedure call");
-            } catch (Exception) {
+            } catch (Grpc.Core.RpcException ex) {
+                Console.WriteLine($"{ex}");
+                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella comunicazione con il server");
+            } catch (Exception ex) {
+                Console.WriteLine($"{ex}");
                 ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
             } finally {
                 ShowOrHideLoading();
@@ -165,11 +169,13 @@ namespace UniWar{
                 }
                 UsernameEntry.TextColor = Colors.LightGreen;
             }
-            catch (Grpc.Core.RpcException) {
-                ShowWarning("Non è stato possibile effettuare la registrazione per qualche problema nella rpc");
+            catch (Grpc.Core.RpcException ex) {
+                Console.WriteLine($"{ex}");
+                ShowWarning("Non è stato possibile verificare lo username a causa di qualche problema nella comunicazione con il server");
             }
-            catch (Exception) {
-                ShowWarning("Si è verificato un errore sconosciuto durante la registrazione");
+            catch (Exception ex) {
+                Console.WriteLine($"{ex}");
+                ShowWarning("Non è stato possibile verificare lo username a causa di un errore sconosciuto");
             }
 
         }

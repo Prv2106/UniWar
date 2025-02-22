@@ -46,7 +46,7 @@ namespace Statistics {
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::Statistics.StatisticsCollection> __Marshaller_statistics_StatisticsCollection = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.StatisticsCollection.Parser));
+    static readonly grpc::Marshaller<global::Statistics.DataRequest> __Marshaller_statistics_DataRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.DataRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::Statistics.Response> __Marshaller_statistics_Response = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.Response.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
@@ -67,11 +67,11 @@ namespace Statistics {
     static readonly grpc::Marshaller<global::Statistics.EndGameRequest> __Marshaller_statistics_EndGameRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::Statistics.EndGameRequest.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response> __Method_send_data = new grpc::Method<global::Statistics.StatisticsCollection, global::Statistics.Response>(
+    static readonly grpc::Method<global::Statistics.DataRequest, global::Statistics.Response> __Method_send_data = new grpc::Method<global::Statistics.DataRequest, global::Statistics.Response>(
         grpc::MethodType.Unary,
         __ServiceName,
         "send_data",
-        __Marshaller_statistics_StatisticsCollection,
+        __Marshaller_statistics_DataRequest,
         __Marshaller_statistics_Response);
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
@@ -172,7 +172,7 @@ namespace Statistics {
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The response received from the server.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Statistics.Response send_data(global::Statistics.StatisticsCollection request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Statistics.Response send_data(global::Statistics.DataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return send_data(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
@@ -183,7 +183,7 @@ namespace Statistics {
       /// <param name="options">The options for the call.</param>
       /// <returns>The response received from the server.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::Statistics.Response send_data(global::Statistics.StatisticsCollection request, grpc::CallOptions options)
+      public virtual global::Statistics.Response send_data(global::Statistics.DataRequest request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_send_data, null, options, request);
       }
@@ -196,7 +196,7 @@ namespace Statistics {
       /// <param name="cancellationToken">An optional token for canceling the call.</param>
       /// <returns>The call object.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_dataAsync(global::Statistics.StatisticsCollection request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_dataAsync(global::Statistics.DataRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return send_dataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
@@ -207,7 +207,7 @@ namespace Statistics {
       /// <param name="options">The options for the call.</param>
       /// <returns>The call object.</returns>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_dataAsync(global::Statistics.StatisticsCollection request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Statistics.Response> send_dataAsync(global::Statistics.DataRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_send_data, null, options, request);
       }

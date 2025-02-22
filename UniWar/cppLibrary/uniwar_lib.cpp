@@ -16,14 +16,10 @@ const  map<string, vector<string>>& Player::getNeighborsMap() const{
 
 // Getter della lista di vicini per un dato territorio
 const vector<string> & Player::getNeighbors(const string& territory){
-    static const vector<string> emptyVector;  // Evita dangling reference
-
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
         throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
-        return emptyVector;
     }
     return neighborsMap.at(territory);
-
 }
 
 const  map<string, int> & Player::getTanksMap() const {

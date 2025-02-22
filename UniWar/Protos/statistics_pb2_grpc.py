@@ -36,7 +36,7 @@ class StatisticsServiceStub(object):
         """
         self.send_data = channel.unary_unary(
                 '/statistics.StatisticsService/send_data',
-                request_serializer=statistics__pb2.StatisticsCollection.SerializeToString,
+                request_serializer=statistics__pb2.DataRequest.SerializeToString,
                 response_deserializer=statistics__pb2.Response.FromString,
                 _registered_method=True)
         self.sign_in = channel.unary_unary(
@@ -133,7 +133,7 @@ def add_StatisticsServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'send_data': grpc.unary_unary_rpc_method_handler(
                     servicer.send_data,
-                    request_deserializer=statistics__pb2.StatisticsCollection.FromString,
+                    request_deserializer=statistics__pb2.DataRequest.FromString,
                     response_serializer=statistics__pb2.Response.SerializeToString,
             ),
             'sign_in': grpc.unary_unary_rpc_method_handler(
@@ -197,7 +197,7 @@ class StatisticsService(object):
             request,
             target,
             '/statistics.StatisticsService/send_data',
-            statistics__pb2.StatisticsCollection.SerializeToString,
+            statistics__pb2.DataRequest.SerializeToString,
             statistics__pb2.Response.FromString,
             options,
             channel_credentials,

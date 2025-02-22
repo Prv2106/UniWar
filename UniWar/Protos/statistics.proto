@@ -4,7 +4,7 @@ package statistics;
 
 service StatisticsService {
     
-    rpc send_data (StatisticsCollection) returns (Response); 
+    rpc send_data (DataRequest) returns (Response); 
     // da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
 
     rpc sign_in (SignInCredentials) returns (Response);
@@ -36,7 +36,7 @@ message Username{
     string username = 1;
 }
 
-message StatisticsCollection {
+message DataRequest {
     string username = 1;
     int32 round_id = 2;
     bool user_turn = 3;

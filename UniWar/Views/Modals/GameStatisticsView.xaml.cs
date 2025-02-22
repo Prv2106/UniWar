@@ -16,16 +16,11 @@ namespace UniWar {
             GameId = gameId;
         }
 
-        public class StatisticEntry {
-            public string StatName { get; }
-            public string UserValue { get; }
-            public string CpuValue { get; }
-
-            public StatisticEntry(string statName, object userValue, object cpuValue) {
-                StatName = statName;
-                UserValue = userValue.ToString()!;
-                CpuValue = cpuValue.ToString()!;
-            }
+        public class StatisticEntry(string statName, object userValue, object cpuValue) // Primary constructor
+        {
+            public string StatName { get; } = statName;
+            public string UserValue { get; } = userValue.ToString()!;
+            public string CpuValue { get; } = cpuValue.ToString()!;
         }
 
         private void ShowLoadingAnimation() {
@@ -56,7 +51,6 @@ namespace UniWar {
 
             ShowLoadingAnimation();
             try {
-                Console.WriteLine("Inviamo la richiesta delle statistiche");
                 StatisticsResponse response = await ClientGrpc.GetStatistics(GameId);
                 Console.WriteLine($"Statistiche ricevute: {response}");
 
@@ -64,6 +58,7 @@ namespace UniWar {
                     HideLoadingAnimation(response.Message);
                     return;
                 }
+                
                 Round.Text = "(round " + response.RoundId.ToString() +"):";
                 StatisticsList = [
                     new("Territori posseduti", response.UserOwnedTerritories, response.CpuOwnedTerritories),

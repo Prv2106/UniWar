@@ -13,7 +13,7 @@ namespace UniWar {
             var stub = GetStub();
 
             // Mappiamo la struct C# nel messaggio gRPC
-            var request = new Statistics.StatisticsCollection {
+            var request = new DataRequest {
                 RoundId = stats.RoundId,
                 UserTurn = stats.UserTurn,
                 UserOwnedTanks = stats.UserOwnedTanks,
@@ -41,9 +41,7 @@ namespace UniWar {
                 request.LostTerritories!.AddRange(stats.LostTerritories);
 
             request.UserOwnedTerritories.AddRange(stats.UserOwnedTerritories);
-            Console.WriteLine($"Numero territori posseduti dall'utente: {request.UserOwnedTerritories}");
             request.CpuOwnedTerritories.AddRange(stats.CpuOwnedTerritories);
-            Console.WriteLine($"Numero territori posseduti dalla Cpu: {request.CpuOwnedTerritories}");
             
             try {
                 var response = await stub.send_dataAsync(request);
@@ -64,7 +62,7 @@ namespace UniWar {
         public async static Task<GameInfoList> GetGames(string username) {
             var stub = GetStub();
 
-            var request = new Username() {
+            var request = new Username {
                Username_ = username
             };
 
@@ -79,12 +77,13 @@ namespace UniWar {
         }
 
 
-                public async static Task<StatisticsResponse> GetStatistics(int GameId) {
+        public async static Task<StatisticsResponse> GetStatistics(int GameId) {
             var stub = GetStub();
 
-            var request = new StatisticRequest();
-            request.GameId = GameId;
-            try{
+            var request = new StatisticRequest {
+                GameId = GameId
+            };
+            try {
                 var response = await stub.get_statisticsAsync(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
@@ -104,9 +103,11 @@ namespace UniWar {
 
         public async static Task<NewGameResponse> NewGame(string Username){
             var stub = GetStub();
-            var request = new Username();
-            request.Username_ = Username;
-            try{
+            var request = new Username {
+                Username_ = Username
+            };
+            
+            try {
                 var response = await stub.new_gameAsync(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
@@ -124,11 +125,12 @@ namespace UniWar {
 
         public async static Task<Response> EndGame(int GameId, bool IsWin){
             var stub = GetStub();
-            var request = new EndGameRequest();
-            request.GameId = GameId;
-            request.IsWin = IsWin;
+            var request = new EndGameRequest {
+                GameId = GameId,
+                IsWin = IsWin
+            };
 
-            try{
+            try {
                 var response = await stub.end_gameAsync(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
@@ -196,10 +198,11 @@ namespace UniWar {
         public async static Task<Response> UsernameCheck(string id) {
             var stub = GetStub();
 
-            var request = new Username();
-            request.Username_ = id;
+            var request = new Username {
+                Username_ = id
+            };
 
-            try{
+            try {
                 var response = await stub.username_checkAsync(request);
                 Console.WriteLine($"Risposta ricevuta dal server: {response}");
                 return response;
