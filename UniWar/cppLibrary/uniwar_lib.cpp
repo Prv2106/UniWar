@@ -7,7 +7,6 @@ using namespace std;
 namespace uniwar{
 
 /******************************************** Implementazione di Player *************************************/
-
 // Costruttore (con lista di inizializzazione)
 Player::Player(const map<string, vector<string>> & neighbors, const  map<string, int> & tanks, const string & player): neighborsMap(neighbors), tankCountMap(tanks), playerId(player) {}
 
@@ -101,14 +100,12 @@ const int Player::getTanksCount(const string &territory) const {
 
 // Questa mappa viene utilizzata dalla funzione "win" per verificare se il giocatore ha vinto
 const map<string, vector<string>> continents = {
-
     {"AmericaDelNord", {"Alaska", "Alberta", "StatiUnitiOccidentali", "StatiUnitiOrientali","AmericaCentrale", "Ontario", "TerritoriDelNordOvest", "Groenlandia", "Quebec"}},
     {"AmericaDelSud", {"Venezuela", "Perù", "Brasile", "Argentina"}},
     {"Africa", {"AfricaDelNord", "Egitto", "AfricaOrientale", "Congo", "AfricaDelSud", "Madagascar"}},
     {"Asia", {"Kamchatka", "Jacuzia", "Cita", "Giappone", "Cina", "Siam", "India", "MedioOriente","Afghanistan", "Urali", "Siberia", "Mongolia"}},
     {"Europa", {"EuropaOccidentale", "EuropaMeridionale", "GranBretagna", "Islanda", "Ucraina", "EuropaSettentrionale", "Scandinavia"}},
     {"Oceania", {"AustraliaOccidentale", "NuovaGuinea", "Indonesia", "AustraliaOrientale"}}
-
 };
 
 
@@ -116,48 +113,50 @@ const map<string, vector<string>> continents = {
 
 // Funzione che inizializza il contesto di gioco per i giocatori in base al json ottenuto da C#
 vector<Player> initializePlayers(const char* jsonData){
-    try {
-        // usiamo la funzione parse() della libreria nlohmann/json per convertire la stringa JSON in un oggetto JSON che rappresenta un array JSON.
-        json parsedData = json::parse(jsonData);
 
-        /*
-            Adesso parsedData contiene un oggetto json con la seguente struttura: 
-            [
-                { "PlayerId": "Player1", "Tanks": {"A": 3, "B": 2}, "Neighbors": {"A": ["B", "C"], "B": ["A"]} },
-                { "PlayerId": "Player2", "Tanks": {"C": 4}, "Neighbors": {"C": ["A"]} }
-            ]
-        */
-
-        // Creiamo un vettore di oggetti Player
-        vector<Player> players;
-         
-        // Cicliamo su ogni giocatore nel JSON
-        // player è un riferimento ad un oggetto json (auto permette di determinare il tipo dinamicamente)
-        for (auto& player : parsedData) {
-            // verifichiamo l'esistenza delle chiavi "Neighbors" e "Tanks" per ogni giocatore
-            if (!(player.contains("PlayerId") && player.contains("Neighbors") && player.contains("Tanks"))) {
-                cerr << "Errore: JSON malformato" << endl;
-                continue;
-            }
-        
-            // Sfruttiamo la funzione membro "get" per convertire i valori dell'oggetto json in tipi di dati standard di C++.
-            // In particolare, recuperiamo le mappe di vicini e carri armati
-            string playerName = player["PlayerId"].get<string>();
-            auto neighborsMap = player["Neighbors"].get<map<string, vector<string>>>(); 
-            auto tankCountsMap = player["Tanks"].get<map<string, int>>();
-
-            // Creiamo un oggetto player (allocato nello stack che verrà deallocato alla fine del for)
-            Player newPlayer(neighborsMap, tankCountsMap, playerName); 
-
-            // Aggiungiamo il player creato al vettore di player
-            players.push_back(newPlayer);
-        }
-        return players;
-
-    }catch (const exception& e) {
-        cerr << "Errore JSON: " << e.what() << endl;
-        return {}; // vettore vuoto in caso di errore
+    if (jsonData == nullptr || strlen(jsonData) == 0) {
+        cerr << "Errore: il JSON passato è vuoto o nullo" << endl;
+        throw std::invalid_argument("Json vuoto o nullo");
     }
+
+    // usiamo la funzione parse() della libreria nlohmann/json per convertire la stringa JSON in un oggetto JSON che rappresenta un array JSON.
+    json parsedData = json::parse(jsonData);
+
+    /*
+        Adesso parsedData contiene un oggetto json con la seguente struttura: 
+        [
+            { "PlayerId": "Player1", "Tanks": {"A": 3, "B": 2}, "Neighbors": {"A": ["B", "C"], "B": ["A"]} },
+            { "PlayerId": "Player2", "Tanks": {"C": 4}, "Neighbors": {"C": ["A"]} }
+        ]
+    */
+
+    // Creiamo un vettore di oggetti Player
+    vector<Player> players;
+        
+    // Cicliamo su ogni giocatore nel JSON
+    // player è un riferimento ad un oggetto json (auto permette di determinare il tipo dinamicamente)
+    for (auto& player : parsedData) {
+        // verifichiamo l'esistenza delle chiavi "Neighbors" e "Tanks" per ogni giocatore
+        if (!(player.contains("PlayerId") && player.contains("Neighbors") && player.contains("Tanks"))) {
+            cerr << "Errore: JSON malformato" << endl;
+            throw std::invalid_argument("Json Malformato");
+        }
+    
+        // Sfruttiamo la funzione membro "get" per convertire i valori dell'oggetto json in tipi di dati standard di C++.
+        // In particolare, recuperiamo le mappe di vicini e carri armati
+        string playerName = player["PlayerId"].get<string>();
+        auto neighborsMap = player["Neighbors"].get<map<string, vector<string>>>(); 
+        auto tankCountsMap = player["Tanks"].get<map<string, int>>();
+
+        // Creiamo un oggetto player (allocato nello stack che verrà deallocato alla fine del for)
+        Player newPlayer(neighborsMap, tankCountsMap, playerName); 
+
+        // Aggiungiamo il player creato al vettore di player
+        players.push_back(newPlayer);
+    }
+    return players;
+
+    
 
 
 }
@@ -168,8 +167,7 @@ const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map) {
     set<string> ownedTerritories = getTerritoriesFromMap(map);
     set<string> notOwnedTerritories;
 
-    for(const auto& pair: map){
-        const auto& neighbors = pair.second;
+    for(const auto& [_, neighbors]: map){
         for(const auto& territory: neighbors){
             // Se il territorio non appartiene a quelli posseduti lo inseriamo nella frontiera dei territori non posseduti
             // Cerchiamo il territorio nel range che va dall'inizio alla fine di ownedTerritories
@@ -180,7 +178,6 @@ const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map) {
     }
 
     return notOwnedTerritories;
-
 }
 
 
@@ -189,19 +186,18 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
     set<string> ownedTerritories = getTerritoriesFromMap(map);
     set<string> ownedFrontier;
 
-    for(const auto& pair: map){
-        const auto& neighbors = pair.second;
+    for(const auto& [territory, neighbors]: map){
         bool frontier = false;
 
         // Se ALMENO 1 territorio tra i vicini non appartiene ai territori posseduti allora il territorio chiave della mappa è un territorio di frontiera posseduto 
         for(const auto& territory: neighbors){
-            if(find(ownedTerritories.begin(), ownedTerritories.end(), territory) == ownedTerritories.end()){
+            if(ownedTerritories.count(territory) == 0){
                 frontier = true;
                 break;
             }
         }
         if(frontier){
-            ownedFrontier.insert(pair.first);
+            ownedFrontier.insert(territory);
         }
     }
 
@@ -225,12 +221,9 @@ bool win(const set<string> & territories){
     // Criamo un set di stringhe per tenere traccia dei continenti completati
     set<string> completedContinents;
 
-    for(const auto & pair: continents){
-        clog << "\nValutazione del completamento del continente " << pair.first << ":" << endl; 
-        // Usiamo i riferimenti per evitare di allocare altra memoria
-        const auto& continent = pair.first;
-        const auto& continentTerritories = pair.second;
-        
+    for(const auto& [continent, continentTerritories]: continents){
+        clog << "\nValutazione del completamento del continente " << continent << ":" << endl; 
+                
         // cicliamo la lista di territori
         bool completed = true;
         for(const auto & territory: continentTerritories){
@@ -258,12 +251,9 @@ bool win(const set<string> & territories){
             return true;
         }
     }
-    
-
     clog << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << " (devono essere completati almeno 3 continenti)" << endl;
     // se il giocatore non ha completato almeno 3 continenti 
     return false;
-
 } 
 
 

@@ -57,21 +57,12 @@ const char* cpuAttack (const char* jsonData){
     clog << "Funzione cpuAttack:" << endl;
     try{
         srand(time(0)); // Inizializziamo il seme
-        vector<uniwar::Player> players;
-            try {
-                players = uniwar::initializePlayers(jsonData);
-                if (players.empty()) {
-                    throw runtime_error("Errore: nessun giocatore inizializzato correttamente.");
-                }
-            } catch (const exception& e) {
-                cerr << "Errore durante l'inizializzazione dei giocatori: " << e.what() << endl;
-                return "{}";  // JSON vuoto come fallback
-            }
+        vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
         uniwar::Player cpuPlayer = players[0]; // Si assume che il cpu player sia il primo
         uniwar::Player userPlayer = players[1];
         vector<json> battleResults;
         bool attackChecking = true;
-        int ciclo = 0; // per il debug 
+        int ciclo = 0; // Debug
         AttackOutcome attackOutcome = AttackOutcome::NONE;
 
         while(true){
@@ -144,6 +135,7 @@ const char* cpuAttack (const char* jsonData){
                             // rimuoviamo il territorio perso dal giocatore
                             userPlayer.removeTerritory(neighborTerritory);
                             attackOutcome = AttackOutcome::CONQUERED;
+
                             clog << "Dopo lo spostamento strategico, il territorio della cpu  " << cpuTerritory << " ha " << cpuPlayer.getTanksCount(cpuTerritory) << " carri armati" << endl; // debug
 
                             if(uniwar::win(uniwar::getTerritoriesFromMap(cpuPlayer.getTanksMap()))){
@@ -207,8 +199,15 @@ const char* cpuAttack (const char* jsonData){
         // Se la cpu non ha vinto (ma ha attaccato) restituisce il risultato della battaglia qui 
         jsonResult = json(battleResults).dump();
         return jsonResult.c_str();
-    }catch (const exception& e) {
-        cerr << "Errore critico in reinforcement: " << e.what() << endl;
+
+    }catch(const invalid_argument &e){
+        cerr << "Errore critico in cpuAttack: " << e.what() << endl;
+        return "{}";  // JSON vuoto come fallback
+    } catch(const out_of_range &e){
+        cerr << "Errore critico in cpuAttack: " << e.what() << endl;
+        return "{}";  // JSON vuoto come fallback
+    } catch (const exception& e) {
+        cerr << "Errore critico in cpuAttack: " << e.what() << endl;
         return "{}";  // JSON vuoto come fallback
     }
 }
@@ -229,17 +228,7 @@ const char* reinforcement (const char* jsonData, int newTanks){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Funzione reinforcement:" << endl;
     try{
-        vector<uniwar::Player> players;
-        try {
-            players = uniwar::initializePlayers(jsonData);
-            if (players.empty()) {
-                throw runtime_error("Errore: nessun giocatore inizializzato correttamente.");
-            }
-        } catch (const exception& e) {
-            cerr << "Errore durante l'inizializzazione dei giocatori: " << e.what() << endl;
-            return "{}";  // JSON vuoto come fallback
-        }
-    
+        vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);    
         uniwar::Player& cpuPlayer = players[0]; 
         set<string> ownedFrontiers = uniwar::getOwnedFrontier(cpuPlayer.getNeighborsMap());
         int max = 0;
@@ -309,7 +298,13 @@ const char* reinforcement (const char* jsonData, int newTanks){
         return jsonResult.c_str();
     
 
-    }catch (const exception& e) {
+    } catch(const invalid_argument &e){
+        cerr << "Errore critico in reinforcement: " << e.what() << endl;
+        return "{}";  // JSON vuoto come fallback
+    } catch(const out_of_range &e){
+        cerr << "Errore critico in reinforcement: " << e.what() << endl;
+        return "{}";  // JSON vuoto come fallback
+    } catch (const exception& e) {
         cerr << "Errore critico in reinforcement: " << e.what() << endl;
         return "{}";  // JSON vuoto come fallback
     }
@@ -317,6 +312,14 @@ const char* reinforcement (const char* jsonData, int newTanks){
 
 // Funzione che permette a C# di verificare se il giocatore ha vinto o meno
 bool winCheck (const char* jsonData) {
-    vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
-    return uniwar::win(uniwar::getTerritoriesFromMap(players[0].getTanksMap()));
+    try {
+        vector<uniwar::Player> players = uniwar::initializePlayers(jsonData);
+        return uniwar::win(uniwar::getTerritoriesFromMap(players[0].getTanksMap()));        
+    } catch(const invalid_argument &e){
+        cerr << "Errore critico in winCheck: " << e.what() << endl;
+        return false;  
+    } catch (const exception& e) {
+        cerr << "Errore critico in winCheck: " << e.what() << endl;
+        return false; 
+    }
 }
