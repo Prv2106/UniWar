@@ -89,7 +89,7 @@
 
                 <HorizontalStackLayout
                      HorizontalOptions="Center"
-                     MaximumWidthRequest="290"
+                     MaximumWidthRequest="330"
                      >
                       <CollectionView ItemsSource="{Binding UserContinents}"
                                    ItemsLayout ="HorizontalList"
@@ -106,7 +106,8 @@
                                    BorderColor="Black"
                                    WidthRequest="100"
                                    HeightRequest="100">
-                                   <Label Text="{Binding}" 
+                                   <Label Text="{Binding}"
+                                          HorizontalTextAlignment="Center"
                                           MaximumWidthRequest ="150"
                                           HorizontalOptions="Center"
                                           VerticalOptions="Center"/>

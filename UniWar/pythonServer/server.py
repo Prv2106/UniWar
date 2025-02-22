@@ -10,8 +10,94 @@ from uniwar import db_config, command_service, query_service, functions
 
 
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
+
+    def get_games(self, request, context):
+        print("\n-------------------------------------------------------------------")
+        print("RPC get_games:")
+        print(f"Parametri richiesta: username = {request.username}")
+
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = query_service.QueryService()
+                response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
+                if response is not None:
+                    won = sum(1 for game in response if game[3] == 1)  # Partite vinte
+                    lost = sum(1 for game in response if game[3] == 0)  # Partite perse
+                    incomplete = sum(1 for game in response if game[3] == -1)  # Partite non finite
+
+                    game_info_list = [
+                        msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M"), state=game[3])
+                        for game in response
+                    ]
+
+                    # Genera il grafico a torta
+                    graph_url = functions.generate_game_results_pie_chart(won, lost, incomplete)
+
+                    print("Operazione eseguita con successo", flush=True)
+                    return msg.GameInfoList(
+                        message="Storico recuperato con successo", 
+                        status=True, 
+                        games=game_info_list,
+                        game_results_pie_chart=graph_url  # Aggiunto il grafico in base64
+                    )
+
+        except ValueError as e:
+            print(f"{e}", flush=True)
+            return msg.GameInfoList(message=str(e), status=False)
+        except pymysql.MySQLError as err:
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return msg.GameInfoList(message=str(err), status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush=True)
+            return msg.GameInfoList(message=str(e), status=False)
     
+
+    # rpc da richiamare quando si vuole iniziare una nuova partita
+    def new_game(self,request,context):
+        print("\n-------------------------------------------------------------------")
+        print("RPC new_game:")        
+        print(f"Parametri richiesta: username = {request.username}")
+        
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = command_service.CommandService()
+                date = datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d %H:%M")
+                game_id = service.handle_insert_game_command(command_service.InsertGameCommand(conn, request.username, date))
+                print("Operazione eseguita con successo",flush=True)
+                return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")
     
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return msg.NewGameResponse(message=str(err), status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
+            return msg.NewGameResponse(message=str(e), status=False)
+        
+        
+        
+    # rpc da richiamare quando si termina una partita
+    def end_game(self,request, context):
+        print("\n-------------------------------------------------------------------\n")
+        print("RPC end_game:")  
+        print(f"Parametri richiesta: game_id = {request.game_id}, is_win = {request.is_win}", flush= True)
+
+        try:
+            with pymysql.connect(**db_config.db_config) as conn:
+                service = command_service.CommandService()
+                service.handle_end_game_command(command_service.EndGameCommand(conn,request.game_id,request.is_win))
+                return msg.Response(message="Operazione completata con successo", status=True)               
+    
+        except pymysql.MySQLError as err:
+            # Gestione degli errori specifici del database   
+            print(f"Errore nel database, codice di errore: {err}", flush=True)
+            return msg.Response(message=str(err), status=False)
+        except Exception as e:
+            print(f"Errore generico, codice di errore: {e}", flush = True)
+            return msg.Response(message=str(e), status=False)
+        
+        
+
     # rpc per l'invio dei dati dopo una battaglia  
     def send_data(self, request, context):
         print("\n-------------------------------------------------------------------")
@@ -74,47 +160,6 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
 
     
-    def get_games(self, request, context):
-        print("\n-------------------------------------------------------------------")
-        print("RPC get_games:")
-        print(f"Parametri richiesta: username = {request.username}")
-
-        try:
-            with pymysql.connect(**db_config.db_config) as conn:
-                service = query_service.QueryService()
-                response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
-                if response is not None:
-                    won = sum(1 for game in response if game[3] == 1)  # Partite vinte
-                    lost = sum(1 for game in response if game[3] == 0)  # Partite perse
-                    incomplete = sum(1 for game in response if game[3] == -1)  # Partite non finite
-
-                    game_info_list = [
-                        msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M"), state=game[3])
-                        for game in response
-                    ]
-
-                    # Genera il grafico a torta
-                    graph_url = functions.generate_game_results_pie_chart(won, lost, incomplete)
-
-                    print("Operazione eseguita con successo", flush=True)
-                    return msg.GameInfoList(
-                        message="Storico recuperato con successo", 
-                        status=True, 
-                        games=game_info_list,
-                        game_results_pie_chart=graph_url  # Aggiunto il grafico in base64
-                    )
-
-        except ValueError as e:
-            print(f"{e}", flush=True)
-            return msg.GameInfoList(message=str(e), status=False)
-        except pymysql.MySQLError as err:
-            print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.GameInfoList(message=str(err), status=False)
-        except Exception as e:
-            print(f"Errore generico, codice di errore: {e}", flush=True)
-            return msg.GameInfoList(message=str(e), status=False)
-
-  
     
     def get_statistics(self,request, context):
         print("\n-------------------------------------------------------------------")
@@ -200,54 +245,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.StatisticsResponse(message=str(e), status=False)
         
-        
-        
-        
-    # rpc da richiamare quando si vuole iniziare una nuova partita
-    def new_game(self,request,context):
-        print("\n-------------------------------------------------------------------")
-        print("RPC new_game:")        
-        print(f"Parametri richiesta: username = {request.username}")
-        
-        try:
-            with pymysql.connect(**db_config.db_config) as conn:
-                service = command_service.CommandService()
-                date = datetime.now(ZoneInfo("Europe/Rome")).strftime("%Y-%m-%d %H:%M")
-                game_id = service.handle_insert_game_command(command_service.InsertGameCommand(conn, request.username, date))
-                print("Operazione eseguita con successo",flush=True)
-                return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")
-    
-        except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
-            print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.NewGameResponse(message=str(err), status=False)
-        except Exception as e:
-            print(f"Errore generico, codice di errore: {e}", flush = True)
-            return msg.NewGameResponse(message=str(e), status=False)
-        
-        
-        
-    
-    # rpc da richiamare quando si termina una partita
-    def end_game(self,request, context):
-        print("\n-------------------------------------------------------------------\n")
-        print("RPC end_game:")  
-        print(f"Parametri richiesta: game_id = {request.game_id}, is_win = {request.is_win}", flush= True)
-
-        try:
-            with pymysql.connect(**db_config.db_config) as conn:
-                service = command_service.CommandService()
-                service.handle_end_game_command(command_service.EndGameCommand(conn,request.game_id,request.is_win))
-                return msg.Response(message="Operazione completata con successo", status=True)               
-    
-        except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
-            print(f"Errore nel database, codice di errore: {err}", flush=True)
-            return msg.Response(message=str(err), status=False)
-        except Exception as e:
-            print(f"Errore generico, codice di errore: {e}", flush = True)
-            return msg.Response(message=str(e), status=False)
-        
+                
          
     # Gestione dell'utente
     def sign_in(self, request, context):
@@ -297,6 +295,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             # Gestione degli errori di validazione
             return msg.Response(message=str(e), status=False)
         
+
     def username_check(self,request,context):
         print("\n-------------------------------------------------------------------\n")
         print("RPC username_check:")  

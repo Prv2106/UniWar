@@ -65,7 +65,7 @@ namespace UniWar {
                     return;
                 }
                 Round.Text = "(round " + response.RoundId.ToString() +"):";
-                StatisticsList = new List<StatisticEntry> {
+                StatisticsList = [
                     new("Territori posseduti", response.UserOwnedTerritories, response.CpuOwnedTerritories),
                     new("Carri armati posseduti", response.UserOwnedTanks, response.CpuOwnedTanks),
                     new("Carri armati totali persi per giro", response.UserTanksLostPerRound, response.CpuTanksLostPerRound),
@@ -76,7 +76,7 @@ namespace UniWar {
                     new("Territori persi per giro", response.UserTerritoriesLostPerRound, response.CpuTerritoriesLostPerRound),
                     new("Territori conquistati per giro", response.CpuTerritoriesLostPerRound, response.UserTerritoriesLostPerRound),
                     new("Percentuale mappa posseduta", $"{response.UserMapOwnershipPercentage:F2}%", $"{response.CpuMapOwnershipPercentage:F2}%")
-                };
+                ];
 
                
                 if (response.UserOwnedContinents != null && response.UserOwnedContinents.Any()) {

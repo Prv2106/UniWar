@@ -2,9 +2,6 @@ import bcrypt
 import re
 
 
-
-
- 
 class LogInUserQuery:
     
     def __init__(self, username, password, conn):
@@ -31,9 +28,6 @@ class LogInUserQuery:
 
 
 
-
-    
-
 class UsernameCheckQuery:
     
     def __init__(self, conn, username):
@@ -46,7 +40,6 @@ class UsernameCheckQuery:
         """
         
     
-
     @staticmethod
     def validate_username(username):
         username_regex = r"^[A-Z][a-zA-Z0-9_-]{4,}$" # Username che inizia con una lettera maiuscola e che deve avere almeno 4 altri caratteri tra quelli indicati nella classe []

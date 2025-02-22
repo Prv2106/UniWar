@@ -58,32 +58,34 @@ namespace UniWar {
             // per recuperare l'elenco delle partite per l'utente loggato
             ShowLoadingAnimation();
             try {
-                string state;
                 GameInfoList response = await ClientGrpc.GetGames(UniWarSystem.Instance.LoggedUsername!);
                 Console.WriteLine("Ho ricevuto la risposta");
-                if (response.Games.Count == 0) {
+                if (response.Games.Count == 0 && response.Status == true) {
                     // l'utente non ha ancora nessuna partita disputata nel database
                     HideLoadingAnimation("Non sono presenti partite da te giocate nel database!");
-                } else {
-
+                } else if (response.Status == false) {
+                    HideLoadingAnimation(response.Message);
+                } else { // abbiamo delle partite!
                     // Controlla se il server ha inviato il grafico in base64
                     if (!string.IsNullOrEmpty(response.GameResultsPieChart)) {
                         byte[] imageBytes = Convert.FromBase64String(response.GameResultsPieChart);
                         // Create a new MemoryStream that will stay in scope
                         var stream = new MemoryStream(imageBytes);
                         Chart.Source = ImageSource.FromStream(() => new MemoryStream(imageBytes));
+                        Chart.WidthRequest = 240;
                     }
 
-                    foreach (GameInfo game in response.Games){
-                    if (game.State == 1)
-                        state = "Vincitore";
-                    else if (game.State == 0)
-                        state = "Perdente";
-                    else
-                        state = "Incompleta";
+                    string state;
+                    foreach (GameInfo game in response.Games) {
+                        if (game.State == 1)
+                            state = "Vincitore";
+                        else if (game.State == 0)
+                            state = "Perdente";
+                        else
+                            state = "Incompleta";
 
-                    Games.Add(new Game(game.Id,game.Date, state));
-                }
+                        Games.Add(new Game(game.Id,game.Date, state));
+                    }
 
                     BindingContext = this;  
                     HideLoadingAnimation();
