@@ -8,27 +8,25 @@ namespace uniwar{
 
 /******************************************** Implementazione di Player *************************************/
 
-// Implementazione del costruttore (con lista di inizializzazione)
+// Costruttore (con lista di inizializzazione)
 Player::Player(const map<string, vector<string>> & neighbors, const  map<string, int> & tanks, const string & player): neighborsMap(neighbors), tankCountMap(tanks), playerId(player) {}
 
-// Implementazione del getter della mappa dei territori vicini
 const  map<string, vector<string>>& Player::getNeighborsMap() const{
     return neighborsMap;
 }
 
-// Implementazione del getter della lista di vicini per un dato territorio
+// Getter della lista di vicini per un dato territorio
 const vector<string> & Player::getNeighbors(const string& territory){
     static const vector<string> emptyVector;  // Evita dangling reference
 
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
-        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
+        throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
         return emptyVector;
     }
     return neighborsMap.at(territory);
 
 }
 
-// Implementazione del getter della mappa con il numero di carri armati
 const  map<string, int> & Player::getTanksMap() const {
     return tankCountMap;
 }
@@ -37,10 +35,10 @@ const string & Player::getName() const{
     return playerId;
 }
 
-// Implementazione del metodo per aggiungere un territorio e i suoi vicini
+// Metodo per aggiungere un territorio e i suoi vicini
 void Player::addTerritory(const string & territory, const vector<string> & neighbors, int count){
     if(territory.empty() || neighbors.empty()){
-         cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
+        throw std::invalid_argument("Errore: il territorio {" + territory + "} o la lista dei vicini è vuota.");
         return;
     }
 
@@ -53,23 +51,22 @@ void Player::addTerritory(const string & territory, const vector<string> & neigh
         neighborsMap[territory] = neighbors; // crea una nuova entry
     }
     else{
-        clog << "Il territorio" << territory <<" è già presente in neighborsMap" << endl;
+        throw std::runtime_error("Errore: il territorio {" + territory + "} è già presente in tankCountMap.");
     }
     
     if(tankCountMap.find(territory) == tankCountMap.end()){ // la chiave non esiste
         tankCountMap[territory] = count; // crea una nuova entry
     }
     else{
-        clog << "Il territorio" << territory <<" è già presente in neighborsMap" << endl;
+        throw std::runtime_error("Errore: il territorio {" + territory + "} è già presente in tankCountMap.");
     }
 
 }
 
-
-// Implementazione del metodo per modificare il numero di carri armati di un territorio
+// Metodo per modificare il numero di carri armati di un territorio
 void Player::modifyTankCount(const string & territory, int newCount){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end())){
-        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
+        throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
         return;
     }
     else{
@@ -78,30 +75,28 @@ void Player::modifyTankCount(const string & territory, int newCount){
 
 }
 
-// Implementazione del metodo per rimuovere un territorio
+// Metodo per rimuovere un territorio
 void Player::removeTerritory(const string & territory){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
-        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
+        throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste o è già stato rimosso.");
         return;
     }
     neighborsMap.erase(territory);
     tankCountMap.erase(territory);
 }
 
-
-
-// Implementazione del metodo per ottenere il numero di carri armati dato il territorio
+// Metodo per ottenere il numero di carri armati dato il territorio
 const int Player::getTanksCount(const string &territory) const {
     if ((territory.empty()) || (neighborsMap.find(territory) == neighborsMap.end()) || (tankCountMap.find(territory) == tankCountMap.end())) {
-        cerr << "Il territorio {"<< territory <<  "} inserito non è valido" << endl;
+        throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
         return -1;  
     }
+    
     return tankCountMap.at(territory);  // .at() è un metodo degli std::map (e anche di std::vector, std::unordered_map, ecc.) che permette di accedere a un elemento in modo sicuro, lanciando un'eccezione se la chiave non esiste.
 }
 
 /****** Fine implementazione di Player */
 
-/* Inizializzazione di continents*/
 
 
 // Questa mappa viene utilizzata dalla funzione "win" per verificare se il giocatore ha vinto
@@ -117,7 +112,7 @@ const map<string, vector<string>> continents = {
 };
 
 
-/* Funzioni */
+/* Funzioni di supporto */
 
 // Funzione che inizializza il contesto di gioco per i giocatori in base al json ottenuto da C#
 vector<Player> initializePlayers(const char* jsonData){
@@ -140,24 +135,14 @@ vector<Player> initializePlayers(const char* jsonData){
         // player è un riferimento ad un oggetto json (auto permette di determinare il tipo dinamicamente)
         for (auto& player : parsedData) {
             // verifichiamo l'esistenza delle chiavi "Neighbors" e "Tanks" per ogni giocatore
-            if (!player.contains("PlayerId") || player["PlayerId"].is_null()) {
-                cerr << "Errore: Il campo 'PlayerId' è mancante o nullo." << endl;
+            if (!(player.contains("PlayerId") && player.contains("Neighbors") && player.contains("Tanks"))) {
+                cerr << "Errore: JSON malformato" << endl;
                 continue;
             }
-            string playerName = player["PlayerId"].get<string>();
-
-            if (!player.contains("Neighbors") || player["Neighbors"].is_null()) {
-                cerr << "Errore nel giocatore " << playerName << ": Manca la chiave 'Neighbors'" << endl;
-                continue;
-            }
-
-            if (!player.contains("Tanks") || player["Tanks"].is_null()) {
-                cerr << "Errore nel giocatore " << playerName << ": Manca la chiave 'Tanks'" << endl;
-                continue;
-            }
-
+        
             // Sfruttiamo la funzione membro "get" per convertire i valori dell'oggetto json in tipi di dati standard di C++.
             // In particolare, recuperiamo le mappe di vicini e carri armati
+            string playerName = player["PlayerId"].get<string>();
             auto neighborsMap = player["Neighbors"].get<map<string, vector<string>>>(); 
             auto tankCountsMap = player["Tanks"].get<map<string, int>>();
 
@@ -232,15 +217,16 @@ bool win(const set<string> & territories){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Inizio Algoritmo per determinare la condizione di vittoria" << endl;
     if(territories.size() < 28){
-        clog << "Condizione di vittoria non rispettata: " << territories.size() << " territori conquistati" << endl;
+        clog << "Condizione di vittoria non rispettata: " << territories.size() << " territori conquistati" << " (devono essere conquistati almeno 28 territori)" << endl;
         return false;
 
     }
+
     // Criamo un set di stringhe per tenere traccia dei continenti completati
     set<string> completedContinents;
 
     for(const auto & pair: continents){
-        clog << "Controlliamo il cotinente " << pair.first << endl; 
+        clog << "\nValutazione del completamento del continente " << pair.first << ":" << endl; 
         // Usiamo i riferimenti per evitare di allocare altra memoria
         const auto& continent = pair.first;
         const auto& continentTerritories = pair.second;
@@ -248,31 +234,23 @@ bool win(const set<string> & territories){
         // cicliamo la lista di territori
         bool completed = true;
         for(const auto & territory: continentTerritories){
-            clog << "Controlliamo il territorio " << territory << endl;
-
-            /*
-                La funzione find cerca l'elemento territory tra gli elementi che vanno da territories.begin() fino a territories.end(). 
-                La funzione restituisce un iteratore che punta al primo elemento trovato uguale a territory, oppure a territories.end() se l'elemento non viene trovato.
-            */
-            if(find(territories.begin(), territories.end(), territory) == territories.end()){
+           if (territories.count(territory) == 0){
                 completed = false;
-                clog << "Territorio " << territory << " mancante" << endl;
+                clog << territory << " mancante" << endl;
                 break; // è inutile continuare il ciclo perché manca almeno 1 territorio per completare il continente
             }
-            clog << "Il territorio " << territory << " è presente" << endl;
+            clog << territory << " presente" << endl;
 
         }
 
         // se il giocatore possiede tutti i territori del continente allora aggiungiamo il continente tra quelli completati
         if(completed){
-            clog << "Il continente " << continent << " è completo" << endl;
+            clog << "Continente " << continent << " completato" << endl;
             completedContinents.insert(continent);
         }
 
         if(completedContinents.size() > 2){
             clog << "Vittoria!\nContinenti completati: ";
-    
-            // Stampiamo tutti i continenti completati
             for (const auto& continent : completedContinents) {
                 clog << continent << " ";
             }          
@@ -282,11 +260,12 @@ bool win(const set<string> & territories){
     }
     
 
-    clog << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << endl;
+    clog << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << " (devono essere completati almeno 3 continenti)" << endl;
     // se il giocatore non ha completato almeno 3 continenti 
     return false;
 
 } 
+
 
 // Funzione che simula il lancio dei dadi e che li ordina in modo decrescente
 int rollTheDice(int (&cpuAttackDice)[3], int (&userDefenseDice)[3], const int& userTanksCount){

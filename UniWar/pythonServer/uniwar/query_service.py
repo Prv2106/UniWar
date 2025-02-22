@@ -72,7 +72,8 @@ class GetGamesQuery:
         self.get_games_query = """
         SELECT *
         FROM Games
-        WHERE username = %s        
+        WHERE username = %s
+        ORDER BY date DESC
         """
         
         
