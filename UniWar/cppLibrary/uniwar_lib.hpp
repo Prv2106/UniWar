@@ -63,8 +63,8 @@ extern  const map<string, vector<string>> continents;
 template <typename T>
 NODISCARD const set<string> getTerritoriesFromMap(const map<string, T> & map) {
     set<string> territories;
-    for (const auto& pair : map) {
-        territories.insert(pair.first);
+    for (const auto& [territory, _] : map) {
+        territories.insert(territory);
     }
     return territories;
 }
