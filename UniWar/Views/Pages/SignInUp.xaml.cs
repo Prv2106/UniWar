@@ -8,7 +8,7 @@ namespace UniWar{
             InitializeComponent();
 
             // come prima cosa, controlliamo se è già presente una "sessione" di login
-            if (UniWarSystem.Instance.IsGameInitialized) {
+            if (UniWarSystem.Instance.LoggedUsername != null) {
                 // allora dovremmo essere nella main page
                 Navigation.PushAsync(new MainPage());
             }

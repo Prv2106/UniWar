@@ -1,5 +1,4 @@
 using Grpc.Net.Client;
-using Microsoft.Windows.Management.Deployment;
 using Statistics; // Namespace generato da gRPC
 
 namespace UniWar {
