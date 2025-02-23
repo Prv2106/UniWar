@@ -19,7 +19,7 @@ namespace UniWar {
                 img.IsVisible = true;
             }
 
-            WarningText.Text = $"Hai perso {tanksLostForUser} carri armati, mentre la CPU ne ha persi {tanksLostForCpu}";
+            WarningText.Text = $"Carri armati persi: Tu = {tanksLostForUser}, CPU = {tanksLostForCpu}";
 
             _tsc = tsc;
         }

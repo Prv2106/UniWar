@@ -38,7 +38,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                         message="Storico recuperato con successo", 
                         status=True, 
                         games=game_info_list,
-                        game_results_pie_chart=graph_url  # Aggiunto il grafico in base64
+                        game_results_pie_chart=graph_url  
                     )
 
         except ValueError as e:

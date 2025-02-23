@@ -537,27 +537,34 @@ public class UniWarSystem { // singleton
             _territories["Cina"],
             _territories["Indonesia"]
         ]);
+        // 38. Cita
+        _territories["Cita"].NeighboringTerritories.AddRange([
+            _territories["Siberia"],
+            _territories["Mongolia"],
+            _territories["Kamchatka"],
+            _territories["Jacuzia"],
+        ]);
     }
     private void Oceania() {
-        // 38. Indonesia
+        // 39. Indonesia
         _territories["Indonesia"].NeighboringTerritories.AddRange([
             _territories["Siam"],
             _territories["NuovaGuinea"],
             _territories["AustraliaOccidentale"]
         ]);
-        // 39. Nuova Guinea
+        // 40. Nuova Guinea
         _territories["NuovaGuinea"].NeighboringTerritories.AddRange([
             _territories["Indonesia"],
             _territories["AustraliaOrientale"],
             _territories["AustraliaOccidentale"]
         ]);
-        // 40. Australia Occidentale
+        // 41. Australia Occidentale
         _territories["AustraliaOccidentale"].NeighboringTerritories.AddRange([
             _territories["Indonesia"],
             _territories["NuovaGuinea"],
             _territories["AustraliaOrientale"]
         ]);
-        // 41. Australia Orientale
+        // 42. Australia Orientale
         _territories["AustraliaOrientale"].NeighboringTerritories.AddRange([
             _territories["AustraliaOccidentale"],
             _territories["NuovaGuinea"]
