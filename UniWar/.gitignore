@@ -16,7 +16,6 @@ bld/
 publish/
 
 # Files built by Visual Studio
-*.dll
 *.pdb
 *.exe
 *.cache
