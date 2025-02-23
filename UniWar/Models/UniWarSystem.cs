@@ -67,7 +67,7 @@ public class UniWarSystem { // singleton
         Random gen = new();
 
         // bisogna distribuire equamente i territori ai due giocatori
-        User = new Player("UserPlayer");
+        User = new Player(LoggedUsername ?? "UserPlayer");
         Cpu = new Player("CpuPlayer");
 
         // recuperiamo tutti i territori

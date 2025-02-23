@@ -4,6 +4,7 @@
     <!-- Supporto solo per Windows -->
     <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
     <WindowsPackageType>None</WindowsPackageType>
+    
 
     <OutputType>Exe</OutputType>
     <RootNamespace>UniWar</RootNamespace>
