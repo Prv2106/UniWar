@@ -97,12 +97,12 @@ class QueryService:
         with query.conn.cursor() as cursor:
             cursor.execute(query.username_check,(query.username,))
             result = cursor.fetchone()
-            if result is not None:
-                raise ValueError("Username esistente")
             
             if not query.validate_username(query.username):
                 raise ValueError("Username non valido: Deve iniziare con una lettera maiuscola e avere almeno 5 caratteri in totale")
             
+            if result is not None:
+                raise ValueError("Username esistente")
             
     def handle_get_data_query(self, query: GetDataQuery):
             with query.conn.cursor() as cursor:

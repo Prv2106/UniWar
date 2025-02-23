@@ -287,10 +287,10 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             # Gestione degli errori specifici del database
             if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
                 print(f"Errore di duplicazione, codice di errore: {err}", flush=True)
-                return msg.Response(message="Unavailable username", status=False)
+                return msg.Response(message="Username già esistente", status=False)
             else:
                 print(f"Errore durante l'inserimento nel database, codice di errore: {err}", flush=True)
-                return msg.Response(message="Database Error", status=False)
+                return msg.Response(message=str(err), status=False)
 
         except ValueError as e:
             # Gestione degli errori di validazione
