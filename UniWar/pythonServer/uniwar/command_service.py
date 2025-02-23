@@ -44,6 +44,7 @@ class InsertDataCommand:
         cpu_owned_tanks = kwargs['cpu_owned_tanks']        
         user_owned_territories_list = kwargs['user_owned_territories_list']        
         cpu_owned_territories_list = kwargs['cpu_owned_territories_list']
+        
         print(f"round_id ricevuto da request = {round_id}", flush=True)
         
 
@@ -53,11 +54,12 @@ class InsertDataCommand:
         if result is not None:
             (_,round_id,turn_completed,_,_,_,_,_,_,_,user_tanks_lost,cpu_tanks_lost,user_tanks_lost_attacking,cpu_tanks_lost_attacking,
             user_tanks_lost_defending,cpu_tanks_lost_defending,user_perfect_defenses,cpu_perfect_defenses,
-            user_territories_lost,cpu_territories_lost) = result
+            user_territories_lost,cpu_territories_lost, is_user_turn) = result
             
             print(f"round_id recuperato dal db = {round_id}", flush=True)
             if round_id == kwargs['round_id']:
-                turn_completed = 1 if turn_completed == 0 else 2
+                if is_user_turn != kwargs['user_turn']: # è avvenuto un cambio turno nello stesso round
+                    turn_completed += 1
             else:
                 turn_completed = 1
                 
@@ -95,7 +97,8 @@ class InsertDataCommand:
                     cpu_owned_territories = %s, 
                     cpu_owned_tanks = %s, 
                     user_owned_territories_list = %s, 
-                    cpu_owned_territories_list = %s
+                    cpu_owned_territories_list = %s,
+                    is_user_turn = %s
                 WHERE game_id = %s;
             """
             
@@ -118,14 +121,11 @@ class InsertDataCommand:
                 cpu_owned_tanks,
                 user_owned_territories_list,
                 cpu_owned_territories_list,
-                game_id 
+                kwargs['user_turn'],
+                game_id
             )
 
 
-
-            
-             
-        
         else:
             user_tanks_lost = kwargs['user_tanks_lost']
             user_tanks_lost_attacking = kwargs['user_tanks_lost_attacking']
@@ -161,10 +161,11 @@ class InsertDataCommand:
                     cpu_owned_territories, 
                     cpu_owned_tanks, 
                     user_owned_territories_list, 
-                    cpu_owned_territories_list
+                    cpu_owned_territories_list,
+                    is_user_turn
                 ) 
                 VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                 );
             """
             self.values_tuple = (
@@ -187,6 +188,7 @@ class InsertDataCommand:
                 cpu_owned_tanks,
                 user_owned_territories_list,
                 cpu_owned_territories_list,
+                kwargs['user_turn'] 
             )
 
 
@@ -225,11 +227,16 @@ class CommandService:
     def handle_insert_data_command(self, command: InsertDataCommand):
         with command.conn.cursor() as cursor:
             cursor.execute(command.insert_command_query, command.values_tuple)
+            if cursor.rowcount == 0:
+                raise ValueError("Si è verificato un problema durante l'aggiornamento dei dati")
             command.conn.commit()
     
     def handle_insert_game_command(self, command: InsertGameCommand) -> int: # type int, serve semplicemente per migliorare la leggibilità del codice, suggerisce che la funzione dovrebbe restituire un intero
         with command.conn.cursor() as cursor:
             cursor.execute(command.insert_game_query, (command.username, command.date))
+            if cursor.rowcount == 0:
+                raise ValueError("Si è verificato un problema durante l'inserimento della partita")
+            
             command.conn.commit()
             game_id = cursor.lastrowid  # Restituisce l'ID dell'ultimo record inserito
             return game_id  # Restituiamo il game_id generato

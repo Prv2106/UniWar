@@ -145,6 +145,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     cpu_owned_tanks=request.cpu_owned_tanks,
                     user_owned_territories_list= user_owned_territories_json, 
                     cpu_owned_territories_list= cpu_owned_territories_json,
+                    user_turn = request.user_turn
                     )
                 )
                 print("Operazione eseguita con successo",flush=True)

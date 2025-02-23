@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS Data (
     user_territories_lost INT NOT NULL DEFAULT 0,
     cpu_territories_lost  INT NOT NULL DEFAULT 0,
 
+    is_user_turn BOOLEAN NOT NULL DEFAULT FALSE,
+
     FOREIGN KEY (game_id) REFERENCES Games(id) ON DELETE CASCADE
 );
 
