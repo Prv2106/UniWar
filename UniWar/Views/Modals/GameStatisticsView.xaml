@@ -31,7 +31,7 @@
                 Source="statistics.png"
                 WidthRequest="60"
                 />
-                <!-- Titolo --> 
+                <!-- Title -->
                 <HorizontalStackLayout HorizontalOptions ="Center">
                 <Label 
                      Text="Resoconto partita " 
@@ -50,7 +50,7 @@
                      
                 </HorizontalStackLayout>               
 
-                <!-- Tabella -->
+                <!-- Table -->
                 <Grid ColumnDefinitions="*,*,*" Padding="10" BackgroundColor="LightGray" WidthRequest="392">
                     <Label Text="" FontAttributes="Bold" HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center" Grid.Column="1"/>

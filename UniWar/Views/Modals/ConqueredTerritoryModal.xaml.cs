@@ -1,5 +1,9 @@
 namespace UniWar
 {
+    /// <summary>
+    /// Modal that lets the user choose how many tanks to move into a conquered
+    /// territory.
+    /// </summary>
     public partial class ConqueredTerritoryModal : ContentPage
     {
         private int _selectedNumber = 1;
@@ -7,6 +11,11 @@ namespace UniWar
         private TaskCompletionSource<int> _tcs;
 
 
+        /// <summary>
+        /// Initializes the modal with the allowed range.
+        /// </summary>
+        /// <param name="maxValue">Maximum number of movable tanks.</param>
+        /// <param name="tcs">Source completed with the chosen number.</param>
         public ConqueredTerritoryModal(int maxValue, TaskCompletionSource<int> tcs) {
             InitializeComponent();
             _maxValue = maxValue;

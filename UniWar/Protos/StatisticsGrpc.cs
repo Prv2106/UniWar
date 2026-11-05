@@ -164,7 +164,7 @@ namespace Statistics {
       }
 
       /// <summary>
-      /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
+      /// Called whenever a player finishes an attack phase
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -177,7 +177,7 @@ namespace Statistics {
         return send_data(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
+      /// Called whenever a player finishes an attack phase
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>
@@ -188,7 +188,7 @@ namespace Statistics {
         return CallInvoker.BlockingUnaryCall(__Method_send_data, null, options, request);
       }
       /// <summary>
-      /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
+      /// Called whenever a player finishes an attack phase
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="headers">The initial metadata to send with the call. This parameter is optional.</param>
@@ -201,7 +201,7 @@ namespace Statistics {
         return send_dataAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
       /// <summary>
-      /// da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
+      /// Called whenever a player finishes an attack phase
       /// </summary>
       /// <param name="request">The request to send to the server.</param>
       /// <param name="options">The options for the call.</param>

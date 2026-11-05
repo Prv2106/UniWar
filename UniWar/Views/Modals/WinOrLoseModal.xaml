@@ -13,7 +13,7 @@
             
             <VerticalStackLayout>
                 
-                <!-- Icona di informazione e testo -->
+                <!-- Information icon and text -->
                 <Image x:Name = "ImageInfo"
                 WidthRequest="100"
                 HeightRequest="100" 

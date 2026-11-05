@@ -17,14 +17,14 @@ CREATE TABLE IF NOT EXISTS Games (
 CREATE TABLE IF NOT EXISTS Data (
     game_id INT NOT NULL DEFAULT 1 PRIMARY KEY,
     round_id INT NOT NULL DEFAULT 1,
-    turn_completed INT NOT NULL DEFAULT 0, -- Turni completati in un round (o 1 o 2)
+    turn_completed INT NOT NULL DEFAULT 0, -- Completed turns within a round (1 or 2)
     user_owned_territories INT NOT NULL DEFAULT 0,
     user_owned_tanks INT NOT NULL DEFAULT 0,
     cpu_owned_territories INT NOT NULL DEFAULT 0,
     cpu_owned_tanks INT NOT NULL DEFAULT 0,
-    user_owned_territories_list TEXT NOT NULL, -- Lista di territori posseduti dall'utente (serializzata in JSON)
-    cpu_owned_territories_list TEXT NOT NULL,  -- Lista di territori posseduti dalla CPU (serializzata in JSON)
-    user_win INT NOT NULL DEFAULT -1, -- -1, 0 o 1
+    user_owned_territories_list TEXT NOT NULL, -- User-owned territories serialized as JSON
+    cpu_owned_territories_list TEXT NOT NULL,  -- CPU-owned territories serialized as JSON
+    user_win INT NOT NULL DEFAULT -1, -- -1, 0, or 1
     
     user_tanks_lost INT NOT NULL DEFAULT 0,
     cpu_tanks_lost INT NOT NULL DEFAULT 0,
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS Data (
     user_tanks_lost_defending INT NOT NULL DEFAULT 0,
     cpu_tanks_lost_defending INT NOT NULL DEFAULT 0,
 
-    user_perfect_defenses INT NOT NULL DEFAULT 0, -- contatori
-    cpu_perfect_defenses INT NOT NULL DEFAULT 0, -- contatori
+    user_perfect_defenses INT NOT NULL DEFAULT 0, -- Counters
+    cpu_perfect_defenses INT NOT NULL DEFAULT 0, -- Counters
 
     user_territories_lost INT NOT NULL DEFAULT 0,
     cpu_territories_lost  INT NOT NULL DEFAULT 0,

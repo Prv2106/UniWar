@@ -1,3 +1,10 @@
+"""Domain helpers for statistics aggregation and chart generation.
+
+Provides the static continent-to-territory mapping, a lightweight wrapper
+around the incoming gRPC request, battle metric aggregation, continent ownership
+detection, and pie-chart rendering as base64-encoded PNG data.
+"""
+
 from functools import reduce
 
 continents = {
@@ -10,17 +17,36 @@ continents = {
 }
 
 class Data:
+    """Normalized view of a ``DataRequest`` protobuf message."""
 
-    def __init__(self,request):
+    def __init__(self, request):
+        """Copies the request fields into plain Python structures.
+
+        Args:
+            request (statistics_pb2.DataRequest): Battle statistics payload.
+        """
         self.is_user_turn = request.user_turn
-        self.defending_territories =dict(request.defending_territories) 
+        self.defending_territories = dict(request.defending_territories)
         self.attacking_territories = dict(request.attacking_territories)
         self.lost_territories = request.lost_territories
 
 
 def process_data(data: Data):
-    
-    if data.is_user_turn is True: # Turno utente
+    """Aggregates battle metrics according to the active player.
+
+    Losses are attributed to the attacker or defender depending on whether the
+    user or the CPU initiated the battle.
+
+    Args:
+        data (Data): Normalized battle statistics.
+
+    Returns:
+        tuple: User tanks lost, user territories lost, user perfect defenses,
+        CPU tanks lost, CPU perfect defenses, CPU territories lost, user tanks
+        lost while attacking, CPU tanks lost while attacking, user tanks lost
+        while defending, and CPU tanks lost while defending.
+    """
+    if data.is_user_turn is True:  # User turn
         user_tanks_lost = user_tanks_lost_attacking = reduce(lambda x,y: x+y, data.attacking_territories.values(), 0) 
         cpu_tanks_lost = cpu_tanks_lost_defending= reduce(lambda x,y: x+y, data.defending_territories.values(), 0) 
         cpu_territories_lost = len(data.lost_territories)
@@ -30,7 +56,7 @@ def process_data(data: Data):
         cpu_tanks_lost_attacking = 0
         user_territories_lost = 0        
             
-    else: # Turno della CPU
+    else:  # CPU turn
         user_tanks_lost = user_tanks_lost_defending = reduce(lambda x,y: x+y, data.defending_territories.values(), 0) 
         cpu_tanks_lost = cpu_tanks_lost_attacking = reduce(lambda x,y: x+y, data.attacking_territories.values(), 0) 
         user_territories_lost = len(data.lost_territories)
@@ -42,14 +68,19 @@ def process_data(data: Data):
     
     return user_tanks_lost,user_territories_lost,user_perfect_defenses,cpu_tanks_lost,cpu_perfect_defenses,cpu_territories_lost,user_tanks_lost_attacking,cpu_tanks_lost_attacking,user_tanks_lost_defending, cpu_tanks_lost_defending
 
-# Funzione che restituisce una lista di stringhe contenente il nome dei contenenti posseduti data una lista di territori posseduti
 def get_owned_continents(owned_territories):
+    """Returns the continents fully controlled by a player.
+
+    Args:
+        owned_territories (list[str]): Names of the territories owned.
+
+    Returns:
+        list[str]: Names of the continents whose territories are all owned.
+    """
     owned_continents = []       
     for continent, territories in continents.items():
-        # Usiamo la sintassi territory in owned_territories for territory in territories
-        # in questo modo otteniamo un effetto simile ad una list comprehension in cui abbiamo dei valori booleani
-        # la differenza sta nel fatto che anziché creare una list creiamo invece un iteratore, facciamo una lazy evaluation
-        # all restituisce True solo se ogni elemento dell'iteratore è True
+        # The generator expression is evaluated lazily; ``all`` returns True
+        # only when every territory of the continent is owned.
         if all(territory in owned_territories for territory in territories):
             owned_continents.append(continent)
 
@@ -61,19 +92,29 @@ import io
 import base64
 
 def generate_game_results_pie_chart(won, lost, incomplete):
-    labels = ['Vinte', 'Perse', 'Incomplete'] # nomi delle categorie 
-    values = [won, lost, incomplete] # valori numerici delle categorie (passati alla funzione quando invoata)
-    colors = ['#4CAF50', '#F44336', '#FFC107']  # Verde, Rosso, Giallo
-    explode = (0.1, 0.1, 0)  # Per evidenziare i primi due segmenti (vittorie e sconfitte)
+    """Renders a pie chart of game outcomes as a base64-encoded PNG.
 
-    # Filtriamo le etichette quando e se il valore è 0
+    Args:
+        won (int): Number of games won.
+        lost (int): Number of games lost.
+        incomplete (int): Number of unfinished games.
+
+    Returns:
+        str: Base64-encoded PNG image data.
+    """
+    labels = ['Vinte', 'Perse', 'Incomplete']  # Category labels
+    values = [won, lost, incomplete]  # Category values
+    colors = ['#4CAF50', '#F44336', '#FFC107']  # Green, red, yellow
+    explode = (0.1, 0.1, 0)  # Emphasize wins and losses
+
+    # Drop categories whose value is zero
     filtered_labels = [label if size > 0 else "_" for label, size in zip(labels, values)]
     filtered_labels = [s for s in filtered_labels if s != "_"]
     filtered_values = [size for size in values if size > 0]
     filtered_explode = [e for e, size in zip(explode, values) if size > 0]
     filtered_colors = [c for c, size in zip(colors, values) if size > 0]
 
-    plt.figure(figsize=(4,4)) # dimensioni 6x6 pollici
+    plt.figure(figsize=(4,4))
     plt.pie(
         filtered_values,
         labels=filtered_labels,
@@ -84,7 +125,7 @@ def generate_game_results_pie_chart(won, lost, incomplete):
         textprops={'fontsize': 14, 'fontweight': 'bold'} 
     )
 
-    # Salvare il grafico come immagine in base64
+    # Encode the chart as a base64 PNG string
     img = io.BytesIO()
     plt.savefig(img, format='png', bbox_inches='tight')
     img.seek(0)

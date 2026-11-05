@@ -4,7 +4,14 @@ using Microsoft.Maui.Platform;
 
 
 namespace UniWar {
+    /// <summary>
+    /// Configures fonts, logging, and the initial Windows window geometry.
+    /// </summary>
     public static class MauiProgram {        
+        /// <summary>
+        /// Creates and configures the MAUI application.
+        /// </summary>
+        /// <returns>Configured <see cref="MauiApp"/> instance.</returns>
         public static MauiApp CreateMauiApp() {
             var builder = MauiApp.CreateBuilder();
             builder
@@ -20,8 +27,8 @@ namespace UniWar {
 						var appWindow = w.GetAppWindow(); 
 						if (appWindow != null) {
 							var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
-                            int width = (int)(displayInfo.Width * 0.49);  // % della larghezza dello schermo
-                            int height = (int)(displayInfo.Height * 0.94);  // % dell'altezza dello schermo
+                            int width = (int)(displayInfo.Width * 0.49);  // Fraction of screen width
+                            int height = (int)(displayInfo.Height * 0.94);  // Fraction of screen height
                             
                             appWindow.Resize(new Windows.Graphics.SizeInt32(width, height));
                             appWindow.Move(new Windows.Graphics.PointInt32(50, 10));

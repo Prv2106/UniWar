@@ -1,34 +1,37 @@
 /*
-In C#, la direttiva using System.Runtime.InteropServices; serve a importare il namespace System.Runtime.InteropServices, che contiene classi e metodi per interagire con il codice nativo (ad esempio, codice C o C++). 
-Questo namespace è fondamentale quando si ha bisogno di fare interoperabilità tra il codice gestito (C#) e il codice non gestito (come quello C++).
+The System.Runtime.InteropServices namespace provides types and methods for
+interoperating with native code (for example, C or C++). It is required for the
+managed-to-native calls used by this page.
 */
 using System.Runtime.InteropServices;
 using System.Text.Json;
 
 namespace UniWar {
+    /// <summary>
+    /// Main game table. Displays the map, the user's army placement, total tank
+    /// and territory counts, the user's tank color, and the assigned goal.
+    /// </summary>
     public partial class TablePage : ContentPage {
     /*
-            Pagina dove viene mostrato il "tavolo" da gioco dal punto di vista dell'utente..
-            Quindi, questo vede informazioni come:
-            - il posizionamento delle sue armate sulla mappa,
-            - il numero totale di carri armati,
-            - il numero totale di territori posseduti,
-            - il suo colore di carri armati,
-            - il suo obiettivo,
+            This page renders the game board from the user's perspective:
+            - army placement on the map;
+            - total tank count;
+            - total owned territories;
+            - tank color;
+            - assigned goal.
     */
 
-    // riceveremo dalla classe singleton due istanze di player, le quali avranno
-    // il riferimento alla lista di territori != da null e dove ogni territorio ha 
-    // a sua volta il riferimento ad una lista di carri armati
+    // The singleton system provides the player instances, each referencing a
+    // non-null territory collection whose items reference tank lists.
 
     private static TablePage? _instance;
     private Player? User {get; set;}
     private Player? CPU {get; set;}
     private Turn? Turn {get; set;}
-    private string? IconSrcUser {get;} // percorso icona carro armato col colore 
+    private string? IconSrcUser {get;}  // Colored tank icon path
     private string? IconSrcCpu {get;}
 
-    private bool UserWantsToAttack {get; set;} = false; // per gestire il click su un territorio
+    private bool UserWantsToAttack {get; set;} = false;  // Tracks territory clicks during attack mode
 
     private bool CpuTurnCompleted {get; set;} = false;
     private bool UserTurnCompleted {get; set;} = false;
@@ -36,6 +39,9 @@ namespace UniWar {
 
     private readonly JsonSerializerOptions jsonSerializerOpt = new() { WriteIndented = true};
 
+    /// <summary>
+    /// Gets the singleton page instance, creating it on first access.
+    /// </summary>
     public static TablePage Instance {
         get {
             if (_instance == null) 
@@ -44,6 +50,9 @@ namespace UniWar {
         }
     }
 
+    /// <summary>
+    /// Discards the singleton instance so a new page can be created.
+    /// </summary>
     public static void Reset() {
         _instance = null;
     }
@@ -55,10 +64,10 @@ namespace UniWar {
             InitializeComponent();
             Turn = UniWarSystem.Instance.Turn!;
             User = UniWarSystem.Instance.User!;
-            // recuperiamo il nome del file dell'icona del carro armato utente
+            // Resolve the user tank icon file name.
             IconSrcUser = User.Territories.Values.First().Tanks[0].GetTankIconByColor();
             CPU = UniWarSystem.Instance.Cpu!;
-            // recuperiamo il nome del file dell'icona del carro armato CPU
+            // Resolve the CPU tank icon file name.
             IconSrcCpu = CPU.Territories.Values.First().Tanks[0].GetTankIconByColor();
 
             BuildGraphics();
@@ -68,17 +77,24 @@ namespace UniWar {
     }
     
 
+    /// <summary>
+    /// Deploys tanks, builds the user information panel, and starts turn
+    /// handling.
+    /// </summary>
     private void BuildGraphics() {
-        // costruiamo la mappa distribuendo i carri armati sia per l'utente che per la CPU
+        // Build the map and place the tanks for both players.
         DeployTanks();
 
-        // costruiamo la parte delle informazioni per l'utente sotto la mappa
+        // Build the information panel below the map.
         BuildUserInformation();
 
-        // gestiamo i turni
+        // Start turn handling.
         HandleTurns();
     }
 
+    /// <summary>
+    /// Increments the round counter when both players complete their turns.
+    /// </summary>
      private void CheckIfRoundIsCompleted() {
         if (CpuTurnCompleted && UserTurnCompleted) {
                 CpuTurnCompleted = false;
@@ -88,16 +104,14 @@ namespace UniWar {
             }
     }
 
+    /// <summary>
+    /// Drives the turn state machine and shows the modal dialogs associated
+    /// with each phase.
+    /// </summary>
     public async void HandleTurns() {
-        /*
-            Questo è metodo che gestisce i "pop-up" da mostrare
-            sulla base delle fasi dei turni e regola gli elementi
-            grafici di supporto ad ogni fase
-        */
-
         try {
             CheckIfRoundIsCompleted();            
-            while (Turn!.CurrentPlayer == CPU) { // è il turno della CPU
+            while (Turn!.CurrentPlayer == CPU) {  // CPU turn
                 statisticsButton.IsVisible = false;
                 endGameButton.IsVisible = false; 
                 switch (Turn.Phase) {
@@ -113,19 +127,19 @@ namespace UniWar {
             CheckIfRoundIsCompleted();
 
             if (Turn.CurrentPlayer == User) {
-                // è il turno dell'utente...
+                // User turn.
                 UserAttack = false;
 
-                // gestiamo visualizzazione pulsante
+                // Update button visibility.
                 if (!UniWarSystem.Instance.IsOffline) 
                     statisticsButton.IsVisible = true;
                 endGameButton.IsVisible = true;
                 
                 switch (Turn.Phase) {
                     case TurnPhases.Reinforcement:
-                        // a livello di UI aggiungiamo il contatore dei numeri dei carri armati da poter aggiungere rimanenti
-                        // l'utente, al click su un territorio suo, può aggiungere un carro armato a quel territorio..
-                        // una volta terminati i carri armati da posizionare, però, finisce la fase di rinforzo
+                        // Show the remaining reinforcement counter. Clicking one
+                        // of the user's territories adds one tank; the phase
+                        // ends when no tanks remain.
                         ShowOrHideReinforcementView();
                         await Navigation.PushModalAsync(new NewUserReinforcementTurn());
                         counterTankReinforcement.Text = (User.Territories.Count/2).ToString();
@@ -146,6 +160,9 @@ namespace UniWar {
 
     }
 
+    /// <summary>
+    /// Toggles the reinforcement counter panel.
+    /// </summary>
     private void ShowOrHideReinforcementView() {
         if (!tankReinforcementView.IsVisible) {
             tankReinforcementView.IsVisible=true;
@@ -154,12 +171,13 @@ namespace UniWar {
             tankReinforcementView.IsVisible=false;
     }
 
+    /// <summary>
+    /// Toggles the attack and pass buttons.
+    /// </summary>
     private void ShowOrdHideAttackView() {
         if (!AttackButton.IsVisible) {
-           // mostriamo il pulsante "attacca"
             AttackButton.IsVisible = true;
             AttackButton.Text = "ATTACCA";
-            // mostriamo il pulsante "passa"
             PassButton.IsVisible = true;
             PassButton.Text = "PASSA";
         } else {
@@ -169,6 +187,9 @@ namespace UniWar {
     }
 
 
+    /// <summary>
+    /// Populates the user information panel.
+    /// </summary>
     private void BuildUserInformation() {
         UserTankIcon.Source = IconSrcUser;
         NumTanks.Text = User!.GetNumTanks.ToString();
@@ -176,12 +197,19 @@ namespace UniWar {
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
+    /// <summary>
+    /// Refreshes the user tank and territory counters.
+    /// </summary>
     private void UpdateUserCounters() {
         NumTanks.Text = User!.GetNumTanks.ToString();
         NumTerritories.Text = User.Territories.Count.ToString();
     }
 
 
+    /// <summary>
+    /// Updates the on-map tank counter for a territory.
+    /// </summary>
+    /// <param name="territoryName">Territory name.</param>
     private void UpdateTankCounter(string territoryName) {
         Grid territoryInMap = this.FindByName<Grid>(territoryName);
             if (territoryInMap != null) {
@@ -191,18 +219,20 @@ namespace UniWar {
             }
     }
 
+    /// <summary>
+    /// Renders both players' tanks and counters on the map.
+    /// </summary>
     public void DeployTanks() {
         foreach (Territory territory in User!.Territories.Values) {
-            // prendiamoci la Grid corrispondente
+            // Resolve the corresponding grid.
             var territoryInMap = this.FindByName<Grid>(territory.Name);
             if (territoryInMap != null) {
                 foreach (var child in territoryInMap.Children) {
                     switch (child) {
-                        case Image img: // sulla grid meno profonda si poggia quest'immagine
+                        case Image img:  // Tank icon layer
                             img.Source = IconSrcUser;
                             break;
-                        case Grid grid: // griglia per il contatore (meno profonda della precedente)
-                            // la grid contenente 
+                        case Grid grid:  // Counter layer
                             foreach (var gridChild in grid.Children)
                                 if (gridChild is Label label)
                                     label.Text = territory.Tanks.Count.ToString();
@@ -217,7 +247,7 @@ namespace UniWar {
         }
 
         foreach (Territory territory in CPU!.Territories.Values) {
-            // prendiamoci la Grid corrispondente
+            // Resolve the corresponding grid.
             var territoryInMap = this.FindByName<Grid>(territory.Name);
             if (territoryInMap != null) {
                 foreach (var child in territoryInMap.Children) {
@@ -226,7 +256,6 @@ namespace UniWar {
                             img.Source = IconSrcCpu;
                             break;
                         case Grid grid:
-                            // la grid contenente 
                             foreach (var gridChild in grid.Children)
                                 if (gridChild is Label label)
                                     label.Text = territory.Tanks.Count.ToString();
@@ -241,42 +270,49 @@ namespace UniWar {
         }
     }
 
+    /// <summary>
+    /// Shows the territory name in a temporary tooltip, since the label may
+    /// be obscured by the tank icon.
+    /// </summary>
+    /// <param name="territoryName">Territory name.</param>
     private async void ShowNameOfTerritory(string territoryName) {
-        // mostriamo semplicemente il nome del territorio
-        // perchè potrebbe essere nascosto dal carro armato
         tooltipLabel.Text = territoryName;  
         tooltipLabel.IsVisible = true;      
         await Task.Delay(2500);
         tooltipLabel.IsVisible = false; 
     }
 
+    /// <summary>
+    /// Handles a territory click according to the current turn phase.
+    /// </summary>
+    /// <param name="sender">Clicked territory button.</param>
+    /// <param name="args">Event arguments.</param>
     private async void OnTerritoryClicked(object sender, EventArgs args) {
         try {
-            // recuperiamo il metadato (nome) associato al territorio cliccato
+            // Read the territory name from the clicked button metadata.
             var button = sender as Button;
             var territoryNameWithSpaces = button!.ClassId;
             string territoryName = territoryNameWithSpaces!.RemoveSpaces();
-            // come prima cosa ne mostriamo il nome in una label apposita
+            // Show the name first.
             ShowNameOfTerritory(territoryNameWithSpaces);
-                // dopodichè, SOLO se il territorio è dell'utente, facciamo diverse cose....
+                // The remaining actions apply only to user-owned territories.
                 if (User!.Territories.TryGetValue(territoryName, out Territory? from)) {
-                    // l'utente sta interagendo coi suoi territori
                     int numTanksinTerritory = from.Tanks.Count;
                     TaskCompletionSource<string> discoverUserChoose;
                     switch (Turn!.Phase) {
                         case TurnPhases.Reinforcement:
-                            // se clicchiamo su un territorio in questa fase, vogliamo aggiungere un carro armato!
+                            // Add one tank to the clicked territory.
                             User.Territories[territoryName].AddTanks(User.TankColor, 1);
-                            // aggiorniamo la mappa 
+                            // Refresh the map.
                             UpdateTankCounter(territoryName);
-                            // aggiorniamo il contatore sulla destra
+                            // Refresh the remaining-tank counter.
                             int oldValue = int.Parse(counterTankReinforcement.Text);
                             int newValue = --oldValue;
                             counterTankReinforcement.Text = newValue.ToString();
-                            // aggiorniamo gli altri contatori
+                            // Refresh the other counters.
                             UpdateUserCounters();
                             if (newValue == 0){
-                                // sono finiti i carri armati da posizionare
+                                // No reinforcement tanks remain.
                                 Turn.Phase = TurnPhases.Attack;
                                 ShowOrHideReinforcementView();
                                 HandleTurns();
@@ -285,23 +321,22 @@ namespace UniWar {
 
                         case TurnPhases.Attack when UserWantsToAttack:
                             PassButton.Text = "FINE";
-                            // l'utente ha prima fatto "click" su ATTACCA
-                            // allora l'utente può attaccare da questo territorio...
-                            // 1. come prima cosa, dobbiamo verificare se il territorio di partenza ha almeno 2 carri armati 
+                            // The user selected ATTACCA and is choosing an
+                            // attacking territory.
+                            // 1. The source territory must hold at least two tanks.
                             if (numTanksinTerritory > 1) {
-                                // Si può procedere con l'attacco
-                                // ci serve l'elenco dei territori attaccabili sulla base dei territori confinanti!
+                                // Retrieve the attackable neighboring territories.
                                 List<string> attackableTerritories = UniWarSystem.Instance.AttackableTerritories(territoryName);
                                 if (attackableTerritories.Count > 0) {
-                                    // mostriamo la modale dove l'utente clicca il territorio da attaccare
+                                    // Let the user choose the target territory.
                                     discoverUserChoose = new TaskCompletionSource<string>();
                                     await Navigation.PushModalAsync(new SelectableTerritories(attackableTerritories, discoverUserChoose, isAttack: true));
                                     string attackedTerritoryChoosen = await discoverUserChoose.Task;
-                                    await Task.Delay(400); // aspettiamo che si chiude la modale
-                                                        // invochiamo la funzione di attacco passando territorio partenza e destinazione
+                                    await Task.Delay(400);  // Wait for the modal to close
+                                    // Run the attack.
                                     AttackTerritory(territoryName, attackedTerritoryChoosen);
                                 }
-                                else // l'utente deve selezionare un altro territorio
+                                else
                                     ShowInformation("I territori confinanti appartengono tutti a te, scegli un altro territorio..");
                             }
                             else
@@ -310,37 +345,37 @@ namespace UniWar {
 
                         case TurnPhases.StrategicShift:
                             UserWantsToAttack = false;
-                            // l'utente vuole spostare i carri armati DA questo territorio cliccato, quindi,
-                            // come primissima cosa, dobbiamo capire se il territorio possiede più di un carro armato
+                            // Perform a strategic shift from the clicked territory.
+                            // The source must hold more than one tank.
                             if (numTanksinTerritory > 1) {
-                                //  restituiamo una lista di territori confinanti che lui possiede
+                                // Retrieve the user-owned neighboring territories.
                                 List<string> neighboringTerritories = UniWarSystem.Instance.UserNeighboringTerritories(territoryName);
                                 if (neighboringTerritories.Count > 0) {
-                                    // mostriamo la modale dove l'utente clicca il territorio verso cui spostare i carri armati
+                                    // Let the user choose the destination territory.
                                     discoverUserChoose = new TaskCompletionSource<string>();
                                     await Navigation.PushModalAsync(new SelectableTerritories(neighboringTerritories, discoverUserChoose, isAttack: false));
                                     string selectedTerritory = await discoverUserChoose.Task;
                                     await Task.Delay(400);
-                                    // apriamo la modale dove facciamo scegliere all'utente il numero di carri armati da spostare
+                                    // Let the user choose how many tanks to move.
                                     var discoverTanksNumber = new TaskCompletionSource<int>();
                                     await Navigation.PushModalAsync(new StrategicShiftModal(numTanksinTerritory - 1, discoverTanksNumber));
                                     int tanksToMove = await discoverTanksNumber.Task;
                                     await Task.Delay(400);
-                                    // adesso invochiamo la funzione che si occupa di effettuare le modifiche ai territori
+                                    // Apply the move to the territories.
                                     MoveTanks(territoryName, selectedTerritory, tanksToMove);
-                                    // fine dello spostamento strategico
+                                    // The strategic shift ends the user turn.
                                     PassTurnToCpu();
                                 }
-                                else // i territori confinanti sono tutti nemici
+                                else
                                     ShowInformation("I territori confinanti non appartengono a te, scegli un altro territorio..");
                             } 
-                                else // il territorio selezionato ha solo 1 carro armato!
+                                else
                                     ShowInformation("Il territorio selezionato ha solo 1 carro armato.. cosa dovresti spostare?!");
                             break;
                         default:
                             break;
                     }
-                } else{ // l'utente ha selezionato un territorio avversario 
+                } else {  // The user selected an enemy territory
                     TurnPhases phase = Turn!.Phase;
                     if (UserWantsToAttack || phase == TurnPhases.Reinforcement || phase == TurnPhases.StrategicShift)
                         ShowInformation("Devi selezionare un territorio che appartiene a te!");
@@ -350,10 +385,13 @@ namespace UniWar {
         }
     }
 
+    /// <summary>
+    /// Ends the game and determines the winner from territory scores.
+    /// </summary>
     public async void OnEndGameClicked(object sender, EventArgs args) {
-        // verifichiamo che siano passati almeno 2 giri
+        // At least two full rounds must have elapsed.
         if (Turn!.IdRound >= 3) {
-            // decretiamo il vincitore
+            // Compute the final scores.
             int userScore = 0;
             int cpuScore = 0;
 
@@ -376,6 +414,10 @@ namespace UniWar {
         }
     }
 
+    /// <summary>
+    /// Shows a temporary information banner.
+    /// </summary>
+    /// <param name="text">Message to display.</param>
     private async void ShowInformation(string text) {
         banner.IsVisible = true;
         bannerText.Text = text;
@@ -384,10 +426,12 @@ namespace UniWar {
         banner.IsVisible = false;
     }
 
+    /// <summary>
+    /// Toggles attack-selection mode.
+    /// </summary>
     private void OnAttackButtonClicked(object sender, EventArgs e) {
         if (!UserWantsToAttack) {
-            // mostriamo un banner in cui informiamo l'utente di dove selezionare
-            // un territorio dal quale effettuare l'attacco
+            // Prompt the user to select the attacking territory.
             ShowInformation("Seleziona il territorio da cui vuoi effettuare l'attacco");  
             UserWantsToAttack = true;
             AttackButton.Text = "ANNULLA";      
@@ -398,76 +442,86 @@ namespace UniWar {
         }
     }
 
-    // spostamento di un tot di carri amrati da un territorio all'altro
+    /// <summary>
+    /// Moves tanks between two user-owned territories.
+    /// </summary>
+    /// <param name="territoryFrom">Source territory.</param>
+    /// <param name="territoryTo">Destination territory.</param>
+    /// <param name="numOfTanksToMove">Number of tanks to move.</param>
     public async void MoveTanks(string territoryFrom, string territoryTo, int numOfTanksToMove) {
         await Task.Delay(200);
         Territory from = User!.Territories[territoryFrom];
         Territory to = User!.Territories[territoryTo];
         from.RemoveTanks(numOfTanksToMove);
         to.AddTanks(User.TankColor, numOfTanksToMove);
-        // aggiorniamo la UI (solo la mappa)
+        // Refresh the map.
         DeployTanks();
     }
 
-    // Attacco di un territorio da parte dell'utente
+    /// <summary>
+    /// Executes a user attack, including dice resolution, conquest handling,
+    /// and statistics collection.
+    /// </summary>
+    /// <param name="attackingTerritory">Attacking territory.</param>
+    /// <param name="attackedTerritory">Defending territory.</param>
     public async void AttackTerritory(string attackingTerritory, string attackedTerritory) {
-        // prepariamo le statistiche
+        // Initialize the statistics payload.
         InitializeStatistics(out StatisticsCollection stats, true);
 
         Territory from = User!.Territories[attackingTerritory];
         int numTanksAttacker = from.Tanks.Count;
         Territory to = CPU!.Territories[attackedTerritory];
         int numTanksDefender = to.Tanks.Count;
-        // lanciamo i dadi
+        // Roll the dice.
         RollTheDice(out List<int> userDice, out List<int> cpuDice, numTanksAttacker, numTanksDefender);
         (int tanksLostForUser, int tanksLostForCpu) = CompareDiceAndRemoveTanks(in userDice, in cpuDice, from, to);
 
-        // riempiamo le statistiche nei dizionari
+        // Record the per-territory losses.
         stats.AttackingTerritories.Add(from.Name, numTanksAttacker - from.Tanks.Count);
         stats.DefendingTerritories.Add(to.Name, numTanksDefender - to.Tanks.Count);
 
         var userClosedTheModal = new TaskCompletionSource();
         await Navigation.PushModalAsync(new ShowDiceResultPage(userDice, cpuDice, tanksLostForUser, tanksLostForCpu, userClosedTheModal));
-        // aspettiamo che l'utente chiude la modale
-        await userClosedTheModal.Task; // questo, nella modale, avviene prima della .Pop()
-        await Task.Delay(100); // aspettiamo che si chiude la modale
-        // Aggiorniamo la UI
+        // Wait until the user closes the modal.
+        await userClosedTheModal.Task;  // Resolved before the modal is popped
+        await Task.Delay(100);  // Wait for the modal to close
+        // Refresh the UI.
         DeployTanks();
         UpdateUserCounters();
 
-        UserAttack = true; // l'utente ha effettuato almeno 1 attacco in questo turno
+        UserAttack = true;  // At least one attack occurred this turn
 
-        // Dopo un attacco, verifichiamo se il territorio avversario è stato conquistato 
+        // Check whether the defending territory was conquered.
         if (to.Tanks.Count == 0) {
-            // allora l'utente ha conquistato il territorio della cpu
+            // The user conquered the CPU territory.
             CPU!.Territories.Remove(attackedTerritory);
             User!.Territories.Add(attackedTerritory, to);
 
-            // statistica sui territori persi dalla CPU
+            // Record the territory lost by the CPU.
             stats.LostTerritories!.Add(to.Name);
 
-            // adesso l'utente deve spostare i carri armati
+            // The user must move tanks into the conquered territory.
             var tcs = new TaskCompletionSource<int>();
             await Navigation.PushModalAsync(new ConqueredTerritoryModal(maxValue: from.Tanks.Count - 1, tcs));
-            int numberSelected = await tcs.Task; // Aspetta il risultato
-            await Task.Delay(100); // aspettiamo che si chiude la modale
+            int numberSelected = await tcs.Task;
+            await Task.Delay(100);  // Wait for the modal to close
             from.RemoveTanks(numberSelected);
             to.AddTanks(User!.TankColor, numberSelected);
-            // Aggiorniamo nuovamente la UI
+            // Refresh the UI again.
             DeployTanks();
             UpdateUserCounters();
 
-            // aggiorniamo le statistiche
+            // Refresh the statistics.
             SetStatsTanksAndTerritories(ref stats);
             
-            // verifichiamo se con questo territorio in più l'utente ha vinto:
+            // Check whether the new territory satisfies the victory condition.
             if (IsWin()) {
                 await CollectsStatistics(stats);
                 await UpdateGameResult(IsWin());
                 await Navigation.PushModalAsync(new WinOrLoseModal(true));
             }
             
-        } else { // aggiorniamo le statistiche
+        } else {
             SetStatsTanksAndTerritories(ref stats);
         }
 
@@ -475,52 +529,67 @@ namespace UniWar {
     }
 
     
+    /// <summary>
+    /// Rolls attacker and defender dice and sorts them in descending order.
+    /// </summary>
+    /// <param name="userDice">Attacker dice.</param>
+    /// <param name="cpuDice">Defender dice.</param>
+    /// <param name="numTanksAttacker">Attacker tank count.</param>
+    /// <param name="numTanksDefender">Defender tank count.</param>
     private static void RollTheDice(out List<int> userDice, out List<int> cpuDice, in int numTanksAttacker, in int numTanksDefender) {
         userDice = [];
         cpuDice = [];
-        // simuliamo il lancio dei dadi dell'attaccante: un dado per ogni carro armato - 1
+        // The attacker rolls one die per tank, excluding one garrison tank.
         Random gen = new Random();
         int counter = 1;
         for (int i = 0; i < numTanksAttacker - 1; i++) {
             userDice.Add(gen.Next(6)+1); 
-            if (counter == 3) break; // non si possono lanciare più di 3 dadi
+            if (counter == 3) break;  // At most three dice
             counter++;
         }
-        // simuliamo il lancio dei dadi della difesa: un dado per ogni carro armato
+        // The defender rolls one die per tank.
         counter = 1;
         for (int i = 0; i < numTanksDefender; i++) {
             cpuDice.Add(gen.Next(6)+1); 
-            if (counter == 3) break; // non si possono lanciare più di 3 dadi
+            if (counter == 3) break;  // At most three dice
             counter++;
         }
-        // ordiniamo i dadi in modo decrescente:
+        // Sort in descending order.
         userDice.Sort((a,b) => b.CompareTo(a));
         cpuDice.Sort((a,b) => b.CompareTo(a));
     }
 
+    /// <summary>
+    /// Compares dice pairs and removes the corresponding tanks.
+    /// </summary>
+    /// <param name="userDice">Attacker dice.</param>
+    /// <param name="cpuDice">Defender dice.</param>
+    /// <param name="attacking">Attacking territory.</param>
+    /// <param name="defending">Defending territory.</param>
+    /// <returns>User losses and CPU losses.</returns>
     private static (int, int) CompareDiceAndRemoveTanks(in List<int> userDice, in List<int> cpuDice, Territory attacking, Territory defending) {
-        // confrontiamo le due liste (dadi) per un numero di volte pari alla lunghezza della lista più corta
+        // Compare as many pairs as the shorter dice list allows.
         int counterForUser = 0;
         int counterForCpu = 0;
         for (int i = 0; i < Math.Min(userDice.Count, cpuDice.Count); i++) {
             if (userDice[i] <= cpuDice[i]) {
-                // se è minore o pari, vince la difesa
-                // rimuoviamo un carro armato da quel territorio posseduto dall'utente
+                // Ties and lower values favor the defender.
                 attacking.Tanks.RemoveAt(0);
                 counterForUser++;
             } else {
-                // confronto "vinto" dall'utente
+                // The attacker wins the comparison.
                 defending.Tanks.RemoveAt(0);
                 counterForCpu++;
             }
         }
-        // restituiamo, rispettivamente,
-        // numero carri armati persi dall'utente, numero carri armati persi dalla CPU
+        // Return user losses followed by CPU losses.
         return (counterForUser, counterForCpu);
     }
 
-    // Dopo che l'utente clicca il bottone "passa" il suo turno termina ed inizia quello della cpu
-    // Questa funzione è responsabile dell'aggiornamento delle informazioni di TablePage in modo tale che vengano mandate a display le informazioni sulla cpu
+    /// <summary>
+    /// Ends the user turn, optionally after a strategic shift, and passes
+    /// control to the CPU.
+    /// </summary>
     private async void OnPassButtonClicked(object sender, EventArgs e) {        
         PassButton.IsVisible = false;
         if(!UserAttack){
@@ -529,18 +598,18 @@ namespace UniWar {
             await CollectsStatistics(stats);
         }
         await Task.Delay(500);
-        // chiediamo all'utente, tramite una modale, se vuole effettuare uno spostamento strategico o meno
+        // Ask whether the user wants a strategic shift.
         var discoverUserChoose = new TaskCompletionSource<bool>();
         await Navigation.PushModalAsync(new YesOrNotModal(discoverUserChoose));
         bool choose = await discoverUserChoose.Task;
-        await Task.Delay(400); // aspettiamo che si chiuda la modale
+        await Task.Delay(400);  // Wait for the modal to close
         if (choose == true) {
-            // passiamo alla terza ed ultima fase del turno
+            // Enter the final phase of the turn.
             Turn!.Phase=TurnPhases.StrategicShift;
             ShowInformation("Fai click sul territorio DA cui vuoi spostare i carri armati");
             HandleTurns(); 
         } else {
-            // passiamo il turno alla CPU
+            // Pass the turn to the CPU.
             AttackButton.IsVisible = false;
             PassButton.IsVisible = false;
             UserWantsToAttack = false;
@@ -548,6 +617,9 @@ namespace UniWar {
         }
     }
 
+    /// <summary>
+    /// Marks the user turn as completed and activates the CPU turn.
+    /// </summary>
     private void PassTurnToCpu() {
         UserTurnCompleted = true;
         Turn!.CurrentPlayer = CPU!;
@@ -555,12 +627,18 @@ namespace UniWar {
         HandleTurns();
     }
 
+    /// <summary>
+    /// Marks the CPU turn as completed and activates the user turn.
+    /// </summary>
     private void PassTurnToUser() {
         CpuTurnCompleted = true;
         Turn!.CurrentPlayer = User!;
         Turn.Phase = TurnPhases.Reinforcement;
     }
 
+    /// <summary>
+    /// Opens the statistics modal for the current game.
+    /// </summary>
     private async void OnViewStatisticsClicked(object sender, EventArgs args) {
         await Navigation.PushModalAsync(new GameStatisticsView((int)UniWarSystem.Instance.GameId!));
     }
@@ -576,21 +654,20 @@ namespace UniWar {
     [DllImport("cppLibrary\\functions_lib.dll", CallingConvention = CallingConvention.Cdecl)]
     public static extern bool winCheck (string jsonData);   
 
-    // Funzione di rinforzo della cpu
+    /// <summary>
+    /// Executes the CPU reinforcement phase through the native library and
+    /// reflects the updated tank counts in the UI.
+    /// </summary>
     private async Task CpuReinforcement(){
         TaskCompletionSource tcs;
-        // Creazione della mappa da passare a C++
+        // Build the map payload passed to the C++ library.
         List<MapData> playersMaps = [
             new MapData {
                 PlayerId = CPU!.Name,
-                // Usiamo un Espressione LINQ per creare un nuovo dizionario nella forma Dictionary<string, List<string>> a partire dal dizionario Dictionary<string, Territory>
-                // In questo caso creiamo un nuovo dizionario in cui la chiave è il nome del territorio e in cui il valore è la lista dei nomi dei territori confinanti
+                // Project the territory dictionary into the adjacency map
+                // expected by the native layer (territory name -> neighbor names).
                 Neighbors = CPU!.Territories.ToDictionary(
-                    // Chiave del nuovo dizionario
-                    // sfrutta una lambda expression in questo caso prende t e restituisce t.key, cioè usiamo la sua chiave come chiave del nuovo dizionario (t è la coppia chiave-valore del vecchio dizionrio)
                     t => t.Key,
-                    // Valore del nuovo dizionario
-                    // Select(n => n.Name) estrae solamente il nome dei territori vicini (perché NeighboringTerritories è una lista di oggetti)
                     t => t.Value.NeighboringTerritories.Select(n => n.Name).ToList()
                 ),
 
@@ -601,43 +678,38 @@ namespace UniWar {
             }
         ];
 
-        // Converte l'oggetto playersMaps (una lista di oggetti MapData) in una stringa JSON formattata
-        // WriteIndented = true opzione che formatta il JSON con spazi e indentazione per renderlo più leggibile
+        // Serialize the payload; WriteIndented produces readable JSON.
         string jsonData = JsonSerializer.Serialize(playersMaps, jsonSerializerOpt);
-        // Console.WriteLine("JSON inviato a C++:\n" + jsonData);
 
-        // reinforcement restituisce un puntatore (char*) ma è un puntatore a memoria non gestita (cioè non gestita dal GC di .NET).
-        // per questo usiamo IntPtr che rappresenta una struttura C# che viene utilizzata per memorizzare degli indirizzi di memoria (per la memoria non gestita).
-        // su IntPtr possono essere utilizzati i metodi della classe Marshal di C#.
+        // The native function returns a char* pointing to unmanaged memory,
+        // represented by IntPtr on the managed side.
 
-        // Strategia di rifornimento delle truppe:
-        // Ad ogni nuovo turno i giocatori ricevono un numero di nuove truppe pari al numero di carri armati posseduti diviso 2 (arrotondato per difetto)
+        // Reinforcement rule: each turn grants half of the owned territory
+        // count as new tanks (integer division).
         int newTanks = CPU.Territories.Values.Count / 2;
 
-        IntPtr resultPtr = reinforcement(jsonData, newTanks); //Stiamo passando il contesto del giocatore della cpu insieme ai nuovi carri che ha a disposizione
+        IntPtr resultPtr = reinforcement(jsonData, newTanks);
 
-        // In questo caso, usiamo Marshal.PtrToStringUTF8(resultPtr) per copiare la stringa della memoria non gestita (C++) in una stringa gestita dal GC di C#
-        // Marshal.PtrToStringUTF8(resultPtr) può restituire null, quindi usiamo ?? (operatore di null-coalescing) per far si che in tal caso a resultJson venga assegnata una stringa vuota anziché null
+        // Copy the unmanaged UTF-8 string into managed memory. The null
+        // coalescing operator handles a null pointer.
         string resultJson = Marshal.PtrToStringUTF8(resultPtr) ?? string.Empty;
 
         if (string.IsNullOrEmpty(resultJson) || resultJson == "{}") {
             ShowInformation("Si è verificato un errore");
-            await Task.Delay(2000); // diamo il tempo di visualizzare l'errore
-            Application.Current!.MainPage = new AppShell(); // Torniamo alla schermata principale
+            await Task.Delay(2000);  // Allow the error message to be read
+            Application.Current!.MainPage = new AppShell();  // Return to the main screen
         }
 
 
-        // Nota: non ci occupiamo di deallocare la memoria non gestita perché nella funzione C++ usiamo una stringa statica 
-        // che quindi viene allocata nella memoria statica e persiste per tutta la durata del rpogramma (non abbiamo problemi di memory leak).
+        // The native function returns a static string, so no explicit
+        // deallocation is required and no memory leak occurs.
 
-        // JsonSerializer.Deserialize<MapData>(resultJson) converte (deserializza) quella stringa JSON in una mappa (MapData)
-        // updatedMaps diventa quindi MapData (che quindi può essere utilizzata per aggiornare le classi in C#).
+        // Deserialize the updated CPU map.
         var updatedMap = JsonSerializer.Deserialize<MapData>(resultJson);
         
-        // Scorriamo i territori della cpu e se il numero di carri armati del territorio è minore di quello presente in updatedMap aggiungiamo alla lista di carri armati della cpu tanti carri armati quanti ne mancano
+        // Add the missing tanks to each CPU territory.
         foreach(var territory in updatedMap.Tanks){
             if(CPU.Territories.TryGetValue(territory.Key, out Territory? value)) {
-                // recuperiamo il territorio della cpu
                 var cpuTerritory = value;
                 int difference = territory.Value - cpuTerritory.Tanks.Count;
                 if(difference > 0)
@@ -648,14 +720,17 @@ namespace UniWar {
         DeployTanks();
         tcs = new TaskCompletionSource();
         await Navigation.PushModalAsync(new GenericModal("La CPU si è rinforzata! ",true,tcs,newTanks));
-        await tcs.Task; // aspetta che facciamo setResult()
-        await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+        await tcs.Task;  // Wait for setResult()
+        await Task.Delay(400);  // Wait for the modal to close
         Turn!.Phase = TurnPhases.Attack;
     }
 
 
 
-    // Funzione di attacco della cpu
+    /// <summary>
+    /// Executes the CPU attack phase through the native library and replays
+    /// the resulting battles in the UI.
+    /// </summary>
     private async Task CpuAttack() {
         TaskCompletionSource tcs;
         List<MapData> playersMaps = [
@@ -690,23 +765,21 @@ namespace UniWar {
 
             if (string.IsNullOrEmpty(resultJson) || resultJson == "{}") {
             ShowInformation("Si è verificato un errore");
-            await Task.Delay(2000); // diamo il tempo di visualizzare l'errore
-            Application.Current!.MainPage = new AppShell(); // Torniamo alla schermata principale
+            await Task.Delay(2000);  // Allow the error message to be read
+            Application.Current!.MainPage = new AppShell();  // Return to the main screen
         }
 
 
-        if (resultJson == "Pass") { // La cpu ha deciso di non attaccare
+        if (resultJson == "Pass") {  // The CPU decided not to attack
             tcs = new TaskCompletionSource();
             InitializeStatistics(out StatisticsCollection stats, false);
             SetStatsTanksAndTerritories(ref stats);
             await CollectsStatistics(stats);
             await Navigation.PushModalAsync(new GenericModal("La CPU ha deciso di non attaccare",false,tcs));
-            await tcs.Task; // aspetta che facciamo setResult()
-            await Task.Delay(400); // per dare il tempo alla modale di chiudersi 
+            await tcs.Task;  // Wait for setResult()
+            await Task.Delay(400);  // Wait for the modal to close
         } else {
             List<BattleResult>? battleResults = JsonSerializer.Deserialize<List<BattleResult>>(resultJson!);
-            // Per il debug
-            // Console.WriteLine("JSON aggiornato:\n" + JsonSerializer.Serialize(battleResults, new JsonSerializerOptions { WriteIndented = true }));
             if (battleResults is not null) {
                 await SimulateBattle(battleResults); 
             }
@@ -718,6 +791,10 @@ namespace UniWar {
 
 
 
+    /// <summary>
+    /// Evaluates the user victory condition through the native library.
+    /// </summary>
+    /// <returns><c>true</c> when the user has won.</returns>
     bool IsWin(){
         List<MapData> playersMaps = [
             new MapData {
@@ -737,7 +814,11 @@ namespace UniWar {
         return winCheck(jsonData);
     }
 
-    // Funzione che riproduce lato UI la fase di attacco della cpu
+    /// <summary>
+    /// Replays CPU battles in the UI and updates the game state and
+    /// statistics.
+    /// </summary>
+    /// <param name="battleList">Battles returned by the native library.</param>
     private async Task SimulateBattle(List<BattleResult> battleList) {
         TaskCompletionSource tcs;
         Territory? lostTerritory = null;
@@ -798,23 +879,23 @@ namespace UniWar {
 
             tcs = new TaskCompletionSource();
             await Navigation.PushModalAsync(new ShowCpuBattleTerritory(battle.AttackingTerritory, battle.DefendingTerritory, tcs));
-            await tcs.Task; // aspetta che facciamo setResult()
-            await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+            await tcs.Task;  // Wait for setResult()
+            await Task.Delay(400);  // Wait for the modal to close
 
             tcs = new TaskCompletionSource();
-            // Mostriamo il risultato del lancio dei dadi
+            // Show the dice result.
             await Navigation.PushModalAsync(new ShowDiceResultPage(battle.DicePlayer,battle.DiceCPU, battle.LossesPlayer, battle.LossesCPU, tcs));
-            await tcs.Task; // aspetta che facciamo setResult()
-            await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+            await tcs.Task;  // Wait for setResult()
+            await Task.Delay(400);  // Wait for the modal to close
 
             if(territoryLoss){
                 tcs = new TaskCompletionSource();
                 await Navigation.PushModalAsync(new ShowDefenceResult(tcs, lostTerritory!.Name));
-                await tcs.Task; // aspetta che facciamo setResult()
-                await Task.Delay(400); // per dare il tempo alla modale di chiudersi
+                await tcs.Task;  // Wait for setResult()
+                await Task.Delay(400);  // Wait for the modal to close
             }
                 
-            // Aggiorniamo la mappa
+            // Refresh the map.
             DeployTanks();
             BuildUserInformation();
 
@@ -836,6 +917,11 @@ namespace UniWar {
     }
 
 
+    /// <summary>
+    /// Fills the tank totals and owned territory lists in the statistics
+    /// payload.
+    /// </summary>
+    /// <param name="stats">Statistics payload to update.</param>
     private void SetStatsTanksAndTerritories(ref StatisticsCollection stats){
         stats.CpuOwnedTanks = CPU!.GetNumTanks;
         stats.UserOwnedTanks = User!.GetNumTanks;
@@ -850,7 +936,12 @@ namespace UniWar {
 
 
 
-    // Funzione per inizializzare le statistiche da passare nel caso in cui non venga effettuato un attacco
+    /// <summary>
+    /// Initializes the statistics payload for a turn, including the case where
+    /// no attack occurs.
+    /// </summary>
+    /// <param name="stats">Initialized statistics payload.</param>
+    /// <param name="isUserTurn">Whether the current turn belongs to the user.</param>
     private void InitializeStatistics(out StatisticsCollection stats, bool isUserTurn){
         stats = new StatisticsCollection {
             Username = User!.Name,
@@ -869,6 +960,10 @@ namespace UniWar {
 
 
 
+    /// <summary>
+    /// Sends the final game result to the server when online.
+    /// </summary>
+    /// <param name="IsWin">Whether the user won.</param>
     private async Task UpdateGameResult(bool IsWin){
         if (!UniWarSystem.Instance.IsOffline) {
             try {
@@ -886,6 +981,10 @@ namespace UniWar {
         }   
     }
 
+    /// <summary>
+    /// Sends battle statistics to the server when online.
+    /// </summary>
+    /// <param name="statistics">Statistics payload to send.</param>
     private async Task CollectsStatistics(StatisticsCollection statistics) {
         if (!UniWarSystem.Instance.IsOffline) {
             try {

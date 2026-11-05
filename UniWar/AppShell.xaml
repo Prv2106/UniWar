@@ -5,6 +5,6 @@
        Shell.FlyoutBehavior="Disabled"
       Title="UniWar"
        x:Class="UniWar.AppShell">
-    <!-- Imposta il contenuto iniziale come la pagina SignInUp -->
+    <!-- Sets the initial content to the SignInUp page -->
     <ShellContent ContentTemplate="{DataTemplate local:SignInUp}" />
 </Shell>

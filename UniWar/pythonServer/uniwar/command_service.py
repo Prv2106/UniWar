@@ -1,12 +1,29 @@
+"""Command objects and command handlers for write operations.
+
+Implements the command side of the CQRS-style service layer: each command
+encapsulates a parameterized SQL statement, while ``CommandService`` executes it
+against a MySQL connection.
+"""
+
 import bcrypt
 import re
 from uniwar import query_service
 
 
-# Command per la registrazione dell'utente
 class RegisterUserCommand:
+    """Command that registers a user with a bcrypt-hashed password."""
+
     def __init__(self, username, password, conn):
-        
+        """Validates credentials and prepares the registration statement.
+
+        Args:
+            username (str): Username to register.
+            password (str): Plain-text password to hash.
+            conn (pymysql.connections.Connection): Active database connection.
+
+        Raises:
+            ValueError: If the password is empty or the username is invalid.
+        """
         if not password:
             raise ValueError("password non inserita")
         
@@ -14,7 +31,7 @@ class RegisterUserCommand:
            raise ValueError("Username non valido: Deve iniziare con una lettera maiuscola e avere almeno 5 caratteri in totale")
          
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        hashed_password_str = hashed_password.decode('utf-8')  # Convertiamo l'hash in stringa per il database
+        hashed_password_str = hashed_password.decode('utf-8')  # Store the hash as text
         
         self.register_user_command = """
         INSERT INTO Users (username, pwd)
@@ -27,14 +44,37 @@ class RegisterUserCommand:
 
     @staticmethod
     def validate_username(username):
-        username_regex = r"^[A-Z][a-zA-Z0-9_-]{4,}$" # Username che inizia con una lettera maiuscola e che deve avere almeno 1 altro carattere tra quelli indicati nella classe []
+        """Checks that the username starts with an uppercase letter.
+
+        The username must start with ``A-Z`` followed by at least four
+        characters from ``[a-zA-Z0-9_-]``.
+
+        Args:
+            username (str): Username to validate.
+
+        Returns:
+            bool: ``True`` when the username matches the required pattern.
+        """
+        username_regex = r"^[A-Z][a-zA-Z0-9_-]{4,}$"
         return re.match(username_regex, username) is not None
     
     
     
 class InsertDataCommand:
+    """Command that upserts per-game statistics after a battle phase.
+
+    When a row already exists for the game, counters are accumulated and the
+    row is updated; otherwise a new row is inserted.
+    """
    
     def __init__(self, conn, **kwargs):
+        """Builds the INSERT or UPDATE statement from the supplied metrics.
+
+        Args:
+            conn (pymysql.connections.Connection): Active database connection.
+            **kwargs: Battle metrics, game/round identifiers, ownership lists,
+                and turn metadata.
+        """
         self.conn = conn
         game_id =kwargs['game_id']
         round_id = kwargs['round_id']
@@ -58,7 +98,7 @@ class InsertDataCommand:
             
             print(f"round_id recuperato dal db = {round_id}", flush=True)
             if round_id == kwargs['round_id']:
-                if is_user_turn != kwargs['user_turn']: # è avvenuto un cambio turno nello stesso round
+                if is_user_turn != kwargs['user_turn']:  # Turn changed within the same round
                     turn_completed += 1
             else:
                 turn_completed = 1
@@ -194,7 +234,16 @@ class InsertDataCommand:
 
     
 class InsertGameCommand:
-    def __init__(self,conn,username,date):
+    """Command that creates a new game record."""
+
+    def __init__(self, conn, username, date):
+        """Stores the connection and the values used by the INSERT statement.
+
+        Args:
+            conn (pymysql.connections.Connection): Active database connection.
+            username (str): Owner of the game.
+            date (str): Formatted creation timestamp.
+        """
         self.conn = conn
         self.username = username
         self.date = date
@@ -204,7 +253,16 @@ class InsertGameCommand:
         """
 
 class EndGameCommand:
+    """Command that stores the final state of a game."""
+
     def __init__(self, conn, game_id, is_win):
+        """Stores the connection and the values used by the UPDATE statement.
+
+        Args:
+            conn (pymysql.connections.Connection): Active database connection.
+            game_id (int): Identifier of the game to update.
+            is_win (bool): Whether the user won the game.
+        """
         self.conn = conn
         self.game_id = game_id
         self.is_win = 1 if is_win else 0
@@ -215,34 +273,62 @@ class EndGameCommand:
         """
 
 
-# Servizio che gestisce i command
 class CommandService:
+    """Executes command objects against the database."""
     
-    def handle_register_user(self, command: RegisterUserCommand): # command: RegisterUserCommand è un annotazione, suggerisce che command è di tipo RegisterUserCommand
-        # Apertura della connessione al database
+    def handle_register_user(self, command: RegisterUserCommand):
+        """Executes a user registration command and commits the transaction.
+
+        Args:
+            command (RegisterUserCommand): Command to execute.
+        """
         with command.conn.cursor() as cursor:
-            cursor.execute(command.register_user_command, (command.username, command.hashed_pwd,)) # Passiamo una tupla
+            cursor.execute(command.register_user_command, (command.username, command.hashed_pwd,))
             command.conn.commit()
             
     def handle_insert_data_command(self, command: InsertDataCommand):
+        """Executes a statistics upsert command and commits the transaction.
+
+        Args:
+            command (InsertDataCommand): Command to execute.
+
+        Raises:
+            ValueError: If the statement affected no rows.
+        """
         with command.conn.cursor() as cursor:
             cursor.execute(command.insert_command_query, command.values_tuple)
             if cursor.rowcount == 0:
                 raise ValueError("Si è verificato un problema durante l'aggiornamento dei dati")
             command.conn.commit()
     
-    def handle_insert_game_command(self, command: InsertGameCommand) -> int: # type int, serve semplicemente per migliorare la leggibilità del codice, suggerisce che la funzione dovrebbe restituire un intero
+    def handle_insert_game_command(self, command: InsertGameCommand) -> int:
+        """Inserts a new game and returns its generated identifier.
+
+        Args:
+            command (InsertGameCommand): Command to execute.
+
+        Returns:
+            int: Identifier assigned to the new game.
+
+        Raises:
+            ValueError: If the statement affected no rows.
+        """
         with command.conn.cursor() as cursor:
             cursor.execute(command.insert_game_query, (command.username, command.date))
             if cursor.rowcount == 0:
                 raise ValueError("Si è verificato un problema durante l'inserimento della partita")
             
             command.conn.commit()
-            game_id = cursor.lastrowid  # Restituisce l'ID dell'ultimo record inserito
-            return game_id  # Restituiamo il game_id generato
+            game_id = cursor.lastrowid  # Identifier of the last inserted row
+            return game_id
             
             
     def handle_end_game_command(self, command: EndGameCommand):
+        """Updates the final state of a game and commits the transaction.
+
+        Args:
+            command (EndGameCommand): Command to execute.
+        """
         with command.conn.cursor() as cursor:
             cursor.execute(command.end_game_query, (command.is_win, command.game_id))
             command.conn.commit()

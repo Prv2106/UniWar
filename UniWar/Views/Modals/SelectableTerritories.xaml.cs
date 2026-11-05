@@ -1,41 +1,54 @@
 namespace UniWar {
+    /// <summary>
+    /// Modal that lets the user choose among a list of territories.
+    /// </summary>
     public partial class SelectableTerritories : ContentPage {
         public List<string> SelectableTerritoriesNames {get;} = [];
 
         private TaskCompletionSource<string> _territoryChoosen;
         
-        // pubblico perchè deve essere accessibilen allo XAML
+        /// <summary>
+        /// Initializes the modal with the selectable territories.
+        /// </summary>
+        /// <param name="neighboringTerritories">Territory names to display.</param>
+        /// <param name="taskCompletionSource">Source completed with the choice.</param>
+        /// <param name="isAttack">Whether the selection is for an attack.</param>
         public SelectableTerritories(List<string> neighboringTerritories, TaskCompletionSource<string> taskCompletionSource, bool isAttack) {
-            // attackingTerritory è senza spazi (chiave pronta per dizionario)
+            // Territory names are stored without spaces so they can be used as
+            // dictionary keys.
             InitializeComponent();
             foreach (var territory in neighboringTerritories) 
-                // mettiamo gli spazi
                 SelectableTerritoriesNames.Add(territory.AddSpaces());
 
-            BindingContext = this; // serve far si che CollectionView possa accedere alle proprietà
+            BindingContext = this;  // Allows CollectionView to access the properties
 
             _territoryChoosen = taskCompletionSource;
 
             if (isAttack) {
-                // allora l'utente sta selezionando il territorio nemico da attaccare
+                // The user is selecting an enemy territory to attack.
                 image.Source = "soldier.png";
                 text.Text = "Seleziona il territorio nemico da attaccare!";
             } else {
-                // sta effettuando uno spostamento strategico, i territori mostrati sono i suoi!
+                // The user is selecting a destination for a strategic shift.
                 image.Source = "running_soldiers.png";
                 text.Text = "Seleziona uno dei tuoi territori confinanti dove vuoi spostare qualche carro armato!";
             }
         }
 
         
+        /// <summary>
+        /// Completes the selection with the clicked territory.
+        /// </summary>
         private async void OnTerritoryClicked (object sender, EventArgs eventArgs) {
-            // qui invochiamo l'operazione di sistema che simula lo scontro.
             var button = sender as Button;
             string attackedTerritory = button!.CommandParameter.ToString()!.RemoveSpaces();
             _territoryChoosen.SetResult(attackedTerritory);
             await Navigation.PopModalAsync();
         }
 
+        /// <summary>
+        /// Closes the modal without selecting a territory.
+        /// </summary>
         private async void OnCancelButtonClicked(object sender, EventArgs eventArgs) {
             await Navigation.PopModalAsync();
         }

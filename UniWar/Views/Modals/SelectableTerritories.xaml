@@ -13,13 +13,13 @@
             
             <VerticalStackLayout>
               
-              <!-- Titolo -->
+              <!-- Title -->
               <Image
                 x:Name="image"
                 WidthRequest="180"
                 Margin="10,0,0,0"
                 />
-              <!-- Testo che spiega all'utente che deve fare -->
+              <!-- Instructions shown to the user -->
               <Label 
                     HorizontalTextAlignment="Center"
                     x:Name="text"

@@ -1,15 +1,27 @@
 namespace UniWar{
+    /// <summary>
+    /// Sign-in and sign-up page, including the offline game entry point.
+    /// </summary>
     public partial class SignInUp: ContentPage{
 
         private bool _isSignIn;
+
+        /// <summary>
+        /// Creates the page in sign-in mode.
+        /// </summary>
         public SignInUp() : this(true) {}
 
+        /// <summary>
+        /// Creates the page and redirects to the main page when a session is
+        /// already active.
+        /// </summary>
+        /// <param name="signIn">Whether to start in sign-in mode.</param>
         public SignInUp(bool signIn = true) {
             InitializeComponent();
 
-            // come prima cosa, controlliamo se è già presente una "sessione" di login
+            // Check whether a login session already exists.
             if (UniWarSystem.Instance.LoggedUsername != null) {
-                // allora dovremmo essere nella main page
+                // Navigate to the main page.
                 Navigation.PushAsync(new MainPage());
             }
 
@@ -17,6 +29,10 @@ namespace UniWar{
             UpdateUI();
         }
 
+        /// <summary>
+        /// Rewires event handlers and labels for the active authentication
+        /// mode.
+        /// </summary>
         private async void UpdateUI() {
             UsernameEntry.TextColor = Colors.White;
 
@@ -93,6 +109,9 @@ namespace UniWar{
             }   
         }
 
+        /// <summary>
+        /// Authenticates the user and opens the main page on success.
+        /// </summary>
         public async void OnSignInButtonClicked(object sender, EventArgs args) {
             var username = UsernameEntry.Text;
             var password = PasswordEntry.Text;
@@ -123,6 +142,9 @@ namespace UniWar{
             }
         }
 
+        /// <summary>
+        /// Registers the user and opens the main page on success.
+        /// </summary>
         public async void OnSignUpButtonClicked(object sender, EventArgs args) {
             var username = UsernameEntry.Text;
             var password = PasswordEntry.Text;
@@ -155,6 +177,9 @@ namespace UniWar{
 
         }
 
+        /// <summary>
+        /// Validates the username when the entry loses focus.
+        /// </summary>
         public async void OnUsernameUnFocused(object sender, EventArgs args) {
             
             if(string.IsNullOrWhiteSpace(UsernameEntry.Text))
@@ -184,13 +209,14 @@ namespace UniWar{
             UsernameEntry.TextColor = Colors.White;
         }
 
+        /// <summary>
+        /// Enables offline mode and opens the main page.
+        /// </summary>
         private async void OnPlayOfflineClicked(object sender, EventArgs eventArg) {
-            // L'utente vuole giocare offline...
-
-            // prima impostiamo la modalità offline nel gioco
+            // Enable offline mode.
             UniWarSystem.Instance.OfflineMode();
 
-            // adesso mandiamo l'utente nella pagina di gioco
+            // Navigate to the game page.
             await Navigation.PushAsync(new MainPage());
         }
     }

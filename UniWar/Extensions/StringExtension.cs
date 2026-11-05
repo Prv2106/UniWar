@@ -1,33 +1,44 @@
 using System.Text.RegularExpressions;
 
+/// <summary>
+/// String helpers for converting territory names between compact and
+/// space-separated representations.
+/// </summary>
 public static class StringExtensions {
     /*
-        vogliamo implementare metodi che rimuovono e aggiungono gli spazi ai nomi dei territori:
-        es: 
-            AmericaDelSud --> America Del Sud
-            America Del Sud --> AmericaDelSud
+        Territory names use two representations:
+            AmericaDelSud <-> America Del Sud
     */
 
     
+    /// <summary>
+    /// Inserts a space before each internal uppercase letter.
+    /// </summary>
+    /// <param name="text">Compact territory name.</param>
+    /// <returns>Space-separated territory name.</returns>
 	public static string AddSpaces(this string text) {
-        // SINTASSI extension: Il primo parametro del metodo deve avere 
-        // il modificatore this seguito dal tipo che si intende estendere! 
+        // The first parameter uses the ``this`` modifier to declare an
+        // extension method on string.
         return Regex.Replace(text, "(?<!^)([A-Z])", " $1");
 
         /*
-            il Replace method della classe Regex, il quale vuole tre parametri:
-            - stringa di input
-            - pattern --> (?<!^)([A-Z]) significa che il gruppo di cattura è l'insieme delle lettere
-                                        maiuscole (quelle tra parentesi quadre), mentre la prima tonda
-                                        impedisce l'inserimento dello spazio all'inizio del testo
-            - replacement --> " $1" aggiungiamo uno spazio prima della lettera maiuscola "catturata"
+            Regex.Replace arguments:
+            - input string;
+            - pattern: (?<!^)([A-Z]) captures uppercase letters while the
+              negative lookbehind (?<!^) prevents a leading space;
+            - replacement: " $1" inserts a space before each captured letter.
         */
 
-        // N.B: le stringhe sono immutabili, dobbiamo restituirne una per forza
+        // Strings are immutable, so the transformed value is returned.
 	}
 
+    /// <summary>
+    /// Removes spaces from a territory name.
+    /// </summary>
+    /// <param name="text">Space-separated territory name.</param>
+    /// <returns>Compact territory name.</returns>
     public static string RemoveSpaces(this string text) {
-        string[] words = text.Split(' '); // lo spazio è il separatore
+        string[] words = text.Split(' ');  // Space separator
         string newText = string.Join("", words);
         return newText;
     }

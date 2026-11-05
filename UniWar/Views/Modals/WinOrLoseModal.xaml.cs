@@ -2,7 +2,14 @@
 using System.Threading.Tasks;
 
 namespace UniWar{
+    /// <summary>
+    /// Modal shown at the end of a game with the outcome.
+    /// </summary>
     public partial class WinOrLoseModal: ContentPage{
+            /// <summary>
+            /// Initializes the modal with the supplied outcome.
+            /// </summary>
+            /// <param name="PlayerWin">Whether the user won.</param>
             public WinOrLoseModal(bool PlayerWin) {
                 InitializeComponent();
 
@@ -17,8 +24,10 @@ namespace UniWar{
                 }
             }
 
+            /// <summary>
+            /// Returns to the authentication shell.
+            /// </summary>
             public void OnGoToMainPageButtonClicked(object sender, EventArgs args) {
-                // Navighiamo fino alla pagina di login / registrazione
                 Application.Current!.MainPage = new AppShell();
             }
     }

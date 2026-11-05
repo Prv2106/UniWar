@@ -14,12 +14,12 @@
             
             <VerticalStackLayout>
               
-              <!-- Titolo -->
+              <!-- Title -->
               <Image
                 Source="arrows.png"
                 WidthRequest="210"
                 />
-              <!-- Testo che spiega all'utente che deve fare -->
+              <!-- Instructions shown to the user -->
               <Label Text="Spostamento Strategico"
                      FontSize="25"
                      TextColor="#666"
@@ -40,7 +40,7 @@
                      HorizontalOptions="Center"
                      Margin="10">
         
-                     <!-- Pulsante "-" -->
+                     <!-- "-" button -->
                      <Button Text="−"
                             FontSize="24"
                             TextColor="Orange"
@@ -49,7 +49,7 @@
                             Clicked="OnDecreaseClicked"
                             Grid.Column="0"/>
 
-                     <!-- Numero attuale -->
+                     <!-- Current number -->
                      <Label x:Name="numberLabel"
                             Text="1"
                             FontSize="24"
@@ -57,7 +57,7 @@
                             VerticalTextAlignment="Center"
                             Grid.Column="1"/>
 
-                     <!-- Pulsante "+" -->
+                     <!-- "+" button -->
                      <Button Text="+"
                             FontSize="24"
                             TextColor="Orange"
@@ -68,7 +68,7 @@
                      
               </Grid>
 
-              <!-- Bottone -->
+              <!-- Button -->
               <Button Text="Conferma"
                      TextColor="White"
                      CornerRadius="8"

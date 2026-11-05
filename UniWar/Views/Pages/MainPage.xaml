@@ -6,9 +6,9 @@
 
     <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
-        <!-- "Vista" per l'utente loggato -->
+        <!-- View for the logged-in user -->
         <HorizontalStackLayout x:Name="LoggedPart" HorizontalOptions ="Center" Margin="5,0,0,-35">
-            <!-- Container per lo username con bordo e padding -->
+            <!-- User name container with border and padding -->
                 <Frame 
                     BackgroundColor="Brown"
                     CornerRadius="20"

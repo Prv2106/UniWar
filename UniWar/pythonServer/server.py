@@ -1,17 +1,35 @@
+"""gRPC statistics server for UniWar.
+
+Exposes the ``StatisticsService`` defined in ``statistics.proto``. The service
+persists users, games, and per-game statistics in MySQL and computes aggregate
+metrics and charts returned to the .NET MAUI client.
+"""
+
 import grpc
 from concurrent import futures
 import pymysql 
 import json
 from datetime import datetime
-import statistics_pb2 as msg # Contiene le definizioni dei messaggi 
-import statistics_pb2_grpc  # Contiene le definizioni del servizio gRPC
+import statistics_pb2 as msg  # Generated protobuf message definitions
+import statistics_pb2_grpc  # Generated gRPC service definitions
 from zoneinfo import ZoneInfo
 from uniwar import db_config, command_service, query_service, functions
 
 
 class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
+    """Implementation of the UniWar statistics RPC service."""
 
     def get_games(self, request, context):
+        """Returns the game history for the requested user.
+
+        Args:
+            request (statistics_pb2.Username): Request containing the username.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.GameInfoList: Game history, outcome counters, and a
+            base64-encoded pie chart. ``status`` is ``False`` on failure.
+        """
         print("\n-------------------------------------------------------------------")
         print("RPC get_games:")
         print(f"Parametri richiesta: username = {request.username}")
@@ -21,16 +39,16 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service = query_service.QueryService()
                 response = service.handle_get_game_query(query_service.GetGamesQuery(conn, request.username))
                 if response is not None:
-                    won = sum(1 for game in response if game[3] == 1)  # Partite vinte
-                    lost = sum(1 for game in response if game[3] == 0)  # Partite perse
-                    incomplete = sum(1 for game in response if game[3] == -1)  # Partite non finite
+                    won = sum(1 for game in response if game[3] == 1)  # Won games
+                    lost = sum(1 for game in response if game[3] == 0)  # Lost games
+                    incomplete = sum(1 for game in response if game[3] == -1)  # Unfinished games
 
                     game_info_list = [
                         msg.GameInfo(id=game[0], date=game[2].strftime("%d/%m/%Y %H:%M"), state=game[3])
                         for game in response
                     ]
 
-                    # Genera il grafico a torta
+                    # Generate the pie chart
                     graph_url = functions.generate_game_results_pie_chart(won, lost, incomplete)
 
                     print("Operazione eseguita con successo", flush=True)
@@ -52,8 +70,16 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             return msg.GameInfoList(message=str(e), status=False)
     
 
-    # rpc da richiamare quando si vuole iniziare una nuova partita
-    def new_game(self,request,context):
+    def new_game(self, request, context):
+        """Creates a new game record for the requesting user.
+
+        Args:
+            request (statistics_pb2.Username): Request containing the username.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.NewGameResponse: Generated game identifier and status.
+        """
         print("\n-------------------------------------------------------------------")
         print("RPC new_game:")        
         print(f"Parametri richiesta: username = {request.username}")
@@ -67,17 +93,25 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 return msg.NewGameResponse(game_id = game_id, status = True, message = "Operazione eseguita con successo")
     
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
+            # Handle database-specific errors
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.NewGameResponse(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.NewGameResponse(message=str(e), status=False)
-        
-        
-        
-    # rpc da richiamare quando si termina una partita
-    def end_game(self,request, context):
+
+
+
+    def end_game(self, request, context):
+        """Marks a game as completed with the supplied outcome.
+
+        Args:
+            request (statistics_pb2.EndGameRequest): Game identifier and outcome.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.Response: Operation status.
+        """
         print("\n-------------------------------------------------------------------\n")
         print("RPC end_game:")  
         print(f"Parametri richiesta: game_id = {request.game_id}, is_win = {request.is_win}", flush= True)
@@ -86,20 +120,28 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             with pymysql.connect(**db_config.db_config) as conn:
                 service = command_service.CommandService()
                 service.handle_end_game_command(command_service.EndGameCommand(conn,request.game_id,request.is_win))
-                return msg.Response(message="Operazione completata con successo", status=True)               
+                return msg.Response(message="Operazione completata con successo", status=True)
     
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
+            # Handle database-specific errors
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.Response(message=str(err), status=False)
         except Exception as e:
             print(f"Errore generico, codice di errore: {e}", flush = True)
             return msg.Response(message=str(e), status=False)
-        
-        
 
-    # rpc per l'invio dei dati dopo una battaglia  
+
+
     def send_data(self, request, context):
+        """Aggregates and persists statistics after a battle phase.
+
+        Args:
+            request (statistics_pb2.DataRequest): Battle statistics payload.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.Response: Operation status.
+        """
         print("\n-------------------------------------------------------------------")
         print("RPC send_data:")
         print(f"Ricevuti dati per il giocatore: {request.username}")
@@ -115,7 +157,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
         data = functions.Data(request)
         
-        # destrutturiamo la tupla restituita da process_data 
+        # Unpack the tuple returned by process_data
         (user_tanks_lost,user_territories_lost,user_perfect_defenses,cpu_tanks_lost,cpu_perfect_defenses,cpu_territories_lost,
          user_tanks_lost_attacking,cpu_tanks_lost_attacking,user_tanks_lost_defending, cpu_tanks_lost_defending)= functions.process_data(data)
 
@@ -149,10 +191,10 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                     )
                 )
                 print("Operazione eseguita con successo",flush=True)
-                return msg.Response(message="Statistiche ricevute con successo!", status = True)        
+                return msg.Response(message="Statistiche ricevute con successo!", status = True)
         
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
+            # Handle database-specific errors
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.Response(message=str(err), status=False)
         except Exception as e:
@@ -162,7 +204,17 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     
     
-    def get_statistics(self,request, context):
+    def get_statistics(self, request, context):
+        """Computes aggregate statistics for a completed or in-progress game.
+
+        Args:
+            request (statistics_pb2.StatisticRequest): Request with game identifier.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.StatisticsResponse: Aggregated metrics, or a failure
+            response when no data is available.
+        """
         print("\n-------------------------------------------------------------------")
         print("RPC get_statistics:")        
         print(f"Parametri richiesta:  game_id= {request.game_id}")
@@ -171,21 +223,22 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 service = query_service.QueryService()
                 cursor,response = service.handle_get_data_query(query_service.GetDataQuery(conn, request.game_id))
                 if response is not None:
-                    # Estraiamo i valori dalla riga restituita dalla query
-                    # description è una lista di tuple dove ogni tupla rappresenta una colonna e in cui il primo elemento è il nome della colonna  
-                    columns = [desc[0] for desc in cursor.description] # lista con i nomi delle colonne
-                    rows = dict(zip(columns,response)) # dizionario in modo da poter accedere ai campi utilizzando il nome
-                    # Convertiamo i json in liste di stringhe
+                    # Extract values from the row returned by the query.
+                    # ``description`` is a list of tuples, one per column, whose
+                    # first element is the column name.
+                    columns = [desc[0] for desc in cursor.description]  # Column names
+                    rows = dict(zip(columns,response))  # Name-addressable row
+                    # Deserialize JSON columns into lists of strings
                     user_territories = json.loads(rows["user_owned_territories_list"])
                     cpu_territories = json.loads(rows["cpu_owned_territories_list"])
                     
-                    # Elaboriamo le statistiche
+                    # Compute the statistics
                     
-                    # Ricaviamo i continenti posseduti dall'utente e quelli posseduti dalla cpu
+                    # Determine the continents owned by the user and by the CPU
                     user_owned_continents = functions.get_owned_continents(user_territories)
                     cpu_owned_continents = functions.get_owned_continents(cpu_territories)
                     
-                    # determiniamo il numero di giri effettivamente completati
+                    # Determine the number of fully completed rounds
                     completed_rounds = rows['round_id'] if rows['turn_completed'] == 2 else rows['round_id']-1
                     if completed_rounds == 0:
                         completed_rounds = 1
@@ -239,7 +292,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             print(f"{e}", flush= True)
             return msg.StatisticsResponse(message=str(e), status=False)
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
+            # Handle database-specific errors
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.StatisticsResponse(message=str(err), status=False)
         except Exception as e:
@@ -248,8 +301,16 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
         
                 
          
-    # Gestione dell'utente
     def sign_in(self, request, context):
+        """Authenticates a user against the stored bcrypt password hash.
+
+        Args:
+            request (statistics_pb2.SignInCredentials): Username and password.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.Response: Authentication result.
+        """
         print("\n-------------------------------------------------------------------\n")
         print("RPC sign_in:")  
         print(f"Parametri richiesta: username = {request.username}, password = {request.password}")
@@ -264,7 +325,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             print(f"{e}", flush= True)
             return msg.Response(message=str(e), status=False)
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
+            # Handle database-specific errors
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.Response(message=str(err), status=False)
         except Exception as e:
@@ -273,6 +334,15 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
     
 
     def sign_up(self, request, context):
+        """Registers a new user with a bcrypt-hashed password.
+
+        Args:
+            request (statistics_pb2.SignUpCredentials): Username and password.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.Response: Registration result.
+        """
         print("\n-------------------------------------------------------------------\n")
         print("RPC sign_up:")  
         print(f"Parametri richiesta: username = {request.username}, password = {request.password}")
@@ -284,8 +354,8 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 print("Operazione eseguita con successo",flush=True)
                 return msg.Response(message="Utente registrato con successo!", status=True)
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database
-            if err.args[0] == 1062:  # Codice errore per duplicati (ID già esistente)
+            # Handle database-specific errors
+            if err.args[0] == 1062:  # Duplicate entry error code
                 print(f"Errore di duplicazione, codice di errore: {err}", flush=True)
                 return msg.Response(message="Username già esistente", status=False)
             else:
@@ -293,11 +363,20 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
                 return msg.Response(message=str(err), status=False)
 
         except ValueError as e:
-            # Gestione degli errori di validazione
+            # Handle validation errors
             return msg.Response(message=str(e), status=False)
         
 
-    def username_check(self,request,context):
+    def username_check(self, request, context):
+        """Validates a username and verifies that it is not already taken.
+
+        Args:
+            request (statistics_pb2.Username): Username to validate.
+            context (grpc.ServicerContext): gRPC call context.
+
+        Returns:
+            statistics_pb2.Response: Validation result.
+        """
         print("\n-------------------------------------------------------------------\n")
         print("RPC username_check:")  
         print(f"Parametri richiesta: username = {request.username}")
@@ -312,7 +391,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
             print(f"{e}", flush= True)
             return msg.Response(message=str(e), status=False)
         except pymysql.MySQLError as err:
-            # Gestione degli errori specifici del database   
+            # Handle database-specific errors
             print(f"Errore nel database, codice di errore: {err}", flush=True)
             return msg.Response(message=str(err), status=False)
         except Exception as e:
@@ -321,6 +400,7 @@ class StatisticsService(statistics_pb2_grpc.StatisticsServiceServicer):
 
     
 def serve():
+    """Starts the gRPC server on port 50051 and blocks until termination."""
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     statistics_pb2_grpc.add_StatisticsServiceServicer_to_server(StatisticsService(), server)
     server.add_insecure_port("[::]:50051")

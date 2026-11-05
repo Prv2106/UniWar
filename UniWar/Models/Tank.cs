@@ -1,10 +1,21 @@
+/// <summary>
+/// Represents a tank and its color.
+/// </summary>
 public class Tank {
     public TankColors TankColor {get;}
 
+    /// <summary>
+    /// Initializes a tank from a numeric color index.
+    /// </summary>
+    /// <param name="color">Index of the <see cref="TankColors"/> value.</param>
     public Tank(int color) {
         TankColor = (TankColors) color;
     }
 
+    /// <summary>
+    /// Returns the icon file name associated with the tank color.
+    /// </summary>
+    /// <returns>Icon file name.</returns>
     public string GetTankIconByColor() {
         switch (TankColor) {
             case TankColors.Black:

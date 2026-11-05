@@ -1,13 +1,19 @@
+/// <summary>
+/// Extension methods for <see cref="List{T}"/>.
+/// </summary>
 public static class ListExtensions {
 	
-    // algoritmo di Fisher-Yates 
+    /// <summary>
+    /// Shuffles the list in place using the Fisher-Yates algorithm.
+    /// </summary>
+    /// <typeparam name="T">Element type.</typeparam>
+    /// <param name="list">List to shuffle.</param>
 	public static void Shuffle<T>(this List<T> list) {
-        // SINTASSI: Il primo parametro del metodo deve avere 
-        // il modificatore this seguito dal tipo che si intende estendere!
+        // The first parameter uses the ``this`` modifier to declare an
+        // extension method on List<T>.
 
         Random gen = new();
-        // generatore di numeri casuali:
-        // invocando il metodo Next(), si ottengono numeri pseudo-casuali
+        // Random number generator; Next() returns pseudo-random values.
 		
 		int n = list.Count;
         while (n > 1) {

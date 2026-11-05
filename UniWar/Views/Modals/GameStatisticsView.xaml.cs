@@ -2,6 +2,9 @@ using Statistics;
 using System.Collections.Generic;
 
 namespace UniWar {
+    /// <summary>
+    /// Displays aggregate statistics for a single game.
+    /// </summary>
     public partial class GameStatisticsView : ContentPage {
         public List<StatisticEntry> StatisticsList { get; set; } = [];
         public List<string> UserContinents {get; set;} = [];
@@ -16,36 +19,50 @@ namespace UniWar {
             GameId = gameId;
         }
 
-        public class StatisticEntry(string statName, object userValue, object cpuValue) // Primary constructor
+        /// <summary>
+        /// Row model displayed in the statistics table.
+        /// </summary>
+        public class StatisticEntry(string statName, object userValue, object cpuValue)
         {
             public string StatName { get; } = statName;
             public string UserValue { get; } = userValue.ToString()!;
             public string CpuValue { get; } = cpuValue.ToString()!;
         }
 
+        /// <summary>
+        /// Shows the loading indicator and hides the content.
+        /// </summary>
         private void ShowLoadingAnimation() {
             loading.IsVisible = true;
             page.IsVisible = false;
             warning.IsVisible = false; 
         }
 
+        /// <summary>
+        /// Hides the loading indicator and shows the content or an error
+        /// message.
+        /// </summary>
+        /// <param name="message">Optional error message.</param>
         private void HideLoadingAnimation(string? message = null) {
-            // da invocare alla fine del blocco try o del catch
+            // Call at the end of the try block or from the catch block.
             if (message is not null) {
-                // ci sono problemi
+                // Failure.
                 page.IsVisible = false;
                 loading.IsVisible = false;
                 warning.Text = message;
                 warning.IsVisible = true; 
             } 
             else {
-                // tutto ok
+                // Success.
                 loading.IsVisible = false;
                 page.IsVisible = true;
                 warning.IsVisible = false; 
             }
         }
 
+        /// <summary>
+        /// Loads the statistics when the modal appears.
+        /// </summary>
         protected async override void OnAppearing() {
             base.OnAppearing();
 
@@ -91,6 +108,9 @@ namespace UniWar {
             }
         }
 
+        /// <summary>
+        /// Closes the modal.
+        /// </summary>
         private async void OnCloseButtonClicked(object o, EventArgs args) {
             await Navigation.PopModalAsync();
         }

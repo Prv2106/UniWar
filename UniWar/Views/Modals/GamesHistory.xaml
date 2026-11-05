@@ -7,7 +7,7 @@
        VerticalOptions="Center"
        Padding="10,0,10,20">
 
-        <!-- Simulazione Material Card -->
+        <!-- Material Card simulation -->
         <Frame CornerRadius="12"
                HasShadow="True"
                MaximumWidthRequest="770"
@@ -45,38 +45,38 @@
               Margin ="0,-60,0,-35"
               />
        
-              <!-- Titolo -->
+              <!-- Title -->
               <Label Text="Le tue partite:"
                      FontSize="25"
                      FontAttributes="Bold"
                      TextColor="#333"
                      HorizontalOptions="Center"/>
               
-              <!-- Descrizione -->
+              <!-- Description -->
               <Label Text="Sono presenti sia le partite completate che non"
                      FontSize="16"
                      TextColor="#666"
                      HorizontalOptions="Center"
                      Margin="0,5,0,10"/>
 
-              <!-- Intestazione delle colonne tabella -->
+              <!-- Table header -->
               <Grid ColumnDefinitions="*,*,*" Padding="10" BackgroundColor="LightGray" WidthRequest="392">
                      
-                     <!-- Colonna ID -->
+                     <!-- ID column -->
                      <Label Text="ID"
                             FontAttributes="Bold"
                             HorizontalTextAlignment="Center"
                             VerticalTextAlignment="Center"
                             Grid.Column="0"/>
 
-                     <!-- Colonna Data -->
+                     <!-- Date column -->
                      <Label Text="Data"
                             FontAttributes="Bold"
                             HorizontalTextAlignment="Center"
                             VerticalTextAlignment="Center"
                             Grid.Column="1"/>
 
-                     <!-- Colonna Stato -->
+                     <!-- State column -->
                      <Label Text="Stato"
                             FontAttributes="Bold"
                             HorizontalTextAlignment="Center"
@@ -85,7 +85,7 @@
                      
               </Grid>
 
-              <!-- tabella! ... lista delle partite -->
+              <!-- Games list table -->
               <ListView ItemsSource="{Binding Games}" HasUnevenRows="True" ItemTapped="OnGameTapped"
                      VerticalOptions="Center" WidthRequest="400" MaximumHeightRequest="200">
               <ListView.ItemTemplate>
@@ -94,14 +94,14 @@
                             <Grid Padding="10"
                       ColumnDefinitions="*,*,*">
                     
-                    <!-- Colonna per l'ID -->
+                    <!-- ID column -->
                     <Label Text="{Binding Id}"
                            FontAttributes="Bold"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"
                            Grid.Column="0"/>
 
-                    <!-- Colonna per la Data -->
+                    <!-- Date column -->
                     <Label Text="{Binding Date}"
                            HorizontalTextAlignment="Start"
                            VerticalTextAlignment="Center"
@@ -109,7 +109,7 @@
                            FontSize ="14"
                            Grid.Column="1"/>
 
-                    <!-- Colonna per lo Stato -->
+                    <!-- State column -->
                     <Label Text="{Binding State}"
                            HorizontalTextAlignment="Center"
                            VerticalTextAlignment="Center"

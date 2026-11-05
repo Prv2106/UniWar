@@ -1,11 +1,15 @@
 using UniWar;
 
-public class UniWarSystem { // singleton
+/// <summary>
+/// Singleton holding the global game state, including the continent and
+/// territory catalog, the current players, and the active turn.
+/// </summary>
+public class UniWarSystem {
     private static UniWarSystem? _instance;
-    private readonly Dictionary<string, Continent> _continents; // collezione di tutti i continenti gestiti dal gioco
-    private readonly Dictionary<string, Territory> _territories; // collezione di tutti i territori gestiti dal gioco
+    private readonly Dictionary<string, Continent> _continents;  // All continents managed by the game
+    private readonly Dictionary<string, Territory> _territories;  // All territories managed by the game
 
-    private readonly List<Goal> _goals; // collezione di tutti gli obiettivi
+    private readonly List<Goal> _goals;  // All available goals
     public Player? User {get; set;}
     public Player? Cpu {get; set;}
 
@@ -19,7 +23,9 @@ public class UniWarSystem { // singleton
 
 
 
-    // Proprietà pubblica per accedere all'istanza Singleton
+    /// <summary>
+    /// Gets the singleton instance, creating it on first access.
+    /// </summary>
     public static UniWarSystem Instance {
         get {
             if (_instance == null) 
@@ -28,7 +34,7 @@ public class UniWarSystem { // singleton
         }
     }
     
-    // il costruttore deve essere privato (accessibile solo da dentro)
+    // The constructor is private so that only the class itself can instantiate it.
     private UniWarSystem() {
         _continents = [];
         _territories = [];
@@ -36,50 +42,56 @@ public class UniWarSystem { // singleton
         InitializeAll();
     }
 
+    /// <summary>
+    /// Loads the static game data: continents and territory adjacency.
+    /// </summary>
     private void InitializeAll() {
-        /*
-            Metodo che "carica" i dati necessari al gioco
-        */
-
-        // creiamo i continenti
+        // Create the continents.
         CreateContinents();
 
-        // impostiamo, per ogni territorio, i territori confinanti
+        // Configure the neighboring territories.
         SetsNeighboringTerritories();
     }
 
     
-    // OPERAZIONE DI SISTEMA UC1 -> inizializza la partita
+    /// <summary>
+    /// Initializes a new match: assigns tank colors and territories to both
+    /// players, assigns the goal, and randomly selects the first player.
+    /// </summary>
+    /// <remarks>
+    /// When the session is online, a new game record is created in the
+    /// database before the in-memory state is initialized.
+    /// </remarks>
     public async Task InitializeGame() {
-        IsGameInitialized = true; // booleano che se vero ci dice che sono già state fatte partite nella sessione di gioco corrente
-        /* 
-            è, sostanzialmente, il metodo che inizializza la partita...
-            - sceglie un colore per i carri armati per i partecipanti in maniera random tra i colori previsti dal risiko.
-            - “mischia” le “carte” dei territori e le distribuisce equamente tra i partecipanti.
-            - assegna un obiettivo ai partecipanti.
-            - sceglie chi inizia il turno tra cpu e utente
-
+        IsGameInitialized = true;  // True once at least one match has been started in this session
+        /*
+            Initialization steps:
+            - pick a random tank color for each participant among the five
+              colors supported by the game;
+            - shuffle the territory deck and deal 21 territories to each player;
+            - assign the goal;
+            - choose which participant starts the turn.
         */
 
-        // come PRIMISSIMA cosa, dobbiamo creare un GameId e creare una nuova entry nel database!
+        // Create the game identifier and the corresponding database row first.
         await CreateGameInDatabase();
 
         Random gen = new();
 
-        // bisogna distribuire equamente i territori ai due giocatori
+        // Deal the territories evenly between the two players.
         User = new Player(LoggedUsername ?? "UserPlayer");
         Cpu = new Player("CpuPlayer");
 
-        // recuperiamo tutti i territori
+        // Collect every territory.
         List<Territory> allTerritories = [];
         allTerritories.AddRange(_territories.Values);
 
-        // eseguiamo uno shuffle (metodo implementato nell'extension)
+        // Shuffle using the extension method.
         allTerritories.Shuffle();
 
-        // 21 territori a User e 21 alla CPU
-        var firstHalf = allTerritories.Take(21).ToList(); // restituisce i primi 21 elementi
-        var secondHalf = allTerritories.Skip(21).ToList(); // restituisce i restanti elementi dopo i primi 21
+        // 21 territories to the user and 21 to the CPU.
+        var firstHalf = allTerritories.Take(21).ToList();  // First 21 elements
+        var secondHalf = allTerritories.Skip(21).ToList();  // Elements after the first 21
 
         foreach (var ter in firstHalf)
             User.AddTerritory(ter);
@@ -87,27 +99,27 @@ public class UniWarSystem { // singleton
         foreach (var ter in secondHalf) 
             Cpu.AddTerritory(ter);
         
-        // scegliamo due colori random, i colori sono 5
+        // Pick two distinct random colors out of five.
         int colorForUser = gen.Next(5);
         int colorForCpu;
-        do { // vogliamo assolutamente evitare che i colori siano uguali
+        do {  // Ensure the colors differ.
             colorForCpu = gen.Next(5);
         } while (colorForUser == colorForCpu);
            
-        // per ogni territorio del'utente, associamo 3 carri armati 
+        // Assign three tanks to each user territory.
         foreach (Territory territory in User.Territories.Values) 
             territory.AddTanks(colorForUser,3);
         
-        // per ogni territorio della CPU, associamo 3 carri armati 
+        // Assign three tanks to each CPU territory.
         foreach (Territory territory in Cpu.Territories.Values) 
             territory.AddTanks(colorForCpu,3);
         
             
-        // obiettivo ai partecipanti
+        // Assign the goal to both participants.
         User.Goal = _goals[0];
         Cpu.Goal = _goals[0];
 
-        // Necessario per l'inserimento di nuovi carri armati
+        // Required when adding new tanks.
         User.TankColor = colorForUser;
         Cpu.TankColor = colorForCpu;
 
@@ -117,26 +129,24 @@ public class UniWarSystem { // singleton
             Turn = new Turn(Cpu);
     }
 
+    /// <summary>
+    /// Creates a new game record when the session is online.
+    /// </summary>
     private async Task CreateGameInDatabase() {
-        // Ovviamente, il GameId nel db va creato solo se l'utente sta giocando online
         if (IsOffline) return;
         var response = await ClientGrpc.NewGame(LoggedUsername!);
         GameId = response.GameId;
         Console.WriteLine("GameId: " + GameId);
     }
 
+    /// <summary>
+    /// Resets the singleton game state and the table page after game over.
+    /// The logged username is preserved.
+    /// </summary>
     public void ResetAll() {
-        /*
-            Questo metodo viene invocato nella modale di GameOver e si occupa 
-            di far sì che le istanze della classi singleton TablePage e UniWar 
-            siano reistanziate
-        */
-
         TablePage.Reset();
 
-        // per quanto riguarda, però, l'istanza di questa classe, dobbiamo 
-        // preservare l'utente loggato
-        
+        // Preserve the logged username across the reset.
         if (IsOffline) {
             _instance = null;
             Instance.IsOffline = true;
@@ -149,15 +159,15 @@ public class UniWarSystem { // singleton
     }
 
 
-    // Mostra elenco territori confinanti "attaccabili"
-    // invocata dalla pagina "TablePage"
+    /// <summary>
+    /// Returns the enemy territories adjacent to the specified territory.
+    /// </summary>
+    /// <param name="territoryName">Name of the source territory.</param>
+    /// <returns>Names of the attackable neighboring territories.</returns>
     public List<string> AttackableTerritories(string territoryName) {
-        /*
-            Dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'avversario.
-        */
         List<Territory> attackableNeighboringTerritories = [];
         attackableNeighboringTerritories.AddRange(_territories[territoryName].NeighboringTerritories);
-        // dobbiamo restituire quelli che non appartengono all'utente
+        // Exclude territories owned by the user.
         
         attackableNeighboringTerritories.RemoveAll(territory => User!.Territories.ContainsValue(territory));
         
@@ -168,16 +178,15 @@ public class UniWarSystem { // singleton
         return attackableNeighboringTerritoriesNames;
     }
 
-    // Mostra elenco territori confinanti "amici"
-    // invocata dalla pagina "TablePage"
+    /// <summary>
+    /// Returns the user-owned territories adjacent to the specified territory.
+    /// </summary>
+    /// <param name="territoryName">Name of the source territory.</param>
+    /// <returns>Names of the friendly neighboring territories.</returns>
     public List<string> UserNeighboringTerritories(string territoryName) {
-        /*
-            Dato il nome di un territorio, ne restituisce quelli confinanti appartenenti all'utente stesso.
-        */
         List<Territory> userNeighboringTerritories = [];
         userNeighboringTerritories.AddRange(_territories[territoryName].NeighboringTerritories);
-        // dobbiamo restituire quelli che appartengono all'utente; in altri termini
-        // rimuoviamo quelli appartenenti alla CPU
+        // Exclude territories owned by the CPU.
         userNeighboringTerritories.RemoveAll(territory => Cpu!.Territories.ContainsValue(territory));
         
         List<string> userNeighboringTerritoriesNames = [];
@@ -187,11 +196,18 @@ public class UniWarSystem { // singleton
         return userNeighboringTerritoriesNames;
     }
 
+    /// <summary>
+    /// Enables offline mode and clears the logged username.
+    /// </summary>
     public void OfflineMode() {
         IsOffline = true;
         LoggedUsername = null;
     }
 
+    /// <summary>
+    /// Enables online mode for the specified user.
+    /// </summary>
+    /// <param name="username">Authenticated username.</param>
     public void SetLogged(string username) {
         LoggedUsername = username;
         IsOffline = false;
@@ -199,10 +215,13 @@ public class UniWarSystem { // singleton
 
 
 
-    // SOTTO, i metodi di caricamento dei dati (relativi all'InitializeAll()).
+    // Territory-loading helpers used by InitializeAll().
+
+    /// <summary>
+    /// Configures the adjacency lists for every territory, continent by
+    /// continent.
+    /// </summary>
     private void SetsNeighboringTerritories() {
-        // qui, territorio per territorio, bisogna impostare manualmente quelli confinanti...
-        // procediamo per continente
         AmericaDelNord();
         AmericaDelSud();
         Europa();
@@ -211,6 +230,9 @@ public class UniWarSystem { // singleton
         Oceania();
     }
 
+    /// <summary>
+    /// Creates the continent catalog and indexes every territory by name.
+    /// </summary>
     private void CreateContinents() {
         _continents.Add("AmericaDelNord", new Continent("AmericaDelNord", 9, new List<Territory>() {
             new Territory("Alaska",3),
@@ -267,14 +289,14 @@ public class UniWarSystem { // singleton
             new Territory("AustraliaOrientale",3),
         }));
 
-        // travasiamo tutti i territori nella collezione della classe
+        // Copy every territory into the class-level collection.
         foreach (Continent con in _continents.Values) 
             foreach (Territory ter in con.Territories) 
                 _territories.Add(ter.Name, ter);
     }
 
 
-    // metodi per impostare i territori confinanti
+    // Adjacency configuration, grouped by continent.
     private void AmericaDelNord() {
          // 1. Alaska
         _territories["Alaska"].NeighboringTerritories.AddRange([

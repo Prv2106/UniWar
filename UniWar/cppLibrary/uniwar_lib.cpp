@@ -6,15 +6,15 @@ using namespace std;
 
 namespace uniwar{
 
-/******************************************** Implementazione di Player *************************************/
-// Costruttore (con lista di inizializzazione)
+/******************************************** Player implementation *************************************/
+// Constructor using an initializer list.
 Player::Player(const map<string, vector<string>> & neighbors, const  map<string, int> & tanks, const string & player): neighborsMap(neighbors), tankCountMap(tanks), playerId(player) {}
 
 const  map<string, vector<string>>& Player::getNeighborsMap() const{
     return neighborsMap;
 }
 
-// Getter della lista di vicini per un dato territorio
+// Returns the neighbor list for a given territory.
 const vector<string> & Player::getNeighbors(const string& territory){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
         throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
@@ -30,27 +30,27 @@ const string & Player::getName() const{
     return playerId;
 }
 
-// Metodo per aggiungere un territorio e i suoi vicini
+// Adds a territory together with its neighbors.
 void Player::addTerritory(const string & territory, const vector<string> & neighbors, int count){
     if(territory.empty() || neighbors.empty()){
         throw std::invalid_argument("Errore: il territorio {" + territory + "} o la lista dei vicini è vuota.");
         return;
     }
 
-    // verifichiamo se esiste già una chiave per il territorio indicato
-    /* Nota:
-        In una std::map, il metodo .find(chiave) restituisce un iteratore che punta all'elemento corrispondente alla chiave, se questa esiste.
-        Se la chiave non esiste, restituisce end(), che rappresenta la fine della mappa.
+    // Check whether an entry already exists for the given territory.
+    /*
+        In a std::map, .find(key) returns an iterator to the matching element
+        when the key exists, or end() when it does not.
     */
-    if((neighborsMap.find(territory) == neighborsMap.end())){ // la chiave non esiste
-        neighborsMap[territory] = neighbors; // crea una nuova entry
+    if((neighborsMap.find(territory) == neighborsMap.end())){ // Key absent
+        neighborsMap[territory] = neighbors; // Create a new entry
     }
     else{
         throw std::runtime_error("Errore: il territorio {" + territory + "} è già presente in tankCountMap.");
     }
     
-    if(tankCountMap.find(territory) == tankCountMap.end()){ // la chiave non esiste
-        tankCountMap[territory] = count; // crea una nuova entry
+    if(tankCountMap.find(territory) == tankCountMap.end()){ // Key absent
+        tankCountMap[territory] = count; // Create a new entry
     }
     else{
         throw std::runtime_error("Errore: il territorio {" + territory + "} è già presente in tankCountMap.");
@@ -58,7 +58,7 @@ void Player::addTerritory(const string & territory, const vector<string> & neigh
 
 }
 
-// Metodo per modificare il numero di carri armati di un territorio
+// Replaces the tank count of a territory.
 void Player::modifyTankCount(const string & territory, int newCount){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end())){
         throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
@@ -70,7 +70,7 @@ void Player::modifyTankCount(const string & territory, int newCount){
 
 }
 
-// Metodo per rimuovere un territorio
+// Removes a territory from both maps.
 void Player::removeTerritory(const string & territory){
     if((territory.empty()) || (tankCountMap.find(territory) == tankCountMap.end() || neighborsMap.find(territory) == neighborsMap.end())){
         throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste o è già stato rimosso.");
@@ -80,21 +80,21 @@ void Player::removeTerritory(const string & territory){
     tankCountMap.erase(territory);
 }
 
-// Metodo per ottenere il numero di carri armati dato il territorio
+// Returns the tank count of a territory.
 const int Player::getTanksCount(const string &territory) const {
     if ((territory.empty()) || (neighborsMap.find(territory) == neighborsMap.end()) || (tankCountMap.find(territory) == tankCountMap.end())) {
         throw std::out_of_range("Errore: il territorio {" + territory + "} non esiste.");
         return -1;  
     }
     
-    return tankCountMap.at(territory);  // .at() è un metodo degli std::map (e anche di std::vector, std::unordered_map, ecc.) che permette di accedere a un elemento in modo sicuro, lanciando un'eccezione se la chiave non esiste.
+    return tankCountMap.at(territory);  // .at() performs a bounds-checked lookup and throws when the key is missing.
 }
 
-/****** Fine implementazione di Player */
+/****** End of Player implementation */
 
 
 
-// Questa mappa viene utilizzata dalla funzione "win" per verificare se il giocatore ha vinto
+// Continent mapping used by the win-condition check.
 const map<string, vector<string>> continents = {
     {"AmericaDelNord", {"Alaska", "Alberta", "StatiUnitiOccidentali", "StatiUnitiOrientali","AmericaCentrale", "Ontario", "TerritoriDelNordOvest", "Groenlandia", "Quebec"}},
     {"AmericaDelSud", {"Venezuela", "Perù", "Brasile", "Argentina"}},
@@ -105,9 +105,9 @@ const map<string, vector<string>> continents = {
 };
 
 
-/* Funzioni di supporto */
+/* Helper functions */
 
-// Funzione che inizializza il contesto di gioco per i giocatori in base al json ottenuto da C#
+// Initializes the player context from the JSON payload received from C#.
 vector<Player> initializePlayers(const char* jsonData){
 
     if (jsonData == nullptr || strlen(jsonData) == 0) {
@@ -115,39 +115,39 @@ vector<Player> initializePlayers(const char* jsonData){
         throw std::invalid_argument("Json vuoto o nullo");
     }
 
-    // usiamo la funzione parse() della libreria nlohmann/json per convertire la stringa JSON in un oggetto JSON che rappresenta un array JSON.
+    // Use nlohmann/json parse() to convert the input string into a JSON array.
     json parsedData = json::parse(jsonData);
 
     /*
-        Adesso parsedData contiene un oggetto json con la seguente struttura: 
+        parsedData now has the following shape:
         [
             { "PlayerId": "Player1", "Tanks": {"A": 3, "B": 2}, "Neighbors": {"A": ["B", "C"], "B": ["A"]} },
             { "PlayerId": "Player2", "Tanks": {"C": 4}, "Neighbors": {"C": ["A"]} }
         ]
     */
 
-    // Creiamo un vettore di oggetti Player
+    // Vector of player objects.
     vector<Player> players;
         
-    // Cicliamo su ogni giocatore nel JSON
-    // player è un riferimento ad un oggetto json (auto permette di determinare il tipo dinamicamente)
+    // Iterate over each player in the JSON payload.
+    // ``player`` is a reference to a JSON object; ``auto`` resolves the type.
     for (auto& player : parsedData) {
-        // verifichiamo l'esistenza delle chiavi "Neighbors" e "Tanks" per ogni giocatore
+        // Verify that the required keys are present.
         if (!(player.contains("PlayerId") && player.contains("Neighbors") && player.contains("Tanks"))) {
             cerr << "Errore: JSON malformato" << endl;
             throw std::invalid_argument("Json Malformato");
         }
     
-        // Sfruttiamo la funzione membro "get" per convertire i valori dell'oggetto json in tipi di dati standard di C++.
-        // In particolare, recuperiamo le mappe di vicini e carri armati
+        // The get() member converts JSON values into standard C++ types.
+        // In particular, retrieve the adjacency and tank-count maps.
         string playerName = player["PlayerId"].get<string>();
         auto neighborsMap = player["Neighbors"].get<map<string, vector<string>>>(); 
         auto tankCountsMap = player["Tanks"].get<map<string, int>>();
 
-        // Creiamo un oggetto player (allocato nello stack che verrà deallocato alla fine del for)
+        // Create a stack-allocated player for the current iteration.
         Player newPlayer(neighborsMap, tankCountsMap, playerName); 
 
-        // Aggiungiamo il player creato al vettore di player
+        // Append the player to the result vector.
         players.push_back(newPlayer);
     }
     return players;
@@ -158,15 +158,14 @@ vector<Player> initializePlayers(const char* jsonData){
 }
 
 
-// Funzione responsabile di estrarre la frontiera dei territori non posseduti da un giocatore (a partire dalla mappa dei vicini)
+// Extracts the frontier of territories not owned by a player from the adjacency map.
 const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map) {
     set<string> ownedTerritories = getTerritoriesFromMap(map);
     set<string> notOwnedTerritories;
 
     for(const auto& [_, neighbors]: map){
         for(const auto& territory: neighbors){
-            // Se il territorio non appartiene a quelli posseduti lo inseriamo nella frontiera dei territori non posseduti
-            // Cerchiamo il territorio nel range che va dall'inizio alla fine di ownedTerritories
+            // Insert territories that are not owned into the not-owned frontier.
             if(find(ownedTerritories.begin(), ownedTerritories.end(), territory)== ownedTerritories.end()){
                 notOwnedTerritories.insert(territory);
             }
@@ -177,7 +176,7 @@ const set<string> getNotOwnedFrontier(const map<string, vector<string>> & map) {
 }
 
 
-// Funzione responsabile di estrarre la frontiera dei territori posseduti da un giocatore (a partire dalla mappa dei vicini)
+// Extracts the frontier of territories owned by a player from the adjacency map.
 const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
     set<string> ownedTerritories = getTerritoriesFromMap(map);
     set<string> ownedFrontier;
@@ -185,7 +184,8 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
     for(const auto& [territory, neighbors]: map){
         bool frontier = false;
 
-        // Se ALMENO 1 territorio tra i vicini non appartiene ai territori posseduti allora il territorio chiave della mappa è un territorio di frontiera posseduto 
+        // A territory belongs to the owned frontier when at least one neighbor
+        // is not owned by the player.
         for(const auto& territory: neighbors){
             if(ownedTerritories.count(territory) == 0){
                 frontier = true;
@@ -201,10 +201,8 @@ const set<string> getOwnedFrontier(const map<string, vector<string>> & map) {
 }
 
 
-// Funzione che restituisce un booleano:
-// - true se il giocatore ha vinto 
-// - false se il giocatore non ha vinto
-// Affinchè il gioocatore vinca la sua lista di territori deve comprendere ALMENO 3 continenti e deve comprendere ALMENO 28 territori
+// Returns true when the player satisfies the victory condition:
+// at least 28 owned territories and at least 3 fully controlled continents.
 bool win(const set<string> & territories){
     clog << "----------------------------------------------------------------------------" << endl;
     clog << "Inizio Algoritmo per determinare la condizione di vittoria" << endl;
@@ -214,25 +212,25 @@ bool win(const set<string> & territories){
 
     }
 
-    // Criamo un set di stringhe per tenere traccia dei continenti completati
+    // Track the fully controlled continents.
     set<string> completedContinents;
 
     for(const auto& [continent, continentTerritories]: continents){
         clog << "\nValutazione del completamento del continente " << continent << ":" << endl; 
                 
-        // cicliamo la lista di territori
+        // Iterate over the continent's territories.
         bool completed = true;
         for(const auto & territory: continentTerritories){
            if (territories.count(territory) == 0){
                 completed = false;
                 clog << territory << " mancante" << endl;
-                break; // è inutile continuare il ciclo perché manca almeno 1 territorio per completare il continente
+                break; // Stop early: at least one territory is missing.
             }
             clog << territory << " presente" << endl;
 
         }
 
-        // se il giocatore possiede tutti i territori del continente allora aggiungiamo il continente tra quelli completati
+        // Mark the continent as completed when every territory is owned.
         if(completed){
             clog << "Continente " << continent << " completato" << endl;
             completedContinents.insert(continent);
@@ -248,42 +246,41 @@ bool win(const set<string> & territories){
         }
     }
     clog << "Condizione di vittoria non rispetatta, continenti completati: " << completedContinents.size() << " (devono essere completati almeno 3 continenti)" << endl;
-    // se il giocatore non ha completato almeno 3 continenti 
+    // The player did not complete at least three continents.
     return false;
 } 
 
 
-// Funzione che simula il lancio dei dadi e che li ordina in modo decrescente
+// Simulates the dice rolls and sorts them in descending order.
 int rollTheDice(int (&cpuAttackDice)[3], int (&userDefenseDice)[3], const int& userTanksCount){
     /* 
-        La CPU attacca sempre con 3 carri armati, quindi simuliamo il lancio di 3 dadi (numero casuale tra 1 e 6)
-        In particolare:
-        rand() % 6 restituisce un numero tra 0 e 5 (prendiamo il resto della divisione per 6).
-        + 1 sposta l'intervallo a 1-6, simulando il lancio di un dado. 
+        The CPU always attacks with three tanks, so three dice are rolled
+        (random values in the range 1-6). ``rand() % 6`` yields 0-5; adding 1
+        shifts the range to 1-6.
     */
 
-    // Assegniamo i valori dei dadi alla CPU
+    // Assign the CPU dice values.
     cpuAttackDice[0] = (rand() %6) + 1;
     cpuAttackDice[1] = (rand() %6) + 1;
     cpuAttackDice[2] = (rand() %6) + 1;
 
     int defenseDiceCount = std::min(3, userTanksCount);
 
-    // Simuliamo il lancio dei dadi per il giocatore
+    // Roll the defender dice.
     for (int i = 0; i < defenseDiceCount; i++) {
         userDefenseDice[i] = (rand() %6) + 1;
     }
 
-    // Adesso ordiniamo i dadi della cpu e del giocatore in ordine decrescente
-    /* per fare questo sfruttiamo la funzione sort della libreria standard, la quale ha questa sintassi: std::sort(inizio, fine, criterio);
-        - inizio -> Iteratore o puntatore al primo elemento da ordinare.
-        - fine -> Iteratore o puntatore alla posizione successiva all'ultimo elemento.
-        - criterio (opzionale) -> Funzione o oggetto che specifica l'ordinamento (default crescente)
+    // Sort both dice arrays in descending order.
+    /*
+        std::sort(begin, end, comparator) is used:
+        - begin: iterator or pointer to the first element.
+        - end: iterator or pointer past the last element.
+        - comparator: optional ordering predicate (ascending by default).
 
-        In questo caso, passiamo il nome del vettore statico (puntatore al primo elemento) e utilizziamo la condizione greater<int>().
-        greater è un funtore, quindi la classe Greater ha ridefinito l'operatore () in modo tale che ritorni un booleano sulla base di un confronto di disuguaglianza:
-            - se il primo elemento è maggiore del secondo ritorna true, altrimenti false
-    
+        The arrays decay to pointers to their first element. ``greater<int>``
+        is a functor whose call operator returns true when the first argument
+        is greater than the second, producing a descending order.
     */
     sort(cpuAttackDice,cpuAttackDice + 3, greater<int>());
     sort(userDefenseDice,userDefenseDice + defenseDiceCount, greater<int>());
@@ -294,4 +291,4 @@ int rollTheDice(int (&cpuAttackDice)[3], int (&userDefenseDice)[3], const int& u
 
 
 
-} // fine del namespace uniwar 
+} // namespace uniwar

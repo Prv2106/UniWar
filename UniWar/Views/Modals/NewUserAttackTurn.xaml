@@ -13,12 +13,12 @@
             
             <VerticalStackLayout>
               
-              <!-- Titolo -->
+              <!-- Title -->
               <Image
                 Source="cannon.png"
                 WidthRequest="210"
                 />
-              <!-- Testo che spiega all'utente che deve fare -->
+              <!-- Instructions shown to the user -->
               <Label Text="Adesso puoi attaccare!"
                      FontSize="25"
                      TextColor="#666"
@@ -31,7 +31,7 @@
                      HorizontalOptions="Center"
                      Margin="0,5,0,10"/>
 
-              <!-- Bottone -->
+              <!-- Button -->
               <Button Text="Capito"
                      TextColor="White"
                      CornerRadius="8"

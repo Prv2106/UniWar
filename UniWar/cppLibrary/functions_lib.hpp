@@ -1,14 +1,14 @@
 #ifndef FUNCTION_LIB_H
 #define FUNCTION_LIB_H
 
-// includiamo le librerie necessarie
+// Required standard and third-party headers.
 #include <iostream>
 #include <string>
 #include <map>
 #include <vector>
 #include <set>
 #include<algorithm>
-#include "json.hpp"  // Libreria JSON per C++
+#include "json.hpp"  // JSON library for C++
 #include "uniwar_lib.hpp"
 #include <random>
 
@@ -17,40 +17,56 @@
 
 using namespace std;
 
-#ifdef __cplusplus  // Serve a controllare se il codice è compilato con un compilatore C++
-    // Per evitare che le funzioni definite in C abbiano nomi diversi nella DLL o nel file oggetto, si usa extern "C" per disabilitare il name mangling.
-    // Se non usiamo extern "C", il compilatore C++ modifica il nome della funzione (name mangling), rendendo impossibile chiamarla direttamente da C# con [DllImport].
-    // extern "C" in C++: Indica che le funzioni all'interno devono usare il linkage C, ovvero senza name mangling.
-    extern "C" { //  Se il codice è compilato in C++, indica al compilatore di non applicare name mangling alle funzioni dichiarate all'interno.
+#ifdef __cplusplus  // Guard for C++ compilation
+    // extern "C" disables C++ name mangling so the exported symbols can be
+    // resolved by C# through [DllImport]. Without it, the compiler rewrites
+    // function names and the native entry points become unavailable.
+    extern "C" {
 #endif
 
 
 /**
- * __declspec (abbreviazione di declaration specifier) è un specificatore di dichiarazione usato nei compilatori Microsoft Visual C++ (MSVC) 
- * per modificare il comportamento di variabili, funzioni, classi e oggetti durante la compilazione. 
- * In particolare, __declspec permette di controllare come funzioni e variabili vengono importate/esportate da una DLL, allocate in memoria o ottimizzate dal compilatore.
+ * __declspec (declaration specifier) is a Microsoft Visual C++ (MSVC)
+ * storage-class attribute used to control how functions and variables are
+ * imported from or exported to a DLL.
  */
 
 #ifdef BUILD_MY_DLL
-    #define FUNCTION_LIB __declspec(dllexport) // Esporta funzione se compiliamo la DLL
+    #define FUNCTION_LIB __declspec(dllexport)  // Export when building the DLL
 #else
-    #define FUNCTION_LIB __declspec(dllimport) // Importa funzione se usiamo la DLL
+    #define FUNCTION_LIB __declspec(dllimport)  // Import when consuming the DLL
 #endif
 
 
-// Funzione per il rinforzo dei territori
+/**
+ * @brief Reinforces the CPU territories with new tanks.
+ *
+ * @param jsonData JSON payload describing the game state.
+ * @param newTanks Number of tanks available for reinforcement.
+ * @return Serialized JSON string with the updated CPU state.
+ */
 FUNCTION_LIB const char* reinforcement (const char* jsonData, int newTanks);
 
-// Funzione per l'attacco della cpu
+/**
+ * @brief Simulates the CPU attack phase.
+ *
+ * @param jsonData JSON payload describing both players.
+ * @return Serialized JSON string with battle results, or ``"Pass"``.
+ */
 FUNCTION_LIB const char* cpuAttack (const char* jsonData);
 
-// Funzione per determinare se il giocatore ha vinto
+/**
+ * @brief Checks whether the player satisfies the victory condition.
+ *
+ * @param jsonData JSON payload describing the player state.
+ * @return ``true`` if the player has won.
+ */
 FUNCTION_LIB bool winCheck (const char* jsonData);
 
 
 #ifdef __cplusplus 
-    } // chiudiamo il blocco delle funzioni per il quale non deve essere applicato il name mangling
+    } // Close the block that disables name mangling
 #endif
 
 
-#endif // Fine della libreria
+#endif // FUNCTION_LIB_H

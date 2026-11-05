@@ -1,4 +1,7 @@
-// Struttura per rappresentare una battaglia della CPU
+/// <summary>
+/// Describes a single CPU battle, including dice rolls, losses, and the
+/// resulting map state.
+/// </summary>
 public struct BattleResult {
     public int Battle { get; set; }
     public string AttackingPlayer { get; set; }

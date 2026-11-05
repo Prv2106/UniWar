@@ -6,17 +6,17 @@
     <VerticalStackLayout VerticalOptions="Start" Padding="0,0,0,20">
 
         <AbsoluteLayout WidthRequest="735" HeightRequest="480" HorizontalOptions="Center" VerticalOptions="Start">
-        <!-- NOTA BENE: 
-                LayoutBounds="X, Y, Width, Height" 
-                X = distanza da sinistra 
-                Y = distanza da sopra -->
+        <!-- NOTE:
+                LayoutBounds="X, Y, Width, Height"
+                X = distance from the left
+                Y = distance from the top -->
 
-        <!-- Mappa di Sfondo -->
+        <!-- Background map -->
         <Image Source="mappa.png"
                Aspect="Fill"
                AbsoluteLayout.LayoutBounds="0, 0, 735, 480" />
                
-        <!-- Questa è la label per mostrare il nome di un territorio cliccandoci sopra -->
+        <!-- Label that shows the name of a clicked territory -->
         <Label x:Name="tooltipLabel"
                Text=""
                BackgroundColor="Black"
@@ -29,11 +29,11 @@
                FontSize="12"
                />       
 
-        <!-- A seguire, posizioniamo una Grid su ogni territorio manualmente!! -->
+        <!-- Each territory is positioned manually with a Grid -->
 
         <!-- Alaska -->
         <Grid x:Name="Alaska" AbsoluteLayout.LayoutBounds="55,60,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -51,7 +51,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Alaska"
                 BackgroundColor="Transparent"
@@ -61,7 +61,7 @@
 
         <!-- Alberta -->
         <Grid x:Name="Alberta" AbsoluteLayout.LayoutBounds="75,115,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -79,7 +79,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Alberta"
                 Margin="0,0,0,5"
@@ -90,7 +90,7 @@
 
         <!-- Stati Uniti Occidentali -->
         <Grid x:Name="StatiUnitiOccidentali" AbsoluteLayout.LayoutBounds="55,160,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -108,7 +108,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Stati Uniti Occidentali"
                 Margin="0,0,0,10"
@@ -119,7 +119,7 @@
 
         <!-- Stati Uniti Orientali -->
         <Grid x:Name="StatiUnitiOrientali" AbsoluteLayout.LayoutBounds="100,190,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -137,7 +137,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Stati Uniti Orientali"
                 Margin="0,0,0,10"
@@ -148,7 +148,7 @@
 
         <!-- America Centrale -->
         <Grid x:Name="AmericaCentrale" AbsoluteLayout.LayoutBounds="45,210,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -166,7 +166,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="America Centrale"
                 Margin="0,-10,0,0"
@@ -177,7 +177,7 @@
 
         <!-- Ontario -->
         <Grid x:Name="Ontario" AbsoluteLayout.LayoutBounds="135,140,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -195,7 +195,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Ontario"
                 Margin="0,-5,0,5"
@@ -206,7 +206,7 @@
 
         <!-- Territori Del Nord Ovest -->
         <Grid x:Name="TerritoriDelNordOvest" AbsoluteLayout.LayoutBounds="115,55,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -224,7 +224,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Territori Del Nord Ovest"
                 Margin="-10,-5,0,-10"
@@ -235,7 +235,7 @@
 
         <!-- Groenlandia -->
         <Grid x:Name="Groenlandia" AbsoluteLayout.LayoutBounds="200,55,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -253,7 +253,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Groenlandia"
                 Margin="-10,-20,-40,-10"
@@ -264,7 +264,7 @@
 
         <!-- Quebec -->
         <Grid x:Name="Quebec" AbsoluteLayout.LayoutBounds="185,150,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -282,7 +282,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Quebec"
                 Margin="0,-5,0,-10"
@@ -293,7 +293,7 @@
 
         <!-- Venezuela -->
         <Grid x:Name="Venezuela" AbsoluteLayout.LayoutBounds="115,250,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -311,7 +311,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Venezuela"
                 Margin="-60,12,0,0"
@@ -322,7 +322,7 @@
 
         <!-- Brasile -->
         <Grid x:Name="Brasile" AbsoluteLayout.LayoutBounds="135,300,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -340,7 +340,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Brasile"
                 Margin="-30,-10,-10,10"
@@ -351,7 +351,7 @@
 
         <!-- Perù -->
         <Grid x:Name="Perù" AbsoluteLayout.LayoutBounds="45,315,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -369,14 +369,14 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Perù"
                 Margin="0,-8,0,0"
                 BackgroundColor="Transparent"
                 CornerRadius="10"
                 Clicked="OnTerritoryClicked"/>
-            <!-- Secondo pulsante a dx per gestire la forma strana del Perù -->
+            <!-- Second button on the right for the irregular shape of Perù -->
             <Button
                 ClassId="Perù"
                 Margin="45,15,-45,0"
@@ -389,7 +389,7 @@
 
          <!-- Argentina -->
         <Grid x:Name="Argentina" AbsoluteLayout.LayoutBounds="85,352,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -407,7 +407,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Argentina"
                 Margin="-10,10,0,-40"
@@ -418,7 +418,7 @@
 
         <!-- Africa Del Nord -->
         <Grid x:Name="AfricaDelNord" AbsoluteLayout.LayoutBounds="290,305,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -436,7 +436,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Africa Del Nord"
                 Margin="-30,-45,18,20"
@@ -454,7 +454,7 @@
 
         <!-- Egitto -->
         <Grid x:Name="Egitto" AbsoluteLayout.LayoutBounds="350,280,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -472,7 +472,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Egitto"
                 Margin="-10,0,-20,10"
@@ -483,7 +483,7 @@
 
         <!-- Africa Orientale -->
         <Grid x:Name="AfricaOrientale" AbsoluteLayout.LayoutBounds="385,320,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -501,7 +501,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Africa Orientale"
                 Margin="-10,-5,-10,-10"
@@ -512,7 +512,7 @@
 
         <!-- Congo -->
         <Grid x:Name="Congo" AbsoluteLayout.LayoutBounds="325,340,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -530,7 +530,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Congo"
                 Margin="10,5,0,10"
@@ -541,7 +541,7 @@
 
         <!-- Africa Del Sud -->
         <Grid x:Name="AfricaDelSud" AbsoluteLayout.LayoutBounds="345,400,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -559,7 +559,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Africa Del Sud"
                 Margin="0,-15,-10,10"
@@ -570,7 +570,7 @@
 
         <!-- Madagascar -->
         <Grid x:Name="Madagascar" AbsoluteLayout.LayoutBounds="400,390,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -588,7 +588,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Madagascar"
                 Margin="10,-10,-5,0"
@@ -599,7 +599,7 @@
 
         <!-- Kamchatka -->
         <Grid x:Name="Kamchatka" AbsoluteLayout.LayoutBounds="555,80,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -617,7 +617,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Kamchatka"
                 Margin="2,-30,0,0"
@@ -628,7 +628,7 @@
 
         <!-- Jacuzia -->
         <Grid x:Name="Jacuzia" AbsoluteLayout.LayoutBounds="505,65,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -646,7 +646,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Jacuzia"
                 Margin="10,-10,0,7"
@@ -657,7 +657,7 @@
 
         <!-- Cita -->
         <Grid x:Name="Cita" AbsoluteLayout.LayoutBounds="509,111,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -675,7 +675,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Cita"
                 Margin="0,0,0,0"
@@ -686,7 +686,7 @@
 
         <!-- Giappone -->
         <Grid x:Name="Giappone" AbsoluteLayout.LayoutBounds="620,121,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -704,7 +704,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Giappone"
                 Margin="0,-25,0,-10"
@@ -715,7 +715,7 @@
 
         <!-- Cina -->
         <Grid x:Name="Cina" AbsoluteLayout.LayoutBounds="580,180,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -733,7 +733,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Cina"
                 Margin="-50,2,-10,-10"
@@ -744,7 +744,7 @@
 
         <!-- Siam -->
         <Grid x:Name="Siam" AbsoluteLayout.LayoutBounds="570,250,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -762,7 +762,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Siam"
                 Margin="0,-10,0,0"
@@ -773,7 +773,7 @@
 
         <!-- India -->
         <Grid x:Name="India" AbsoluteLayout.LayoutBounds="510,250,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -791,7 +791,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="India"
                 Margin="-10,-5,-5,-10"
@@ -802,7 +802,7 @@
 
         <!-- Medio Oriente -->
         <Grid x:Name="MedioOriente" AbsoluteLayout.LayoutBounds="430,265,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -820,7 +820,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Medio Oriente"
                 Margin="0,-25,-12,-10"
@@ -831,7 +831,7 @@
 
         <!-- Afghanistan -->
         <Grid x:Name="Afghanistan" AbsoluteLayout.LayoutBounds="450,178,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -849,7 +849,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Afghanistan"
                 Margin="20,0,-5,-10"
@@ -866,7 +866,7 @@
 
         <!-- Urali -->
         <Grid x:Name="Urali" AbsoluteLayout.LayoutBounds="430,130,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -884,7 +884,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Urali"
                 Margin="0,-5,0,10"
@@ -895,7 +895,7 @@
 
         <!-- Siberia -->
         <Grid x:Name="Siberia" AbsoluteLayout.LayoutBounds="460,90,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -913,7 +913,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Siberia"
                 Margin="12,-25,0,-19"
@@ -924,7 +924,7 @@
 
         <!-- Mongolia -->
         <Grid x:Name="Mongolia" AbsoluteLayout.LayoutBounds="550,130,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -942,7 +942,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Mongolia"
                 Margin="0,5,-10,0"
@@ -953,7 +953,7 @@
 
         <!-- Europa Occidentale -->
         <Grid x:Name="EuropaOccidentale" AbsoluteLayout.LayoutBounds="260,200,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -971,7 +971,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Europa Occidentale"
                 Margin="-10,-5,0,0"
@@ -982,7 +982,7 @@
 
         <!-- Europa Meridionale -->
         <Grid x:Name="EuropaMeridionale" AbsoluteLayout.LayoutBounds="340,200,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1000,7 +1000,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Europa Meridionale"
                 Margin="-10,5,-10,0"
@@ -1011,7 +1011,7 @@
 
         <!-- GranBretagna -->
         <Grid x:Name="GranBretagna" AbsoluteLayout.LayoutBounds="280,130,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1029,7 +1029,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Gran Bretagna"
                 Margin="0,0,0,-10"
@@ -1040,7 +1040,7 @@
 
         <!-- Islanda -->
         <Grid x:Name="Islanda" AbsoluteLayout.LayoutBounds="290,80,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1058,7 +1058,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Islanda"
                 Margin="0,0,0,0"
@@ -1069,7 +1069,7 @@
 
         <!-- Ucraina -->
         <Grid x:Name="Ucraina" AbsoluteLayout.LayoutBounds="390,150,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1087,7 +1087,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Ucraina"
                 Margin="0,-30,0,-15"
@@ -1098,7 +1098,7 @@
 
         <!-- EuropaSettentrionale -->
         <Grid x:Name="EuropaSettentrionale" AbsoluteLayout.LayoutBounds="340,150,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1116,7 +1116,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Europa Settentrionale"
                 Margin="-10,10,0,-5"
@@ -1127,7 +1127,7 @@
 
         <!-- Scandinavia -->
         <Grid x:Name="Scandinavia" AbsoluteLayout.LayoutBounds="340,100,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1145,7 +1145,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Scandinavia"
                 Margin="-10,3,0,-5"
@@ -1156,7 +1156,7 @@
 
         <!-- AustraliaOccidentale -->
         <Grid x:Name="AustraliaOccidentale" AbsoluteLayout.LayoutBounds="599,370,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1174,7 +1174,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Australia Occidentale"
                 Margin="-10,0,0,-5"
@@ -1185,7 +1185,7 @@
 
         <!-- Nuova Guinea -->
         <Grid x:Name="NuovaGuinea" AbsoluteLayout.LayoutBounds="665,320,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1203,7 +1203,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Nuova Guinea"
                 Margin="-10,0,0,-5"
@@ -1214,7 +1214,7 @@
 
         <!-- Indonesia -->
         <Grid x:Name="Indonesia" AbsoluteLayout.LayoutBounds="610,300,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1232,7 +1232,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Indonesia"
                 Margin="-30,0,-5,-10"
@@ -1243,7 +1243,7 @@
 
         <!-- Australia Orientale -->
         <Grid x:Name="AustraliaOrientale" AbsoluteLayout.LayoutBounds="650,380,40,40">       
-            <!-- Carro armato -->
+            <!-- Tank -->
             <Image/>
             <!-- Counter -->
             <Grid Margin="28,0,0,28">
@@ -1261,7 +1261,7 @@
                         HorizontalTextAlignment="Center"
                         VerticalTextAlignment="Center" />
             </Grid>
-            <!-- Pulsante per gestire il click -->
+            <!-- Click handling button -->
             <Button
                 ClassId="Australia Orientale"
                 Margin="0,0,0,-20"
@@ -1273,20 +1273,20 @@
     </AbsoluteLayout>
 
 
-           <!-- A partire da qui, mettiamo le informazioni grafiche per l'utente -->
+           <!-- User information panel starts here -->
          <Frame
                CornerRadius="12"
                HasShadow="True"
                BackgroundColor="White"
                MaximumWidthRequest="760"
-               Margin="10"> <!-- Simula la profondità della Material Card -->
+               Margin="10"> <!-- Simulates Material Card depth -->
 
             <HorizontalStackLayout HorizontalOptions="Center">
 
                 <VerticalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Center">
-                    <!-- Riepilogo colore e numero armate -->
+                    <!-- Tank color and army summary -->
                     <Image
                         x:Name="UserTankIcon"
                         Source="red_tank.png"
@@ -1300,7 +1300,7 @@
                         FontAttributes="Bold"
                         TextColor="#333"
                         HorizontalOptions="Center"/>
-                    <!-- Riepilogo numero territori posseduti -->
+                    <!-- Owned territory count summary -->
                     <Image
                         Source="flag.png"
                         WidthRequest="40"
@@ -1315,7 +1315,7 @@
                         TextColor="#333"
                         HorizontalOptions="Center"/>
 
-                    <!-- Numero Round -->
+                    <!-- Round number -->
                     <Image
                         x:Name="RoundCounterIcon"
                         Source="round.png"
@@ -1332,12 +1332,12 @@
                         HorizontalOptions="Center"/>
 
 
-                    <!-- Contatore carri armati rimanenti in fase di rinforzo -->
+                    <!-- Remaining reinforcement tank counter -->
                     <VerticalStackLayout x:Name="tankReinforcementView"
                         Margin="50,-14,0,0"
                         IsVisible ="False">
                         <HorizontalStackLayout HorizontalOptions="Center">
-                        <!-- Icona Carro armato rimanente -->
+                        <!-- Remaining tank icon -->
                             <Image x:Name="tankReinforcementIcon"
                                 Source="green_tank.png"
                                 Margin="0,0,0,-10"
@@ -1346,7 +1346,7 @@
                                 Margin ="-17,0,0,29"
                                 WidthRequest="20"/>
                         </HorizontalStackLayout>
-                        <!-- Doppia label per numero carri armanti rimanenti rinforzo -->
+                        <!-- Two labels for the remaining reinforcement tanks -->
                         <Label 
                             HorizontalTextAlignment="Center"
                             MaximumWidthRequest="136"
@@ -1360,7 +1360,7 @@
 
                 </HorizontalStackLayout>
 
-                <!-- Riepilogo obiettivo -->
+                <!-- Goal summary -->
                 <HorizontalStackLayout Margin="0,5,0,15" HorizontalOptions="Center">
                     <Label 
                         HorizontalTextAlignment="Center"
@@ -1377,7 +1377,7 @@
                         Margin="10,0,0,0"/>
                 </HorizontalStackLayout>
 
-                 <!-- Pulsanti -->
+                 <!-- Buttons -->
                 <HorizontalStackLayout  HorizontalOptions="Center">
 
                     <Button
@@ -1402,7 +1402,7 @@
                         Clicked="OnPassButtonClicked"/>
                     
 
-                    <!-- Pulsante di Visualizzazione delle statistiche -->
+                    <!-- Statistics button -->
                     <Button
                         IsVisible="False"
                         x:Name="statisticsButton"
@@ -1414,7 +1414,7 @@
                         BackgroundColor="#FF8B4A2D"
                         />
 
-                    <!-- Pulsante di End Game-->
+                    <!-- End game button -->
                     <Button
                         Margin="0,0,10,0"
                         x:Name="endGameButton"
@@ -1435,7 +1435,7 @@
         </Frame>
 
 
-        <!-- Questa è la label che dice all'utente di selezionare un territorio da cui effettuare l'attacco -->
+        <!-- Label prompting the user to select an attacking territory -->
         <Frame
             MaximumWidthRequest="740"
             x:Name="banner"

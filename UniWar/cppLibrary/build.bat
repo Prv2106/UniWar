@@ -1,19 +1,20 @@
-:: Compila uniwar_lib.cpp in un file oggetto 
+:: Compile uniwar_lib.cpp into an object file.
 g++ -m64 -c uniwar_lib.cpp
 
-:: Per prima cosa invochiamo il compilatore GNU per C++
-:: con -c diciamo al compilatore di compilare il file sorgente ma senza eseguire il linking, 
-:: risultando in un file oggetto (.o) che contiene il codice compilato ma non completo.
-:: -DBUILD_MY_DLL serve a definire una macro chiamata BUILD_MY_DLL, 
-:: questa macro viene utilizzata per determinare se il codice debba essere compilato in modalità esportazione di DLL o in modalità di importazione.
+:: Invoke the GNU C++ compiler.
+:: -c compiles the source file without linking, producing an object file (.o)
+:: that contains compiled but unresolved code.
+:: -DBUILD_MY_DLL defines the BUILD_MY_DLL macro, which selects DLL export
+:: mode instead of import mode.
 g++ -m64 -c -DBUILD_MY_DLL functions_lib.cpp
 
 
-:: -shared indica al compilatore di creare una libreria condivisa (DLL in questo caso), invece di un codice eseguibile.
-:: -o functions_lib.dll specifica il nome del file di output, che in questo caso è functions_lib.dll.
-:: functions_lib.o è il file oggetto che è stato compilato nel primo comando
-:: -Wl,--out-implib,libfunctions_lib.a passa un'opzione al linker.
-:: -Wl, indica che le opzioni che seguono devono essere passate al linker.
-:: --out-implib,libfunctions_lib.a crea una libreria statica di importazione (libfunctions_lib.a) che può essere utilizzata da altri programmi per fare il linking con la DLL creata.
-:: in pratica, questa libreria di importazione è un interfaccia per collegare il codice al programma in modo che possa chiamare la DLL.
+:: -shared instructs the compiler to build a shared library (DLL) instead of
+:: an executable.
+:: -o functions_lib.dll sets the output file name.
+:: functions_lib.o is the object file produced by the previous command.
+:: -Wl,--out-implib,libfunctions_lib.a forwards an option to the linker.
+:: -Wl, marks the following options as linker options.
+:: --out-implib,libfunctions_lib.a creates a static import library that other
+:: programs can use to link against the generated DLL.
 g++ -m64 -shared -o functions_lib.dll functions_lib.o uniwar_lib.o -Wl,--out-implib,libfunctions_lib.a

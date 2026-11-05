@@ -5,7 +5,7 @@ package statistics;
 service StatisticsService {
     
     rpc send_data (DataRequest) returns (Response); 
-    // da richiamare ogni volta che si conclude una fase di attacco da parte di un giocatore
+    // Called whenever a player finishes an attack phase
 
     rpc sign_in (SignInCredentials) returns (Response);
 
@@ -63,7 +63,7 @@ message SignUpCredentials {
 
 
 
-// messaggi di risposta (client <- server)
+// Response messages (client <- server)
 
 message Response {
     string message = 1;
@@ -80,11 +80,11 @@ message GameInfoList {
     string message = 1;
     bool status = 2;
     repeated GameInfo games = 3;
-    string game_results_pie_chart = 4; // Aggiunto il campo per il grafico in base64
+    string game_results_pie_chart = 4; // Base64-encoded chart payload
 }
 
 message StatisticsResponse{
-    // Informazioni utili per l'history
+    // Values used by the history view
     int32 user_owned_territories = 1;
     int32 user_owned_tanks = 2;
     int32 cpu_owned_territories = 3;
@@ -93,21 +93,21 @@ message StatisticsResponse{
     repeated string cpu_owned_continents = 6;
     int32 user_win = 7;
     
-    float user_tanks_lost_per_round = 8;   // Carri armati persi dall'utente per turno
-    float cpu_tanks_lost_per_round = 9;    // Carri armati persi dalla CPU per turno
-    float user_tanks_lost_attacking_per_round = 10; // Carri armati persi dall'utente in attacco
-    float cpu_tanks_lost_attacking_per_round = 11;  // Carri armati persi dalla CPU in attacco
-    float user_tanks_lost_defending_per_round = 12; // Carri armati persi dall'utente in difesa
-    float cpu_tanks_lost_defending_per_round = 13;  // Carri armati persi dalla CPU in difesa
+    float user_tanks_lost_per_round = 8;   // User tanks lost per round
+    float cpu_tanks_lost_per_round = 9;    // CPU tanks lost per round
+    float user_tanks_lost_attacking_per_round = 10; // User tanks lost while attacking
+    float cpu_tanks_lost_attacking_per_round = 11;  // CPU tanks lost while attacking
+    float user_tanks_lost_defending_per_round = 12; // User tanks lost while defending
+    float cpu_tanks_lost_defending_per_round = 13;  // CPU tanks lost while defending
 
-    int32 user_perfect_defenses = 14;      // Difese perfette dell'utente (nessuna perdita)
-    int32 cpu_perfect_defenses = 15;       // Difese perfette della CPU
+    int32 user_perfect_defenses = 14;      // User perfect defenses (no losses)
+    int32 cpu_perfect_defenses = 15;       // CPU perfect defenses
 
-    float user_territories_lost_per_round = 16; // Territori persi dall'utente per turno
-    float cpu_territories_lost_per_round = 17;  // Territori persi dalla CPU per turno
+    float user_territories_lost_per_round = 16; // User territories lost per round
+    float cpu_territories_lost_per_round = 17;  // CPU territories lost per round
     
-    float user_map_ownership_percentage = 18; // Percentuale di mappa posseduta dall'utente
-    float cpu_map_ownership_percentage = 19;  // Percentuale di mappa posseduta dalla CPU
+    float user_map_ownership_percentage = 18; // Percentage of the map owned by the user
+    float cpu_map_ownership_percentage = 19;  // Percentage of the map owned by the CPU
     string message = 20;
     bool status = 21;
     int32 round_id =22;

@@ -13,7 +13,7 @@
             
             <VerticalStackLayout>
 
-              <!-- Icona dei dadi e testo -->
+              <!-- Dice icons and text -->
               <HorizontalStackLayout
                 HorizontalOptions="Center">
                 <Image
@@ -29,7 +29,7 @@
 
 
               
-              <!-- dadi utente -->
+              <!-- User dice -->
               <Label Text="I tuoi dadi"
                      FontSize="15"
                      TextColor="#666"
@@ -59,7 +59,7 @@
               </HorizontalStackLayout>
 
 
-              <!-- dadi cpu -->
+              <!-- CPU dice -->
               <Label Text="Dadi avversario"
                      FontSize="15"
                      TextColor="#666"
@@ -90,7 +90,7 @@
 
 
               
-              <!-- Testo per avvisi (es: eccezioni) -->
+              <!-- Warning text (for example, exceptions) -->
               <Label  
                 x:Name="WarningText"
                 IsVisible="True"
