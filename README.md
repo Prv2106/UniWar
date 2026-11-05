@@ -150,6 +150,8 @@ classDiagram
 ```text
 .
 ├── README.md
+├── LICENSE
+├── THIRD_PARTY_NOTICES.md
 ├── .gitattributes
 ├── .gitignore
 ├── .vscode/
@@ -425,5 +427,14 @@ checks cover the main execution paths:
 
 ## License
 
-No license file is included in this repository. Contact the repository owners
-before redistributing the code or assets.
+The original source code is released under the MIT License. See
+[LICENSE](LICENSE) for the full text.
+
+Third-party components and asset provenance are documented in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The MIT License applies to the
+original source code only; bundled images, fonts, and third-party components
+remain subject to their respective licenses.
+
+Institutional ownership requirements, if any, take precedence over this
+licensing choice. Confirm the university's intellectual-property policy before
+redistributing the project.
